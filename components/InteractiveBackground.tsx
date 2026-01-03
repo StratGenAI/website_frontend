@@ -50,7 +50,7 @@ export default function InteractiveBackground() {
     window.addEventListener('mousemove', handleMouseMove)
 
     function animate() {
-      if (!ctx) return
+      if (!ctx || !canvas) return
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       particles.forEach((particle, i) => {
@@ -59,6 +59,7 @@ export default function InteractiveBackground() {
         particle.y += particle.vy
 
         // Bounce off edges
+        if (!canvas) return
         if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1
         if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1
 

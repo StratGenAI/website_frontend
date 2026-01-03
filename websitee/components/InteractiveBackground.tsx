@@ -50,7 +50,7 @@ export default function InteractiveBackground() {
     window.addEventListener('mousemove', handleMouseMove)
 
     function animate() {
-      if (!ctx) return
+      if (!ctx || !canvas) return
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       particles.forEach((particle, i) => {

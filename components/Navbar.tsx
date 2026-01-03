@@ -176,7 +176,7 @@ export default function Navbar() {
                 height={1400}
                 priority
                 unoptimized
-                className="object-contain h-16 md:h-20 lg:h-24 w-auto max-w-[190px] md:max-w-[140px] lg:max-w-[160px]"
+                className="object-contain h-16 md:h-20 lg:h-24 w-auto max-w-[190px] md:max-w-[180px] lg:max-w-[160px]"
                 style={{
                   backgroundColor: 'transparent',
                   display: 'block'

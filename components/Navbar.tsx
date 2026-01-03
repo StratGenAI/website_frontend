@@ -179,7 +179,12 @@ export default function Navbar() {
                 className="object-contain h-16 md:h-20 lg:h-24 w-auto max-w-[190px] md:max-w-[180px] lg:max-w-[160px]"
                 style={{
                   backgroundColor: 'transparent',
-                  display: 'block'
+                  display: 'block',
+                  height:'100px',
+                  width:auto,
+                  maxWidth:'200px',
+                  
+                  
                 }}
               />
             </div>

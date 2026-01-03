@@ -176,7 +176,7 @@ export default function Navbar() {
                 height={1200}
                 priority
                 unoptimized
-                className="object-contain h-12 md:h-14 lg:h-16 w-auto max-w-[90px] md:max-w-[100px]"
+                className="object-contain h-16 md:h-20 lg:h-24 w-auto max-w-[120px] md:max-w-[140px] lg:max-w-[160px]"
                 style={{
                   backgroundColor: 'transparent',
                   display: 'block'
@@ -235,21 +235,28 @@ export default function Navbar() {
               if (item.label === 'Services') {
                 return (
                   <div key={item.href} className="relative" ref={servicesDropdownRef}>
-                    <motion.button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        e.preventDefault()
-                        const newState = !servicesDropdownOpen
-                        setServicesDropdownOpen(newState)
-                      }}
-                      className="relative px-4 py-2 text-gray-700 hover:text-gray-900 transition-all font-heading font-medium text-base lg:text-lg rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-200 flex items-center space-x-1"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <span>{item.label}</span>
-                      <ChevronDown className={`w-4 h-4 transition-transform ${servicesDropdownOpen ? 'rotate-180' : ''}`} />
-                    </motion.button>
+                    <div className="flex items-center">
+                      <Link
+                        href="/services"
+                        className="relative px-4 py-2 text-gray-700 hover:text-gray-900 transition-all font-heading font-medium text-base lg:text-lg rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-200"
+                      >
+                        {item.label}
+                      </Link>
+                      <motion.button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          e.preventDefault()
+                          const newState = !servicesDropdownOpen
+                          setServicesDropdownOpen(newState)
+                        }}
+                        className="px-2 py-2 text-gray-700 hover:text-gray-900 transition-all rounded-lg hover:bg-gray-50"
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                      >
+                        <ChevronDown className={`w-4 h-4 transition-transform ${servicesDropdownOpen ? 'rotate-180' : ''}`} />
+                      </motion.button>
+                    </div>
                     
                     <AnimatePresence>
                       {servicesDropdownOpen && (
@@ -257,7 +264,7 @@ export default function Navbar() {
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
-                          className="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden z-50"
+                          className="absolute top-full right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden z-50"
                         >
                           {servicesItems.map((serviceItem) => (
                             <motion.button

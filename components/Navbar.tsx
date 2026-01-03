@@ -173,7 +173,7 @@ export default function Navbar() {
                 src="/single_s.png"
                 alt="StratgenAI Logo"
                 width={1200}
-                height={1200}
+                height={1400}
                 priority
                 unoptimized
                 className="object-contain h-16 md:h-20 lg:h-24 w-auto max-w-[190px] md:max-w-[140px] lg:max-w-[160px]"

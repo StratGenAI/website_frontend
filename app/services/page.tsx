@@ -2,7 +2,7 @@ import Services from '@/components/sections/Services'
 
 export default function ServicesPage() {
   return (
-    <div className="relative">
+    <div className="relative pt-20 md:pt-24">
       <Services />
     </div>
   )

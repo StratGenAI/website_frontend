@@ -152,13 +152,12 @@ export default function Navbar() {
     style={{ overflow: 'visible' }}
   >
     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="flex items-center justify-between h-16 md:h-20 lg:h-24 w-full">
+      <div className="flex items-center justify-between h-16 md:h-20 lg:h-24 w-full gap-2 md:gap-4">
   
-        {/* Logo - Completely Left Aligned */}
+        {/* Logo - Properly Aligned */}
         <Link
           href="/"
-          className="flex items-center flex-shrink-0"
-          style={{ marginLeft: '-90px' }}
+          className="flex items-center flex-shrink-0 z-10"
         >
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -177,12 +176,9 @@ export default function Navbar() {
                 height={1200}
                 priority
                 unoptimized
-                className="object-contain"
+                className="object-contain h-12 md:h-14 lg:h-16 w-auto max-w-[90px] md:max-w-[100px]"
                 style={{
                   backgroundColor: 'transparent',
-                  height: '160px',
-                  width: 'auto',
-                  maxWidth: 'none',
                   display: 'block'
                 }}
               />
@@ -423,11 +419,11 @@ export default function Navbar() {
             {/* Mobile Collaborate Button */}
             <motion.a
               href="#contact"
-              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-heading font-semibold text-xs rounded-lg shadow-md"
+              className="px-3 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-heading font-semibold text-xs rounded-lg shadow-md whitespace-nowrap"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              Collaborate
+              Let's Collaborate
             </motion.a>
             <motion.button
               className="p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-200"

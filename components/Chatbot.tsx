@@ -90,7 +90,7 @@ export default function Chatbot() {
       "👤 **Niyanta Meswaniya** - Creative Lens and Content",
       "The creative force behind our brand and communications. Niyanta brings artistic vision and strategic content expertise, ensuring our solutions are not just powerful but also beautifully presented.",
       "",
-      "👤 **Sheefa Memon** - Grown Lens",
+      "👤 **Sheefa Memon** - Growth Lens",
       "Focused on growth, strategy, and scaling our impact. Sheefa combines business acumen with a growth mindset, driving our expansion and ensuring we deliver value at every stage.",
       "",
       "Together, they bring a unique blend of technical expertise, creative vision, and business acumen to make AI accessible and transformative for businesses of all sizes.",

@@ -30,7 +30,7 @@ const founders = [
   {
     id: 3,
     name: 'Sheefa Memon',
-    role: 'Grown Lens',
+    role: 'Growth Lens',
     bio: 'Focused on growth, strategy, and scaling our impact. Sheefa combines business acumen with a growth mindset, driving our expansion and ensuring we deliver value at every stage. Her expertise in business development and strategic partnerships helps us reach new heights and transform more businesses.',
     image: '/sheefa-memon.jpg',
     email: 'sheefa@stratgenai.in',

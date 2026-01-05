@@ -14,8 +14,8 @@ export default function AnnouncementBar() {
   const allAnnouncements = [...announcements, ...announcements]
 
   return (
-    <div className="fixed top-16 md:top-20 lg:top-24 left-0 right-0 z-40 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 overflow-hidden shadow-md">
-      <div className="relative h-8 md:h-9 flex items-center overflow-hidden w-full">
+    <div className="fixed top-16 md:top-20 lg:top-24 left-0 right-0 z-40 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 overflow-hidden shadow-lg">
+      <div className="relative h-10 md:h-11 flex items-center overflow-hidden w-full">
         <motion.div
           className="flex items-center space-x-8 whitespace-nowrap"
           animate={{
@@ -31,8 +31,8 @@ export default function AnnouncementBar() {
           {allAnnouncements.map((announcement, i) => {
             const Icon = announcement.icon
             return (
-              <div key={i} className="flex items-center space-x-2 text-white text-xs md:text-sm font-heading font-semibold px-6 flex-shrink-0">
-                <Icon className="w-3 h-3 md:w-4 md:h-4" />
+              <div key={i} className="flex items-center space-x-3 text-white text-sm md:text-base font-semibold px-8 flex-shrink-0">
+                <Icon className="w-4 h-4 md:w-5 md:h-5" />
                 <span>{announcement.text}</span>
               </div>
             )

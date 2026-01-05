@@ -176,12 +176,12 @@ export default function Navbar() {
                 height={1400}
                 priority
                 unoptimized
-                className="object-contain md:h-[120px] md:max-w-[240px] lg:h-[160px] lg:max-w-[320px]"
+                className="object-contain md:h-[140px] md:max-w-[280px] lg:h-[180px] lg:max-w-[360px]"
                 style={{
                   backgroundColor: 'transparent',
-                  height: '100px',
+                  height: '120px',
                   width: 'auto',
-                  maxWidth: '200px',
+                  maxWidth: '240px',
                   display: 'block'
                 }}
               />

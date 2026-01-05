@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'StratgenAI <noreply@stratgenai.in>',
+        from: 'StratgenAI <onboarding@resend.dev>',
         to: ['hello@stratgenai.in'],
         subject: `New Product Inquiry: ${productName}`,
         html: `

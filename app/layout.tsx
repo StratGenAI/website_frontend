@@ -62,7 +62,7 @@ export default function RootLayout({
       <body className={`${spaceGrotesk.variable} ${playfair.variable} ${poppins.variable} ${outfit.variable} font-sans`}>
         <Navbar />
         <AnnouncementBar />
-        <main className="min-h-screen relative z-10 pt-28 md:pt-32 lg:pt-36">
+        <main className="min-h-screen relative z-10">
           {children}
         </main>
         <Footer />

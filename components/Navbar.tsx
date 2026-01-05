@@ -176,6 +176,7 @@ export default function Navbar() {
                 height={1400}
                 priority
                 unoptimized
+<<<<<<< HEAD
                 className="object-contain h-16 md:h-20 lg:h-24 w-auto max-w-[190px] md:max-w-[180px] lg:max-w-[160px]"
                 style={{
                   backgroundColor: 'transparent',
@@ -185,6 +186,15 @@ export default function Navbar() {
                   maxWidth:'200px',
                   
                   
+=======
+                className="object-contain"
+                style={{
+                  backgroundColor: 'transparent',
+                  height: '100px',
+                  width: 'auto',
+                  maxWidth: '200px',
+                  display: 'block'
+>>>>>>> 3c36469 (Logo size increased to 100px)
                 }}
               />
             </div>

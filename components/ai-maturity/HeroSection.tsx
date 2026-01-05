@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { ArrowDown, Sparkles } from 'lucide-react'
+import { ArrowDown, Sparkles, Crown, Target, TrendingUp, Zap, Users, BookOpen } from 'lucide-react'
 import { useState } from 'react'
 
 const levels = [

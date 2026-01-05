@@ -161,14 +161,14 @@ export default function Hero() {
 
 
       {/* Main Content - Centered, No Overlapping */}
-      <div ref={ref} className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-20 pt-20 md:pt-24 lg:pt-28">
+      <div ref={ref} className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-20 pt-32 md:pt-36 lg:pt-40 flex items-center min-h-[calc(100vh-120px)]">
         <div className="max-w-6xl mx-auto text-center">
           {/* Main Headline - Professional Typography */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display font-black mb-4 sm:mb-6 leading-tight"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-black mb-4 sm:mb-6 leading-tight"
           >
             <motion.span
               className="block mb-2 text-gray-900"

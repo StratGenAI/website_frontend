@@ -19,7 +19,7 @@ export default function AnnouncementBar() {
         <motion.div
           className="flex items-center space-x-8 whitespace-nowrap"
           animate={{
-            x: [0, -50 + '%'],
+            x: ['0%', '-50%'],
           }}
           transition={{
             duration: 30,

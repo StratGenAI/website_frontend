@@ -13,8 +13,8 @@ const founders = [
     role: 'Dimension of Intelligence',
     bio: 'A visionary leader with deep expertise in AI and machine learning. Krisha drives our technical innovation, transforming complex algorithms into intelligent solutions that solve real-world business challenges. Her strategic thinking and technical prowess make her the cornerstone of our intelligence-driven approach.',
     image: '/krisha_patel.jpeg',
-    email: 'krisha@stratgenai.in',
-    linkedin: '#',
+    email: 'patelkrisha011@gmail.com',
+    linkedin: 'https://www.linkedin.com/in/krisha-patel-59a4b2337',
     gradient: 'from-blue-500 to-cyan-500',
   },
   {

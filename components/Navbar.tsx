@@ -179,9 +179,9 @@ export default function Navbar() {
                 className="object-contain"
                 style={{
                   backgroundColor: 'transparent',
-                  height: '100px',
+                  height: '120px',
                   width: 'auto',
-                  maxWidth: '200px',
+                  maxWidth: '240px',
                   display: 'block'
                 }}
               />
@@ -361,6 +361,14 @@ export default function Navbar() {
                             className="block w-full px-5 py-3 text-left text-gray-700 hover:bg-gray-50 transition-all font-heading font-medium text-sm border-b border-gray-100 flex items-center justify-between group"
                           >
                             <span>Area of Expertise</span>
+                            <ChevronDown className="w-4 h-4 transition-transform group-hover:translate-x-1 rotate-[-90deg]" />
+                          </Link>
+                          <Link
+                            href="/technologies"
+                            onClick={() => setSkillsDropdownOpen(false)}
+                            className="block w-full px-5 py-3 text-left text-gray-700 hover:bg-gray-50 transition-all font-heading font-medium text-sm flex items-center justify-between group"
+                          >
+                            <span>Technologies</span>
                             <ChevronDown className="w-4 h-4 transition-transform group-hover:translate-x-1 rotate-[-90deg]" />
                           </Link>
                         </motion.div>
@@ -604,6 +612,16 @@ export default function Navbar() {
                               className="block w-full py-2 px-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all font-heading font-medium text-sm text-gray-700"
                             >
                               Area of Expertise
+                            </Link>
+                            <Link
+                              href="/technologies"
+                              onClick={() => {
+                                setIsOpen(false)
+                                setSkillsDropdownOpen(false)
+                              }}
+                              className="block w-full py-2 px-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all font-heading font-medium text-sm text-gray-700"
+                            >
+                              Technologies
                             </Link>
                           </motion.div>
                         )}

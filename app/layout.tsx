@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Space_Grotesk, Playfair_Display, Poppins, Outfit } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
+import AnnouncementBar from '@/components/AnnouncementBar'
 import Footer from '@/components/Footer'
 import FloatingButton from '@/components/FloatingButton'
 import AnimatedGradient from '@/components/AnimatedGradient'
@@ -54,7 +55,8 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body className={`${spaceGrotesk.variable} ${playfair.variable} ${poppins.variable} ${outfit.variable} font-sans`}>
         <Navbar />
-        <main className="min-h-screen relative z-10">
+        <AnnouncementBar />
+        <main className="min-h-screen relative z-10 pt-24 md:pt-28 lg:pt-32">
           {children}
         </main>
         <Footer />

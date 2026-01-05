@@ -127,11 +127,12 @@ const serviceCategories = [
 export default function Services() {
   const [ref, inView] = useInView({
     triggerOnce: true,
-    threshold: 0.1,
+    threshold: 0.05,
+    rootMargin: '0px 0px -50px 0px',
   })
 
   return (
-    <section id="services" ref={ref} className="py-32 relative overflow-hidden bg-gradient-to-br from-white via-blue-50/30 to-pink-50/30">
+    <section id="services" ref={ref} className="py-16 md:py-32 relative overflow-x-hidden bg-gradient-to-br from-white via-blue-50/30 to-pink-50/30 min-h-screen">
       {/* Enhanced Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div

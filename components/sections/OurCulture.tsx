@@ -27,6 +27,24 @@ const cultureMedia = [
     type: 'video',
     alt: 'Team event',
   },
+  {
+    id: 4,
+    src: '/culture/WhatsApp Video 2025-12-09 at 19.17.13_623cf1d1.mp4',
+    type: 'video',
+    alt: 'Team event',
+  },
+  {
+    id: 5,
+    src: '/culture/WhatsApp Video 2025-10-29 at 12.06.31_547d0244.mp4',
+    type: 'video',
+    alt: 'Team event',
+  },
+  {
+    id: 6,
+    src: '/culture/WhatsApp Video 2025-12-09 at 20.53.56_8be3dec7.mp4',
+    type: 'video',
+    alt: 'Team event',
+  },
 ]
 
 export default function OurCulture() {

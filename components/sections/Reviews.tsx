@@ -1,9 +1,10 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { Star, Quote } from 'lucide-react'
+import { Star, Quote, Sparkles, CheckCircle2 } from 'lucide-react'
 import ScrollReveal from '@/components/ScrollReveal'
+import { useRef } from 'react'
 
 const reviews = [
   {
@@ -13,8 +14,8 @@ const reviews = [
     role: 'Client',
     content: 'StratgenAI transformed our business operations with their intelligent AI solutions. Their team delivered exceptional results, helping us automate processes and improve efficiency significantly. Highly professional and innovative approach!',
     rating: 5,
-    gradient: 'from-blue-500 to-cyan-500',
-    bgColor: 'bg-blue-50',
+    gradient: 'from-blue-500 via-cyan-500 to-teal-500',
+    bgGradient: 'from-blue-50 via-cyan-50 to-teal-50',
   },
   {
     id: 2,
@@ -23,8 +24,8 @@ const reviews = [
     role: 'Client',
     content: 'Working with StratgenAI has been a game-changer for our consultancy. Their AI-powered solutions helped us streamline our workflows and deliver better results to our clients. Outstanding service and cutting-edge technology!',
     rating: 5,
-    gradient: 'from-purple-500 to-pink-500',
-    bgColor: 'bg-purple-50',
+    gradient: 'from-purple-500 via-pink-500 to-rose-500',
+    bgGradient: 'from-purple-50 via-pink-50 to-rose-50',
   },
 ]
 
@@ -33,13 +34,23 @@ export default function Reviews() {
     triggerOnce: true,
     threshold: 0.1,
   })
+  const containerRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start end', 'end start'],
+  })
+  const y = useTransform(scrollYProgress, [0, 1], [0, -50])
 
   return (
-    <section ref={ref} id="reviews" className="py-32 bg-gradient-to-br from-white via-gray-50 to-blue-50/30 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
+    <section 
+      ref={containerRef}
+      id="reviews" 
+      className="py-32 bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30 relative overflow-hidden"
+    >
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute top-20 right-10 w-96 h-96 bg-blue-400 rounded-full blur-3xl opacity-10"
+          className="absolute top-20 right-10 w-[500px] h-[500px] bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-3xl"
           animate={{
             x: [0, 100, 0],
             y: [0, 50, 0],
@@ -52,7 +63,7 @@ export default function Reviews() {
           }}
         />
         <motion.div
-          className="absolute bottom-20 left-10 w-96 h-96 bg-purple-400 rounded-full blur-3xl opacity-10"
+          className="absolute bottom-20 left-10 w-[500px] h-[500px] bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"
           animate={{
             x: [0, -100, 0],
             y: [0, -50, 0],
@@ -64,24 +75,26 @@ export default function Reviews() {
             ease: 'easeInOut',
           }}
         />
+        {/* Grid Pattern Overlay */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div ref={ref} className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <ScrollReveal direction="scale" delay={0.2}>
-          <div className="text-center mb-20">
+          <div className="text-center mb-24">
             <motion.div
-              className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-100 to-purple-100 mb-6"
+              className="inline-flex items-center space-x-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-100/80 via-purple-100/80 to-pink-100/80 backdrop-blur-sm border border-white/50 mb-8 shadow-lg"
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6 }}
             >
-              <Star className="w-5 h-5 text-blue-600 fill-blue-600" />
-              <span className="text-sm font-heading font-semibold text-gray-700">Client Reviews</span>
+              <Sparkles className="w-5 h-5 text-blue-600" />
+              <span className="text-sm font-heading font-semibold text-gray-700">Client Testimonials</span>
             </motion.div>
             
             <motion.h2
-              className="text-5xl md:text-6xl lg:text-7xl font-display font-black mb-6"
+              className="text-5xl md:text-6xl lg:text-7xl font-display font-black mb-8 leading-tight"
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -95,76 +108,154 @@ export default function Reviews() {
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              Trusted by leading companies who have transformed their business with our AI solutions
+              Real stories from companies that transformed their business with our AI solutions
             </motion.p>
           </div>
         </ScrollReveal>
 
-        {/* Reviews Grid */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-          {reviews.map((review, index) => (
-            <ScrollReveal key={review.id} direction={index % 2 === 0 ? 'left' : 'right'} delay={0.3 + index * 0.2}>
-              <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.8, delay: 0.3 + index * 0.2 }}
-                className="relative group"
+        {/* Reviews - Asymmetric Modern Layout */}
+        <motion.div 
+          style={{ y }}
+          className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto"
+        >
+          {reviews.map((review, index) => {
+            const isLarge = false // No large cards for 2 reviews
+            
+            return (
+              <ScrollReveal 
+                key={review.id} 
+                direction={index % 2 === 0 ? 'left' : 'right'} 
+                delay={0.3 + index * 0.15}
               >
-                {/* Card */}
-                <div className={`relative bg-white rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 h-full ${review.bgColor}/30`}>
-                  {/* Quote Icon */}
-                  <div className="absolute top-6 right-6 opacity-10">
-                    <Quote className={`w-16 h-16 text-gray-400`} />
-                  </div>
+                <motion.div
+                  initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                  animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
+                  transition={{ 
+                    duration: 0.8, 
+                    delay: 0.3 + index * 0.15,
+                    type: "spring",
+                    stiffness: 100
+                  }}
+                  className="relative group"
+                  whileHover={{ y: -8, scale: 1.02 }}
+                >
+                  {/* Main Card with Glassmorphism */}
+                  <div className={`
+                    relative h-full rounded-3xl p-8 lg:p-10
+                    bg-gradient-to-br ${review.bgGradient}
+                    backdrop-blur-xl border border-white/60
+                    shadow-2xl hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)]
+                    transition-all duration-500
+                    overflow-hidden
+                  `}>
+                    {/* Animated Gradient Border */}
+                    <div className={`
+                      absolute inset-0 rounded-3xl
+                      bg-gradient-to-r ${review.gradient}
+                      opacity-0 group-hover:opacity-20
+                      transition-opacity duration-500
+                      blur-xl
+                    `} />
+                    
+                    {/* Decorative Elements */}
+                    <div className="absolute top-0 right-0 w-32 h-32 opacity-5">
+                      <div className={`w-full h-full bg-gradient-to-br ${review.gradient} rounded-full blur-2xl`} />
+                    </div>
+                    <div className="absolute bottom-0 left-0 w-24 h-24 opacity-5">
+                      <div className={`w-full h-full bg-gradient-to-br ${review.gradient} rounded-full blur-2xl`} />
+                    </div>
 
-                  {/* Rating Stars */}
-                  <div className="flex items-center space-x-1 mb-6">
-                    {[...Array(review.rating)].map((_, i) => (
+                    {/* Quote Icon - Floating */}
+                    <motion.div
+                      className={`absolute top-6 right-6 w-20 h-20 rounded-2xl bg-gradient-to-br ${review.gradient} opacity-10 flex items-center justify-center`}
+                      animate={{
+                        rotate: [0, 5, -5, 0],
+                        scale: [1, 1.1, 1],
+                      }}
+                      transition={{
+                        duration: 6,
+                        repeat: Infinity,
+                        ease: 'easeInOut',
+                      }}
+                    >
+                      <Quote className="w-10 h-10 text-white" />
+                    </motion.div>
+
+                    {/* Rating Stars */}
+                    <div className="flex items-center space-x-1 mb-6 relative z-10">
+                      {[...Array(review.rating)].map((_, i) => (
+                        <motion.div
+                          key={i}
+                          initial={{ opacity: 0, scale: 0, rotate: -180 }}
+                          animate={inView ? { opacity: 1, scale: 1, rotate: 0 } : {}}
+                          transition={{ 
+                            delay: 0.5 + index * 0.15 + i * 0.1,
+                            type: "spring",
+                            stiffness: 200
+                          }}
+                          whileHover={{ scale: 1.2, rotate: 15 }}
+                        >
+                          <Star className="w-6 h-6 text-yellow-400 fill-yellow-400 drop-shadow-lg" />
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    {/* Review Content */}
+                    <motion.p
+                      className={`text-lg ${isLarge ? 'lg:text-xl' : ''} text-gray-800 leading-relaxed font-body mb-8 relative z-10 font-medium`}
+                      initial={{ opacity: 0 }}
+                      animate={inView ? { opacity: 1 } : {}}
+                      transition={{ delay: 0.6 + index * 0.15 }}
+                    >
+                      <span className="text-4xl leading-none text-gray-400 font-serif mr-2">"</span>
+                      {review.content}
+                      <span className="text-4xl leading-none text-gray-400 font-serif ml-2">"</span>
+                    </motion.p>
+
+                    {/* Company Info */}
+                    <div className="flex items-center space-x-4 relative z-10">
                       <motion.div
-                        key={i}
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={inView ? { opacity: 1, scale: 1 } : {}}
-                        transition={{ delay: 0.5 + index * 0.2 + i * 0.1 }}
+                        className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${review.gradient} flex items-center justify-center shadow-xl flex-shrink-0 relative overflow-hidden`}
+                        whileHover={{ rotate: 360, scale: 1.1 }}
+                        transition={{ duration: 0.6 }}
                       >
-                        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                        <div className="absolute inset-0 bg-white/20" />
+                        <span className="text-white font-bold text-xl relative z-10">
+                          {review.company.charAt(0)}
+                        </span>
                       </motion.div>
-                    ))}
+                      <div>
+                        <h4 className="text-xl font-heading font-black text-gray-900 mb-1">
+                          {review.company}
+                        </h4>
+                        <p className="text-sm text-gray-600 font-body font-medium">
+                          {review.role}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Bottom Gradient Accent */}
+                    <motion.div
+                      className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${review.gradient} rounded-b-3xl`}
+                      initial={{ scaleX: 0 }}
+                      animate={inView ? { scaleX: 1 } : {}}
+                      transition={{ delay: 1 + index * 0.15, duration: 0.8 }}
+                    />
                   </div>
 
-                  {/* Review Content */}
-                  <motion.p
-                    className="text-lg text-gray-700 leading-relaxed font-body mb-8 relative z-10"
-                    initial={{ opacity: 0 }}
-                    animate={inView ? { opacity: 1 } : {}}
-                    transition={{ delay: 0.6 + index * 0.2 }}
-                  >
-                    "{review.content}"
-                  </motion.p>
-
-                  {/* Company Info */}
-                  <div className="flex items-center space-x-4 relative z-10">
-                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${review.gradient} flex items-center justify-center shadow-lg flex-shrink-0`}>
-                      <span className="text-white font-bold text-xl">
-                        {review.company.charAt(0)}
-                      </span>
-                    </div>
-                    <div>
-                      <h4 className="text-xl font-heading font-bold text-gray-900 mb-1">
-                        {review.company}
-                      </h4>
-                      <p className="text-sm text-gray-600 font-body">
-                        {review.role}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Gradient Accent */}
-                  <div className={`absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r ${review.gradient} rounded-b-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-                </div>
-              </motion.div>
-            </ScrollReveal>
-          ))}
-        </div>
+                  {/* Floating Shadow Effect */}
+                  <div className={`
+                    absolute -inset-1 rounded-3xl
+                    bg-gradient-to-r ${review.gradient}
+                    opacity-0 group-hover:opacity-30
+                    blur-xl -z-10
+                    transition-opacity duration-500
+                  `} />
+                </motion.div>
+              </ScrollReveal>
+            )
+          })}
+        </motion.div>
       </div>
     </section>
   )

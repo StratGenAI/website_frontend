@@ -12,7 +12,7 @@ const founders = [
     id: 1,
     name: 'Krisha Patel',
     role: 'Dimension of Intelligence',
-    bio: 'A visionary leader with deep expertise in AI and machine learning. Krisha drives our technical innovation, transforming complex algorithms into intelligent solutions that solve real-world business challenges. Her strategic thinking and technical prowess make her the cornerstone of our intelligence-driven approach.',
+    bio: 'A visionary leader with deep expertise in AI and machine learning, currently working in healthcare with a focus on multi-omics. Krisha drives our technical innovation, transforming complex algorithms into intelligent solutions that solve real-world business challenges. Her experience in healthcare and multi-omics data analysis enables her to bridge the gap between cutting-edge AI technology and critical medical applications. Her strategic thinking and technical prowess, combined with her domain expertise in healthcare, make her the cornerstone of our intelligence-driven approach.',
     image: '/krisha_patel.jpeg',
     email: 'patelkrisha011@gmail.com',
     linkedin: 'https://www.linkedin.com/in/krisha-patel-59a4b2337',

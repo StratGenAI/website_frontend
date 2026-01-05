@@ -14,11 +14,6 @@ import FAQSection from '@/components/ai-maturity/FAQSection'
 import CTASection from '@/components/ai-maturity/CTASection'
 
 export default function AIMaturityModelPage() {
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  })
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
       <HeroSection />

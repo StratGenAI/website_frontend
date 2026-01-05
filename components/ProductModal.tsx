@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Send } from 'lucide-react'
+import { X, Send, CheckCircle, AlertCircle, Loader2 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
@@ -23,9 +23,17 @@ export default function ProductModal({ isOpen, onClose, product }: ProductModalP
     message: '',
   })
 
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [submitMessage, setSubmitMessage] = useState('')
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
+      // Reset form when modal opens
+      setFormData({ name: '', email: '', company: '', message: '' })
+      setSubmitStatus('idle')
+      setSubmitMessage('')
     } else {
       document.body.style.overflow = 'unset'
     }
@@ -34,12 +42,47 @@ export default function ProductModal({ isOpen, onClose, product }: ProductModalP
     }
   }, [isOpen])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Form submitted:', { ...formData, product: product.name })
-    alert('Thank you for your interest! We will get back to you soon.')
-    setFormData({ name: '', email: '', company: '', message: '' })
-    onClose()
+    setIsSubmitting(true)
+    setSubmitStatus('idle')
+    setSubmitMessage('')
+
+    try {
+      const response = await fetch('/api/send-product-inquiry', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          productName: product.name,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send inquiry')
+      }
+
+      setSubmitStatus('success')
+      setSubmitMessage(data.message || 'Thank you for your inquiry! We will get back to you soon.')
+      setFormData({ name: '', email: '', company: '', message: '' })
+
+      // Close modal after 2 seconds
+      setTimeout(() => {
+        onClose()
+        setSubmitStatus('idle')
+        setSubmitMessage('')
+      }, 2000)
+    } catch (error: any) {
+      console.error('Error submitting form:', error)
+      setSubmitStatus('error')
+      setSubmitMessage(error.message || 'Something went wrong. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleBackdropClick = (e: React.MouseEvent) => {
@@ -165,14 +208,44 @@ export default function ProductModal({ isOpen, onClose, product }: ProductModalP
                     />
                   </div>
 
+                  {/* Status Message */}
+                  {submitStatus !== 'idle' && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className={`p-4 rounded-lg flex items-center space-x-3 ${
+                        submitStatus === 'success'
+                          ? 'bg-green-50 text-green-800 border border-green-200'
+                          : 'bg-red-50 text-red-800 border border-red-200'
+                      }`}
+                    >
+                      {submitStatus === 'success' ? (
+                        <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                      ) : (
+                        <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                      )}
+                      <p className="text-sm font-body">{submitMessage}</p>
+                    </motion.div>
+                  )}
+
                   <motion.button
                     type="submit"
-                    className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white rounded-lg font-heading font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2 group mt-2"
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
+                    disabled={isSubmitting}
+                    className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white rounded-lg font-heading font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2 group mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    whileHover={!isSubmitting ? { scale: 1.02, y: -2 } : {}}
+                    whileTap={!isSubmitting ? { scale: 0.98 } : {}}
                   >
-                    <span>Submit</span>
-                    <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span>Sending...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Submit</span>
+                        <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                      </>
+                    )}
                   </motion.button>
                 </form>
               </div>

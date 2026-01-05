@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Code2, Database, Cloud, Globe, Server, GitBranch, Package, Shield, Zap, Cpu, Layers } from 'lucide-react'
+import { Code2, Database, Cloud, Globe, Server, GitBranch, Package, Zap, Layers } from 'lucide-react'
 import { useInView } from 'react-intersection-observer'
 
 export default function TechnologiesPage() {
@@ -26,8 +26,9 @@ export default function TechnologiesPage() {
 
   const databaseTech = [
     { name: 'PostgreSQL', icon: Database, color: 'from-blue-600 to-indigo-600', bgColor: 'bg-blue-50', description: 'Advanced open-source relational database' },
+    { name: 'MySQL', icon: Database, color: 'from-orange-500 to-amber-500', bgColor: 'bg-orange-50', description: 'Reliable relational database management system' },
     { name: 'MongoDB', icon: Database, color: 'from-green-500 to-emerald-500', bgColor: 'bg-green-50', description: 'NoSQL database for flexible data storage' },
-    { name: 'Redis', icon: Database, color: 'from-red-500 to-rose-500', bgColor: 'bg-red-50', description: 'In-memory data store for caching and sessions' },
+    { name: 'Supabase', icon: Database, color: 'from-green-600 to-emerald-600', bgColor: 'bg-green-50', description: 'Open-source Firebase alternative with PostgreSQL' },
     { name: 'Vector DBs', icon: Database, color: 'from-purple-500 to-violet-500', bgColor: 'bg-purple-50', description: 'Pinecone, Weaviate for AI embeddings storage' },
   ]
 
@@ -41,8 +42,6 @@ export default function TechnologiesPage() {
   const devTools = [
     { name: 'Git', icon: GitBranch, color: 'from-orange-500 to-red-500', bgColor: 'bg-orange-50', description: 'Version control and collaboration' },
     { name: 'CI/CD', icon: Zap, color: 'from-purple-500 to-pink-500', bgColor: 'bg-purple-50', description: 'Automated testing and deployment pipelines' },
-    { name: 'Kubernetes', icon: Cpu, color: 'from-blue-500 to-indigo-500', bgColor: 'bg-blue-50', description: 'Container orchestration and scaling' },
-    { name: 'Security', icon: Shield, color: 'from-green-500 to-teal-500', bgColor: 'bg-green-50', description: 'Security best practices and compliance' },
   ]
 
   const TechSection = ({ title, subtitle, techs, delay }: { title: string, subtitle: string, techs: typeof frontendTech, delay: number }) => (

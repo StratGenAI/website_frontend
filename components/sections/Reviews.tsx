@@ -99,7 +99,7 @@ export default function Reviews() {
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              What Our <span className="gradient-text">Clients Say</span>
+              What Our <span className="gradient-text">Partners Say</span>
             </motion.h2>
             
             <motion.p
@@ -229,7 +229,7 @@ export default function Reviews() {
                           {review.company}
                         </h4>
                         <p className="text-xs sm:text-sm text-gray-600 font-body font-medium">
-                          {review.role}
+                          Business Partner
                         </p>
                       </div>
                     </div>

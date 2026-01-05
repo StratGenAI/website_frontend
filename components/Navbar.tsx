@@ -179,11 +179,12 @@ export default function Navbar() {
                 className="object-contain"
                 style={{
                   backgroundColor: 'transparent',
-                  height: '120px',
+                  height: '60px',
                   width: 'auto',
-                  maxWidth: '240px',
+                  maxWidth: '120px',
                   display: 'block'
                 }}
+                className="md:h-[80px] md:max-w-[160px] lg:h-[120px] lg:max-w-[240px]"
               />
             </div>
           </motion.div>

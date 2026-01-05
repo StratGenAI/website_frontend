@@ -168,7 +168,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 30 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display font-black mb-6 leading-tight"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display font-black mb-4 sm:mb-6 leading-tight"
           >
             <motion.span
               className="block mb-2 text-gray-900"
@@ -187,7 +187,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-lg md:text-xl lg:text-2xl text-gray-800 mb-12 max-w-4xl mx-auto leading-relaxed font-body font-medium"
+            className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-800 mb-8 sm:mb-12 max-w-4xl mx-auto leading-relaxed font-body font-medium px-2"
           >
             We build{' '}
             <motion.span

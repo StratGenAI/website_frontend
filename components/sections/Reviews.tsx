@@ -141,7 +141,7 @@ export default function Reviews() {
                 >
                   {/* Main Card with Glassmorphism */}
                   <div className={`
-                    relative h-full rounded-3xl p-8 lg:p-10
+                    relative h-full rounded-2xl md:rounded-3xl p-6 sm:p-8 lg:p-10
                     bg-gradient-to-br ${review.bgGradient}
                     backdrop-blur-xl border border-white/60
                     shadow-2xl hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)]
@@ -202,33 +202,33 @@ export default function Reviews() {
 
                     {/* Review Content */}
                     <motion.p
-                      className={`text-lg ${isLarge ? 'lg:text-xl' : ''} text-gray-800 leading-relaxed font-body mb-8 relative z-10 font-medium`}
+                      className={`text-base sm:text-lg ${isLarge ? 'lg:text-xl' : ''} text-gray-800 leading-relaxed font-body mb-6 md:mb-8 relative z-10 font-medium`}
                       initial={{ opacity: 0 }}
                       animate={inView ? { opacity: 1 } : {}}
                       transition={{ delay: 0.6 + index * 0.15 }}
                     >
-                      <span className="text-4xl leading-none text-gray-400 font-serif mr-2">"</span>
+                      <span className="text-3xl sm:text-4xl leading-none text-gray-400 font-serif mr-1 sm:mr-2">"</span>
                       {review.content}
-                      <span className="text-4xl leading-none text-gray-400 font-serif ml-2">"</span>
+                      <span className="text-3xl sm:text-4xl leading-none text-gray-400 font-serif ml-1 sm:ml-2">"</span>
                     </motion.p>
 
                     {/* Company Info */}
-                    <div className="flex items-center space-x-4 relative z-10">
+                    <div className="flex items-center space-x-3 sm:space-x-4 relative z-10">
                       <motion.div
-                        className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${review.gradient} flex items-center justify-center shadow-xl flex-shrink-0 relative overflow-hidden`}
+                        className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br ${review.gradient} flex items-center justify-center shadow-xl flex-shrink-0 relative overflow-hidden`}
                         whileHover={{ rotate: 360, scale: 1.1 }}
                         transition={{ duration: 0.6 }}
                       >
                         <div className="absolute inset-0 bg-white/20" />
-                        <span className="text-white font-bold text-xl relative z-10">
+                        <span className="text-white font-bold text-lg sm:text-xl relative z-10">
                           {review.company.charAt(0)}
                         </span>
                       </motion.div>
                       <div>
-                        <h4 className="text-xl font-heading font-black text-gray-900 mb-1">
+                        <h4 className="text-lg sm:text-xl font-heading font-black text-gray-900 mb-0.5 sm:mb-1">
                           {review.company}
                         </h4>
-                        <p className="text-sm text-gray-600 font-body font-medium">
+                        <p className="text-xs sm:text-sm text-gray-600 font-body font-medium">
                           {review.role}
                         </p>
                       </div>

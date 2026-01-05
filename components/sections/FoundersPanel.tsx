@@ -148,7 +148,7 @@ export default function FoundersPanel() {
                       </div>
                       
                       {/* Image Container - Static, No 3D */}
-                      <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-3xl overflow-hidden">
+                      <div className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-72 md:h-72 lg:w-96 lg:h-96 rounded-3xl overflow-hidden">
                         <Image
                           src={founder.image}
                           alt={founder.name}
@@ -181,12 +181,12 @@ export default function FoundersPanel() {
                       </motion.div>
                       
                       {/* Name */}
-                      <h3 className="text-4xl md:text-5xl lg:text-6xl font-display font-black text-gray-900 mb-4">
+                      <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-black text-gray-900 mb-3 md:mb-4">
                         {founder.name}
                       </h3>
                       
                       {/* Bio */}
-                      <p className="text-lg md:text-xl text-gray-600 font-body leading-relaxed mb-8">
+                      <p className="text-base sm:text-lg md:text-xl text-gray-600 font-body leading-relaxed mb-6 md:mb-8">
                         {founder.bio}
                       </p>
                       

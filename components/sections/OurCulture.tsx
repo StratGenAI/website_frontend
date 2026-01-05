@@ -143,11 +143,11 @@ export default function OurCulture() {
 
         {/* Unique Carousel - Reference Style */}
         <div className="max-w-7xl mx-auto">
-          <div className="relative h-[500px] md:h-[600px] lg:h-[700px]">
+          <div className="relative h-[300px] sm:h-[400px] md:h-[600px] lg:h-[700px]">
             {/* Carousel Container */}
             <div className="relative w-full h-full flex items-center justify-center">
-              {/* Left Blurred Media */}
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center space-x-4 z-0">
+              {/* Left Blurred Media - Hidden on mobile */}
+              <div className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 items-center space-x-4 z-0">
                 {[-2, -1].map((offset) => {
                   const index = (currentIndex + offset + cultureMedia.length) % cultureMedia.length
                   const media = cultureMedia[index]
@@ -220,8 +220,8 @@ export default function OurCulture() {
                 </div>
               </motion.div>
 
-              {/* Right Blurred Media */}
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center space-x-4 z-0">
+              {/* Right Blurred Media - Hidden on mobile */}
+              <div className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 items-center space-x-4 z-0">
                 {[1, 2].map((offset) => {
                   const index = (currentIndex + offset) % cultureMedia.length
                   const media = cultureMedia[index]

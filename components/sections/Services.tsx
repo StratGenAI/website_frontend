@@ -244,7 +244,7 @@ export default function Services() {
                       />
                     </motion.div>
                     <div className="flex-1">
-                      <h3 className="text-4xl md:text-5xl lg:text-6xl font-display font-black text-gray-900 mb-3">
+                      <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-black text-gray-900 mb-2 sm:mb-3">
                         {category.category}
                       </h3>
                       <div className={`h-1.5 w-40 bg-gradient-to-r ${category.color} rounded-full shadow-lg`} />

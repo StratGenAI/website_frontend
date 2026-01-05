@@ -9,7 +9,6 @@ import OverviewSection from '@/components/ai-maturity/OverviewSection'
 import MaturityLevels from '@/components/ai-maturity/MaturityLevels'
 import ComparisonTable from '@/components/ai-maturity/ComparisonTable'
 import AssessmentQuiz from '@/components/ai-maturity/AssessmentQuiz'
-import CaseStudies from '@/components/ai-maturity/CaseStudies'
 import ResourcesSection from '@/components/ai-maturity/ResourcesSection'
 import FAQSection from '@/components/ai-maturity/FAQSection'
 import CTASection from '@/components/ai-maturity/CTASection'
@@ -27,7 +26,6 @@ export default function AIMaturityModelPage() {
       <MaturityLevels />
       <ComparisonTable />
       <AssessmentQuiz />
-      <CaseStudies />
       <ResourcesSection />
       <FAQSection />
       <CTASection />

@@ -39,10 +39,16 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: 'StratgenAI - AI Solutions for Your Business',
   description: 'Transform your business with cutting-edge AI software solutions. We help businesses automate processes, enhance productivity, and drive innovation.',
+  applicationName: 'StratgenAI',
   icons: {
     icon: '/single_s.png',
     shortcut: '/single_s.png',
     apple: '/single_s.png',
+  },
+  openGraph: {
+    title: 'StratgenAI - AI Solutions for Your Business',
+    description: 'Transform your business with cutting-edge AI software solutions.',
+    siteName: 'StratgenAI',
   },
 }
 

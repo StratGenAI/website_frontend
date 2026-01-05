@@ -24,8 +24,8 @@ const founders = [
     role: 'Grown Lens',
     bio: 'Focused on growth, strategy, and scaling our impact. Sheefa combines business acumen with a growth mindset, driving our expansion and ensuring we deliver value at every stage. Her expertise in business development and strategic partnerships helps us reach new heights and transform more businesses.',
     image: '/sheefa-memon.jpg',
-    email: 'sheefa@stratgenai.in',
-    linkedin: '#',
+    email: 'sheefamemon2112@gmail.com',
+    linkedin: 'http://linkedin.com/in/sheefa-memon-8b845a340',
     gradient: 'from-pink-500 to-rose-500',
   },
   {
@@ -34,8 +34,8 @@ const founders = [
     role: 'Creative Lens and Content',
     bio: 'The creative force behind our brand and communications. Niyanta brings artistic vision and strategic content expertise, ensuring our solutions are not just powerful but also beautifully presented. Her ability to translate complex AI concepts into compelling narratives makes technology accessible and engaging.',
     image: '/niyanta-meswaniya.jpg',
-    email: 'niyanta@stratgenai.in',
-    linkedin: '#',
+    email: 'niyantameswaniya@gmail.com',
+    linkedin: 'https://www.linkedin.com/in/meswaniya-niyanta-67880031a',
     gradient: 'from-purple-500 to-pink-500',
   },
 ]
@@ -190,64 +190,47 @@ export default function FoundersPanel() {
                         {founder.bio}
                       </p>
                       
-                      {/* Social Links */}
-                      <div className={`flex items-center space-x-4 ${isEven ? '' : 'lg:justify-end lg:flex-row-reverse lg:space-x-reverse'}`}>
-                        <div className="relative group">
+                      {/* Contact Information */}
+                      <div className={`space-y-4 ${isEven ? '' : 'lg:text-right'}`}>
+                        {/* Email Address - Visible */}
+                        <div className={`flex items-center space-x-3 ${isEven ? '' : 'lg:justify-end lg:flex-row-reverse lg:space-x-reverse'}`}>
+                          <motion.a
+                            href={`mailto:${founder.email}`}
+                            className="text-gray-700 hover:text-gray-900 font-medium text-base md:text-lg transition-colors flex items-center space-x-2 group"
+                            whileHover={{ scale: 1.02 }}
+                          >
+                            <Mail className="w-5 h-5 text-gray-500 group-hover:text-gray-700" />
+                            <span className="break-all">{founder.email}</span>
+                          </motion.a>
                           <motion.button
                             onClick={(e) => handleEmailClick(e, founder.email)}
-                            className={`w-12 h-12 rounded-xl bg-gradient-to-br ${founder.gradient} text-white flex items-center justify-center shadow-lg hover:shadow-xl transition-all relative`}
+                            className={`p-2 rounded-lg bg-gradient-to-br ${founder.gradient} text-white flex items-center justify-center shadow-md hover:shadow-lg transition-all`}
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
-                            title={`Click to copy: ${founder.email}`}
+                            title="Copy email"
                           >
                             {copiedEmail === founder.email ? (
-                              <Check className="w-5 h-5" />
+                              <Check className="w-4 h-4" />
                             ) : (
-                              <Mail className="w-5 h-5" />
+                              <Copy className="w-4 h-4" />
                             )}
                           </motion.button>
-                          
-                          {/* Email Tooltip */}
-                          {showEmail === founder.email && (
-                            <motion.div
-                              initial={{ opacity: 0, y: 10, scale: 0.9 }}
-                              animate={{ opacity: 1, y: 0, scale: 1 }}
-                              exit={{ opacity: 0, y: 10, scale: 0.9 }}
-                              className={`absolute ${isEven ? 'left-0' : 'right-0'} bottom-full mb-2 px-4 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-xl whitespace-nowrap z-50`}
-                            >
-                              {copiedEmail === founder.email ? (
-                                <div className="flex items-center space-x-2">
-                                  <Check className="w-4 h-4 text-green-400" />
-                                  <span>Copied!</span>
-                                </div>
-                              ) : (
-                                <div className="flex items-center space-x-2">
-                                  <Copy className="w-4 h-4" />
-                                  <span>{founder.email}</span>
-                                </div>
-                              )}
-                              <div className={`absolute ${isEven ? 'left-4' : 'right-4'} top-full w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900`} />
-                            </motion.div>
-                          )}
-                          
-                          {/* Hover Tooltip */}
-                          <div className={`absolute ${isEven ? 'left-0' : 'right-0'} bottom-full mb-2 px-3 py-1.5 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-40 ${showEmail === founder.email ? 'hidden' : ''}`}>
-                            {founder.email}
-                            <div className={`absolute ${isEven ? 'left-4' : 'right-4'} top-full w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800`} />
-                          </div>
                         </div>
                         
-                        <motion.a
-                          href={founder.linkedin}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`w-12 h-12 rounded-xl bg-gradient-to-br ${founder.gradient} text-white flex items-center justify-center shadow-lg hover:shadow-xl transition-all`}
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.95 }}
-                          title="View LinkedIn Profile"
-                        >
-                          <Linkedin className="w-5 h-5" />
-                        </motion.a>
+                        {/* Social Links */}
+                        <div className={`flex items-center space-x-4 ${isEven ? '' : 'lg:justify-end lg:flex-row-reverse lg:space-x-reverse'}`}>
+                          <motion.a
+                            href={founder.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`w-12 h-12 rounded-xl bg-gradient-to-br ${founder.gradient} text-white flex items-center justify-center shadow-lg hover:shadow-xl transition-all`}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                            title="View LinkedIn Profile"
+                          >
+                            <Linkedin className="w-5 h-5" />
+                          </motion.a>
+                        </div>
                       </div>
                     </motion.div>
                   </div>

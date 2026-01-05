@@ -2,9 +2,10 @@
 
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { MapPin, Mail, Send } from 'lucide-react'
+import { MapPin, Mail, Send, CheckCircle, AlertCircle } from 'lucide-react'
 import { useState, useRef } from 'react'
 import ScrollReveal from '@/components/ScrollReveal'
+import { supabase } from '@/lib/supabase'
 
 export default function Contact() {
   const [ref, inView] = useInView({
@@ -19,12 +20,50 @@ export default function Contact() {
     message: '',
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [submitMessage, setSubmitMessage] = useState('')
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle form submission here
-    console.log('Form submitted:', formData)
-    alert('Thank you for your message! We will get back to you soon.')
-    setFormData({ name: '', email: '', company: '', message: '' })
+    setIsSubmitting(true)
+    setSubmitStatus('idle')
+    setSubmitMessage('')
+
+    try {
+      const { data, error } = await supabase
+        .from('contact_submissions')
+        .insert([
+          {
+            name: formData.name,
+            email: formData.email,
+            company: formData.company || null,
+            message: formData.message,
+            created_at: new Date().toISOString(),
+          },
+        ])
+        .select()
+
+      if (error) {
+        throw error
+      }
+
+      setSubmitStatus('success')
+      setSubmitMessage('Thank you for your message! We will get back to you soon.')
+      setFormData({ name: '', email: '', company: '', message: '' })
+      
+      // Reset status after 5 seconds
+      setTimeout(() => {
+        setSubmitStatus('idle')
+        setSubmitMessage('')
+      }, 5000)
+    } catch (error: any) {
+      console.error('Error submitting form:', error)
+      setSubmitStatus('error')
+      setSubmitMessage(error.message || 'Something went wrong. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const sectionRef = useRef<HTMLElement>(null)
@@ -203,11 +242,34 @@ export default function Contact() {
                   />
                 </div>
 
+                {submitStatus === 'success' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-center space-x-2 text-green-600 bg-green-50 p-4 rounded-xl border border-green-200"
+                  >
+                    <CheckCircle className="w-5 h-5" />
+                    <span className="font-body font-semibold">{submitMessage}</span>
+                  </motion.div>
+                )}
+
+                {submitStatus === 'error' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-center space-x-2 text-red-600 bg-red-50 p-4 rounded-xl border border-red-200"
+                  >
+                    <AlertCircle className="w-5 h-5" />
+                    <span className="font-body font-semibold">{submitMessage}</span>
+                  </motion.div>
+                )}
+
                 <motion.button
                   type="submit"
-                  className="w-full px-8 py-5 bg-gradient-ai text-white rounded-2xl font-heading font-bold text-lg shadow-2xl relative overflow-hidden flex items-center justify-center space-x-3 group/btn"
-                  whileHover={{ scale: 1.05, y: -5 }}
-                  whileTap={{ scale: 0.95 }}
+                  disabled={isSubmitting}
+                  className="w-full px-8 py-5 bg-gradient-ai text-white rounded-2xl font-heading font-bold text-lg shadow-2xl relative overflow-hidden flex items-center justify-center space-x-3 group/btn disabled:opacity-50 disabled:cursor-not-allowed"
+                  whileHover={!isSubmitting ? { scale: 1.05, y: -5 } : {}}
+                  whileTap={!isSubmitting ? { scale: 0.95 } : {}}
                 >
                   <motion.div
                     className="absolute inset-0 bg-white opacity-0 group-hover/btn:opacity-20 transition-opacity"
@@ -220,14 +282,18 @@ export default function Contact() {
                       ease: 'linear',
                     }}
                   />
-                  <span className="relative z-10">Send Message</span>
-                  <motion.div
-                    className="relative z-10"
-                    animate={{ x: [0, 5, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                  >
-                    <Send className="w-6 h-6" />
-                  </motion.div>
+                  <span className="relative z-10">
+                    {isSubmitting ? 'Sending...' : 'Send Message'}
+                  </span>
+                  {!isSubmitting && (
+                    <motion.div
+                      className="relative z-10"
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    >
+                      <Send className="w-6 h-6" />
+                    </motion.div>
+                  )}
                 </motion.button>
               </div>
             </motion.form>

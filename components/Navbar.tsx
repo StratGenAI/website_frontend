@@ -176,15 +176,14 @@ export default function Navbar() {
                 height={1400}
                 priority
                 unoptimized
-                className="object-contain"
+                className="object-contain md:h-[100px] md:max-w-[200px] lg:h-[140px] lg:max-w-[280px]"
                 style={{
                   backgroundColor: 'transparent',
-                  height: '60px',
+                  height: '80px',
                   width: 'auto',
-                  maxWidth: '120px',
+                  maxWidth: '160px',
                   display: 'block'
                 }}
-                className="md:h-[80px] md:max-w-[160px] lg:h-[120px] lg:max-w-[240px]"
               />
             </div>
           </motion.div>

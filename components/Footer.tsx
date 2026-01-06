@@ -5,12 +5,12 @@ import { motion } from 'framer-motion'
 import { Facebook, Instagram, Linkedin, Twitter } from 'lucide-react'
 
 export default function Footer() {
-  // Social media links - Update these with your actual links
+  // Social media links
   const socialLinks = {
-    facebook: 'https://facebook.com/yourpage', // Replace with your Facebook link
-    instagram: 'https://instagram.com/yourpage', // Replace with your Instagram link
-    linkedin: 'https://linkedin.com/company/yourpage', // Replace with your LinkedIn link
-    twitter: 'https://twitter.com/yourpage', // Replace with your Twitter link
+    facebook: 'https://facebook.com/stratgenai',
+    instagram: 'https://instagram.com/stratgenai',
+    linkedin: 'https://linkedin.com/company/stratgenai',
+    twitter: 'https://twitter.com/stratgenai',
   }
 
   return (

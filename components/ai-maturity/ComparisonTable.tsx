@@ -129,26 +129,26 @@ export default function ComparisonTable() {
             </p>
           </motion.div>
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
             <motion.div
               className="min-w-full inline-block"
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.2 }}
             >
-              <table className="w-full border-collapse">
+              <table className="w-full border-collapse text-sm sm:text-base">
                 <thead>
                   <tr>
-                    <th className="sticky left-0 z-10 bg-white p-4 text-left font-heading font-bold text-gray-900 border-b-2 border-gray-200">
+                    <th className="sticky left-0 z-10 bg-white p-3 sm:p-4 text-left font-heading font-bold text-gray-900 border-b-2 border-gray-200 text-xs sm:text-sm">
                       Metric
                     </th>
                     {[0, 1, 2, 3, 4, 5].map((level) => (
                       <th
                         key={level}
-                        className="p-4 text-center font-heading font-bold text-white border-b-2 border-gray-200 min-w-[120px]"
+                        className="p-2 sm:p-4 text-center font-heading font-bold text-white border-b-2 border-gray-200 min-w-[90px] sm:min-w-[120px] text-xs sm:text-sm"
                         style={{ backgroundColor: levelColors[level].bg }}
                       >
-                        Level {level}
+                        L{level}
                       </th>
                     ))}
                   </tr>
@@ -162,7 +162,7 @@ export default function ComparisonTable() {
                       animate={inView ? { opacity: 1, x: 0 } : {}}
                       transition={{ delay: 0.3 + rowIndex * 0.05 }}
                     >
-                      <td className="sticky left-0 z-10 bg-white p-4 font-heading font-semibold text-gray-900 border-b border-gray-200">
+                      <td className="sticky left-0 z-10 bg-white p-3 sm:p-4 font-heading font-semibold text-gray-900 border-b border-gray-200 text-xs sm:text-sm">
                         {row.metric}
                       </td>
                       {[0, 1, 2, 3, 4, 5].map((level) => {
@@ -170,7 +170,7 @@ export default function ComparisonTable() {
                         return (
                           <td
                             key={level}
-                            className="p-4 text-center font-body border-b border-gray-200"
+                            className="p-2 sm:p-4 text-center font-body border-b border-gray-200 text-xs sm:text-sm"
                             style={{
                               backgroundColor: `${levelColors[level].bg}15`,
                               color: levelColors[level].text === '#FFFFFF' ? '#1F2937' : '#1F2937',

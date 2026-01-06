@@ -81,7 +81,7 @@ export default function HeroSection() {
               </motion.div>
 
               <motion.h1
-                className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-black mb-6 leading-tight"
+                className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display font-black mb-6 leading-tight px-2 sm:px-0"
                 initial={{ opacity: 0, y: 30 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.3 }}
@@ -130,12 +130,12 @@ export default function HeroSection() {
 
             {/* Right: Interactive Pyramid */}
             <motion.div
-              className="flex flex-col items-center justify-center"
+              className="flex flex-col items-center justify-center mt-8 lg:mt-0"
               initial={{ opacity: 0, x: 50 }}
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <div className="relative w-full max-w-md">
+              <div className="relative w-full max-w-md px-4 sm:px-0">
                 {levels.map((level, index) => {
                   const Icon = level.icon
                   const width = 100 - (index * 12) // Decreasing width for pyramid effect

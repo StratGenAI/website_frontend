@@ -385,19 +385,19 @@ export default function MaturityLevels() {
                       >
                         <Icon className="w-8 h-8 md:w-10 md:h-10 text-white" />
                       </div>
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-2">
-                          <span className="text-3xl md:text-4xl font-black text-gray-900">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 space-y-1 sm:space-y-0 mb-2">
+                          <span className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900">
                             Level {level.number}
                           </span>
                           <span
-                            className="text-xl md:text-2xl font-heading font-bold"
+                            className="text-lg sm:text-xl md:text-2xl font-heading font-bold"
                             style={{ color: level.color }}
                           >
                             {level.name}
                           </span>
                         </div>
-                        <p className="text-gray-600 font-body text-sm md:text-base">
+                        <p className="text-gray-600 font-body text-xs sm:text-sm md:text-base line-clamp-2 sm:line-clamp-none">
                           {level.content.whatItMeans}
                         </p>
                       </div>

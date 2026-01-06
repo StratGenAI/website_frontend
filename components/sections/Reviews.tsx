@@ -12,7 +12,8 @@ const reviews = [
     company: 'Rumi Energizer',
     name: 'Rumi Energizer Team',
     role: 'Client',
-    content: 'StratgenAI transformed our business operations with their intelligent AI solutions. Their team delivered exceptional results, helping us automate processes and improve efficiency significantly. Highly professional and innovative approach!',
+    location: 'Dubai, UAE',
+    content: 'StratgenAI transformed our business operations by building a complete automated pipeline that streamlined our entire workflow. Their intelligent AI solutions eliminated manual processes and significantly improved our efficiency. The automated pipeline they created handles everything seamlessly, allowing us to focus on growth. Highly professional and innovative approach!',
     rating: 5,
     gradient: 'from-blue-500 via-cyan-500 to-teal-500',
     bgGradient: 'from-blue-50 via-cyan-50 to-teal-50',
@@ -22,7 +23,8 @@ const reviews = [
     company: 'D&G Consultant',
     name: 'D&G Consultant Team',
     role: 'Client',
-    content: 'Working with StratgenAI has been a game-changer for our consultancy. Their AI-powered solutions helped us streamline our workflows and deliver better results to our clients. Outstanding service and cutting-edge technology!',
+    location: 'Ahmedabad, India',
+    content: 'Working with StratgenAI has been a game-changer for our consultancy. They implemented an intelligent AI chatbot that handles client inquiries 24/7, and their AI-powered solutions helped us streamline our workflows and deliver better results to our clients. The chatbot integration was seamless and has significantly improved our customer engagement. Outstanding service and cutting-edge technology!',
     rating: 5,
     gradient: 'from-purple-500 via-pink-500 to-rose-500',
     bgGradient: 'from-purple-50 via-pink-50 to-rose-50',
@@ -99,7 +101,7 @@ export default function Reviews() {
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              What Our <span className="gradient-text">Partners Say</span>
+              Let's Hear From Our <span className="gradient-text">Clients</span>
             </motion.h2>
             
             <motion.p
@@ -229,7 +231,7 @@ export default function Reviews() {
                           {review.company}
                         </h4>
                         <p className="text-xs sm:text-sm text-gray-600 font-body font-medium">
-                          Business Partner
+                          {review.location}
                         </p>
                       </div>
                     </div>

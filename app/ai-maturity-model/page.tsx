@@ -1,9 +1,5 @@
 'use client'
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { useInView } from 'react-intersection-observer'
-import { ChevronDown, ChevronUp, CheckCircle2, ArrowRight, Download, BookOpen, Users, TrendingUp, Zap, Target, Crown } from 'lucide-react'
 import HeroSection from '@/components/ai-maturity/HeroSection'
 import OverviewSection from '@/components/ai-maturity/OverviewSection'
 import MaturityLevels from '@/components/ai-maturity/MaturityLevels'

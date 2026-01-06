@@ -152,13 +152,13 @@ export default function Navbar() {
       }`}
       style={{ overflow: 'visible' }}
     >
-    <div className="container mx-auto px-2 sm:px-4 lg:px-6">
-      <div className="flex items-center justify-between h-16 md:h-20 lg:h-24 w-full gap-2 md:gap-3">
+    <div className="container mx-auto px-1 sm:px-2 lg:px-4">
+      <div className="flex items-center justify-between h-16 md:h-20 lg:h-24 w-full gap-1 md:gap-2">
   
         {/* Logo - Left Aligned */}
         <Link
           href="/"
-          className="flex items-center flex-shrink-0 z-10 -ml-2 sm:ml-0"
+          className="flex items-center flex-shrink-0 z-10 -ml-3 sm:-ml-2 md:ml-0"
         >
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -177,12 +177,12 @@ export default function Navbar() {
                 height={1400}
                 priority
                 unoptimized
-                className="object-contain md:h-[100px] md:max-w-[200px] lg:h-[120px] lg:max-w-[240px]"
+                className="object-contain md:h-[80px] md:max-w-[160px] lg:h-[100px] lg:max-w-[200px]"
                 style={{
                   backgroundColor: 'transparent',
-                  height: '90px',
+                  height: '70px',
                   width: 'auto',
-                  maxWidth: '180px',
+                  maxWidth: '140px',
                   display: 'block'
                 }}
               />
@@ -191,7 +191,7 @@ export default function Navbar() {
         </Link>
 
           {/* Desktop Menu - Right Side */}
-          <div className="hidden md:flex items-center space-x-2 lg:space-x-3 flex-shrink-0 ml-auto">
+          <div className="hidden md:flex items-center space-x-1.5 lg:space-x-2 flex-shrink-0 ml-auto">
             {navItems.map((item) => {
               if (item.label === 'About Us') {
                 return (
@@ -411,7 +411,7 @@ export default function Navbar() {
           {/* Let's Collaborate Button - Right Aligned */}
           <motion.a
             href="#contact"
-            className="hidden md:flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white font-heading font-bold text-base lg:text-lg rounded-xl shadow-lg hover:shadow-xl transition-all relative group ml-4"
+            className="hidden md:flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white font-heading font-bold text-sm lg:text-base rounded-xl shadow-lg hover:shadow-xl transition-all relative group ml-2"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >

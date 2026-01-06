@@ -39,3 +39,4 @@ Right now, the form:
 2. Check Supabase dashboard to see the submission
 3. Once email service is configured, emails will be sent to `hello@stratgenai.in`
 
+

@@ -152,13 +152,13 @@ export default function Navbar() {
       }`}
       style={{ overflow: 'visible' }}
     >
-    <div className="container mx-auto px-1 sm:px-2 lg:px-4">
-      <div className="flex items-center justify-between h-16 md:h-20 lg:h-24 w-full gap-1 md:gap-2">
+    <div className="container mx-auto px-0 sm:px-1 lg:px-2">
+      <div className="flex items-center justify-between h-16 md:h-20 lg:h-24 w-full gap-0 md:gap-0.5">
   
         {/* Logo - Left Aligned */}
         <Link
           href="/"
-          className="flex items-center flex-shrink-0 z-10 -ml-3 sm:-ml-2 md:ml-0"
+          className="flex items-center flex-shrink-0 z-10 -ml-5 sm:-ml-4 md:-ml-3"
         >
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -177,12 +177,12 @@ export default function Navbar() {
                 height={1400}
                 priority
                 unoptimized
-                className="object-contain md:h-[80px] md:max-w-[160px] lg:h-[100px] lg:max-w-[200px]"
+                className="object-contain md:h-[50px] md:max-w-[100px] lg:h-[60px] lg:max-w-[120px]"
                 style={{
                   backgroundColor: 'transparent',
-                  height: '70px',
+                  height: '45px',
                   width: 'auto',
-                  maxWidth: '140px',
+                  maxWidth: '90px',
                   display: 'block'
                 }}
               />
@@ -191,7 +191,7 @@ export default function Navbar() {
         </Link>
 
           {/* Desktop Menu - Right Side */}
-          <div className="hidden md:flex items-center space-x-1.5 lg:space-x-2 flex-shrink-0 ml-auto">
+          <div className="hidden md:flex items-center space-x-0.5 lg:space-x-1 flex-shrink-0 ml-auto">
             {navItems.map((item) => {
               if (item.label === 'About Us') {
                 return (
@@ -204,7 +204,7 @@ export default function Navbar() {
                         const newState = !aboutDropdownOpen
                         setAboutDropdownOpen(newState)
                       }}
-                      className="relative px-4 py-2 text-gray-700 hover:text-gray-900 transition-all font-heading font-medium text-base lg:text-lg rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-200 flex items-center space-x-1"
+                      className="relative px-2 py-1 text-gray-700 hover:text-gray-900 transition-all font-heading font-medium text-xs lg:text-sm rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-200 flex items-center space-x-0.5"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -242,7 +242,7 @@ export default function Navbar() {
                     <div className="flex items-center">
                       <Link
                         href="/services"
-                        className="relative px-4 py-2 text-gray-700 hover:text-gray-900 transition-all font-heading font-medium text-base lg:text-lg rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-200"
+                        className="relative px-2.5 py-1.5 text-gray-700 hover:text-gray-900 transition-all font-heading font-medium text-sm lg:text-base rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-200"
                       >
                         {item.label}
                       </Link>
@@ -297,7 +297,7 @@ export default function Navbar() {
                         const newState = !productsDropdownOpen
                         setProductsDropdownOpen(newState)
                       }}
-                      className="relative px-4 py-2 text-gray-700 hover:text-gray-900 transition-all font-heading font-medium text-base lg:text-lg rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-200 flex items-center space-x-1"
+                      className="relative px-2 py-1 text-gray-700 hover:text-gray-900 transition-all font-heading font-medium text-xs lg:text-sm rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-200 flex items-center space-x-0.5"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -340,7 +340,7 @@ export default function Navbar() {
                         const newState = !skillsDropdownOpen
                         setSkillsDropdownOpen(newState)
                       }}
-                      className="relative px-4 py-2 text-gray-700 hover:text-gray-900 transition-all font-heading font-medium text-base lg:text-lg rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-200 flex items-center space-x-1"
+                      className="relative px-2 py-1 text-gray-700 hover:text-gray-900 transition-all font-heading font-medium text-xs lg:text-sm rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-200 flex items-center space-x-0.5"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -383,7 +383,7 @@ export default function Navbar() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="relative px-4 py-2 text-gray-700 hover:text-gray-900 transition-all font-heading font-medium text-base lg:text-lg rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-200"
+                    className="relative px-2 py-1 text-gray-700 hover:text-gray-900 transition-all font-heading font-medium text-xs lg:text-sm rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-200"
                   >
                     {item.label}
                   </Link>
@@ -411,7 +411,7 @@ export default function Navbar() {
           {/* Let's Collaborate Button - Right Aligned */}
           <motion.a
             href="#contact"
-            className="hidden md:flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white font-heading font-bold text-sm lg:text-base rounded-xl shadow-lg hover:shadow-xl transition-all relative group ml-2"
+            className="hidden md:flex items-center justify-center px-3 py-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white font-heading font-bold text-xs lg:text-sm rounded-lg shadow-lg hover:shadow-xl transition-all relative group ml-1 whitespace-nowrap"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >

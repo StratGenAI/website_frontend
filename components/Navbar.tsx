@@ -191,7 +191,7 @@ export default function Navbar() {
         </Link>
 
           {/* Desktop Menu - Right Side */}
-          <div className="hidden md:flex items-center space-x-3 lg:space-x-4 flex-shrink-0 ml-auto">
+          <div className="hidden md:flex items-center space-x-2 lg:space-x-3 flex-shrink-0 ml-auto">
             {navItems.map((item) => {
               if (item.label === 'About Us') {
                 return (

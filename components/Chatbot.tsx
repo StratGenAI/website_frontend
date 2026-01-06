@@ -682,13 +682,23 @@ export default function Chatbot() {
       {/* Chatbot Window */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 sm:top-auto sm:left-auto sm:translate-x-0 sm:translate-y-0 sm:bottom-24 sm:right-6 z-[99998] w-[calc(100vw-1.5rem)] sm:w-[420px] max-w-[calc(100vw-1.5rem)] sm:max-w-[420px] h-[85vh] sm:h-[640px] max-h-[85vh] sm:max-h-[640px] bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden"
-          >
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsOpen(false)}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[99997]"
+            />
+            {/* Chatbot Window - Centered */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, x: '-50%', y: '-50%' }}
+              animate={{ opacity: 1, scale: 1, x: '-50%', y: '-50%' }}
+              exit={{ opacity: 0, scale: 0.8, x: '-50%', y: '-50%' }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[99998] w-[calc(100vw-2rem)] sm:w-[500px] max-w-[calc(100vw-2rem)] sm:max-w-[500px] h-[85vh] sm:h-[700px] max-h-[85vh] sm:max-h-[700px] bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden"
+            >
             {/* Header */}
             <div className="bg-white border-b border-gray-200 px-5 py-4 flex items-center justify-between">
               <div className="flex items-center space-x-3">
@@ -945,6 +955,7 @@ export default function Chatbot() {
               </div>
             </div>
           </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>

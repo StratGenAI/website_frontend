@@ -608,11 +608,14 @@ export default function Chatbot() {
       {/* Chatbot Button - Bottom Right */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-[9999] w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 shadow-xl border-2 border-white/20 flex items-center justify-center group hover:shadow-2xl hover:scale-110 transition-all relative"
+        className="fixed bottom-6 right-6 z-[99999] w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 shadow-2xl border-2 border-white/30 flex items-center justify-center group hover:shadow-3xl hover:scale-110 transition-all relative"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         style={{ 
-          zIndex: 9999
+          position: 'fixed',
+          bottom: '24px',
+          right: '24px',
+          zIndex: 99999
         }}
       >
         {isOpen ? (
@@ -622,13 +625,18 @@ export default function Chatbot() {
             <Image
               src="/chatbot_logo.png"
               alt="Keirō Chatbot"
-              width={32}
-              height={32}
-              className="w-8 h-8 object-contain brightness-0 invert"
+              width={40}
+              height={40}
+              className="w-10 h-10 object-contain drop-shadow-lg"
+              priority
+              unoptimized
             />
             <motion.div
-              className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-white rounded-full border-2 border-purple-500 shadow-lg"
-              animate={{ scale: [1, 1.2, 1] }}
+              className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full border-2 border-white shadow-lg"
+              animate={{ 
+                scale: [1, 1.3, 1],
+                opacity: [1, 0.8, 1]
+              }}
               transition={{ duration: 2, repeat: Infinity }}
             />
           </>
@@ -643,7 +651,7 @@ export default function Chatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed bottom-24 right-6 z-50 w-[90vw] sm:w-[420px] h-[640px] bg-white rounded-2xl shadow-xl border border-gray-200 flex flex-col overflow-hidden"
+            className="fixed bottom-24 right-6 z-[99998] w-[90vw] sm:w-[420px] h-[640px] bg-white rounded-2xl shadow-xl border border-gray-200 flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="bg-white border-b border-gray-200 px-5 py-4 flex items-center justify-between">

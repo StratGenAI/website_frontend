@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { Calendar, MessageSquare, Users, ArrowRight, Sparkles } from 'lucide-react'
+import { MessageSquare, Rocket, ArrowRight, Sparkles } from 'lucide-react'
 
 export default function CTASection() {
   const [ref, inView] = useInView({
@@ -11,15 +11,6 @@ export default function CTASection() {
   })
 
   const ctaOptions = [
-    {
-      title: 'Free Consultation',
-      subtitle: 'Get Your Custom Roadmap',
-      description: '30-minute call with AI strategist, detailed gap analysis, actionable 90-day plan',
-      icon: Calendar,
-      buttonText: 'Book Free Call',
-      color: 'from-blue-600 to-cyan-600',
-      href: '#contact',
-    },
     {
       title: 'AI Strategy Session',
       subtitle: 'Get Expert Guidance',
@@ -30,13 +21,13 @@ export default function CTASection() {
       href: '#contact',
     },
     {
-      title: 'Workshop',
-      subtitle: 'AI Maturity Workshop for Your Team',
-      description: 'Half-day workshop, assess your entire organization, create consensus and roadmap',
-      icon: Users,
-      buttonText: 'Request Workshop',
+      title: 'Get Started Today',
+      subtitle: 'Begin Your AI Transformation',
+      description: 'Connect with our team to explore how AI can transform your business. Get a free initial consultation and discover your AI potential',
+      icon: Rocket,
+      buttonText: 'Get Started',
       color: 'from-pink-600 to-rose-600',
-      href: '#contact',
+      href: '/services',
     },
   ]
 
@@ -95,7 +86,7 @@ export default function CTASection() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {ctaOptions.map((option, index) => {
               const Icon = option.icon
               return (
@@ -124,6 +115,15 @@ export default function CTASection() {
                     className={`block w-full px-6 py-4 bg-gradient-to-r ${option.color} text-white rounded-xl font-heading font-bold text-center shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2`}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
+                    onClick={(e) => {
+                      if (option.href.startsWith('#')) {
+                        e.preventDefault()
+                        const element = document.querySelector(option.href)
+                        if (element) {
+                          element.scrollIntoView({ behavior: 'smooth' })
+                        }
+                      }
+                    }}
                   >
                     <span>{option.buttonText}</span>
                     <ArrowRight className="w-5 h-5" />

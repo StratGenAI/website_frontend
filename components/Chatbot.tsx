@@ -2,8 +2,9 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { MessageCircle, X, Send, Bot, Sparkles } from 'lucide-react'
+import { X, Send, Bot, Sparkles, User } from 'lucide-react'
 import Image from 'next/image'
+import Fuse from 'fuse.js'
 
 interface Message {
   id: string
@@ -12,18 +13,49 @@ interface Message {
   timestamp: Date
 }
 
+interface KnowledgeItem {
+  id: number
+  category: string
+  questions: string[]
+  keywords: string[]
+  answer: string
+  followUp?: string[]
+  requiresLeadCapture?: boolean
+}
+
+interface ConversationContext {
+  userName: string | null
+  userEmail: string | null
+  userPhone: string | null
+  interest: string | null
+  lastCategory: string | null
+  askedQuestions: string[]
+  unclearAttempts: number
+}
+
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hi there! 👋 I'm Keirō, your AI assistant from StratgenAI. I'm here to help you learn about our company, products, and services. What would you like to know?",
+      text: "Hi! 👋 I'm Keirō, your AI assistant from StratgenAI. I'm here to help you learn about our company, products, and services.\n\nYou can ask me in English, Hindi, or Hinglish - I understand all! 😊\n\nWhat would you like to know?",
       sender: 'bot',
       timestamp: new Date(),
     },
   ])
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
+  const [showLeadForm, setShowLeadForm] = useState(false)
+  const [leadData, setLeadData] = useState({ name: '', email: '', phone: '' })
+  const [context, setContext] = useState<ConversationContext>({
+    userName: null,
+    userEmail: null,
+    userPhone: null,
+    interest: null,
+    lastCategory: null,
+    askedQuestions: [],
+    unclearAttempts: 0,
+  })
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -41,211 +73,458 @@ export default function Chatbot() {
     }
   }, [isOpen])
 
-  // Company Knowledge Base
-  const knowledgeBase: { [key: string]: string[] } = {
-    company: [
-      "StratgenAI is a cutting-edge AI software company founded by three passionate co-founders.",
-      "We specialize in developing intelligent software solutions that help businesses leverage AI to solve real-world problems.",
-      "Our mission is to democratize AI technology and make it accessible for businesses of all sizes.",
-      "We combine technical expertise with business acumen to deliver transformative solutions.",
-      "Tagline: 'From Silent Gen to Gen Alpha - AI that speaks your language'",
-    ],
-    products: [
-      "We have 2 main products:",
-      "1. **Keirō** - Intelligent conversational AI chatbot. Features: Natural Language Processing, Multi-language Support, Customizable Workflows, Analytics & Insights, Easy Integration.",
-      "2. **Stratflow** - AI-driven fashion marketing platform. Features: Trend Analysis & Prediction, Personalized Recommendations, Campaign Optimization, Customer Segmentation, Real-time Analytics.",
-    ],
-    services: [
-      "We provide comprehensive AI solutions including:",
-      "• Custom AI Development",
-      "• AI Consulting & Strategy",
-      "• Machine Learning Solutions",
-      "• Natural Language Processing",
-      "• Computer Vision Solutions",
-      "• AI Integration Services",
-      "• Data Analytics & Insights",
-    ],
-    industries: [
-      "We serve multiple industries:",
-      "• Healthcare - EHR Integration, Medical Image Analysis, Telemedicine Platforms",
-      "• Retail & E-commerce - Inventory Management, Personalized Recommendations, Supply Chain Optimization",
-      "• Fintech - Payment Processing, Digital Banking, Credit Risk Analysis",
-      "• Manufacturing - Predictive Maintenance, Quality Control, Production Optimization",
-      "• Education - Learning Management Systems, Adaptive Learning, Virtual Classrooms",
-      "• Food & Beverage - Restaurant Management, Inventory Tracking, Menu Optimization",
-      "• Real Estate - Property Management, Virtual Tours, Market Analysis",
-    ],
-    contact: [
-      "You can reach us at:",
-      "📧 Email: hello@stratgenai.in",
-      "📍 Location: Ahmedabad, India",
-      "Feel free to ask me anything else about our services!",
-    ],
-    founders: [
-      "StratgenAI was founded by three passionate co-founders who are building the future of AI-powered business solutions.",
-      "",
-      "👤 **Krisha Patel** - Dimension of Intelligence",
-      "A visionary leader with deep expertise in AI and machine learning. Krisha drives our technical innovation, transforming complex algorithms into intelligent solutions that solve real-world business challenges.",
-      "",
-      "👤 **Niyanta Meswaniya** - Creative Lens and Content",
-      "The creative force behind our brand and communications. Niyanta brings artistic vision and strategic content expertise, ensuring our solutions are not just powerful but also beautifully presented.",
-      "",
-      "👤 **Sheefa Memon** - Growth Lens",
-      "Focused on growth, strategy, and scaling our impact. Sheefa combines business acumen with a growth mindset, driving our expansion and ensuring we deliver value at every stage.",
-      "",
-      "Together, they bring a unique blend of technical expertise, creative vision, and business acumen to make AI accessible and transformative for businesses of all sizes.",
-    ],
-    about: [
-      "StratgenAI is an AI software company that helps businesses transform their operations through intelligent automation.",
-      "We build cutting-edge AI solutions that automate processes, enhance productivity, and drive innovation.",
-      "Our team combines technical expertise with business acumen to deliver solutions that truly transform how clients operate.",
-    ],
+  // Enhanced Knowledge Base with questions, keywords, and answers
+  const knowledgeBase: KnowledgeItem[] = [
+    {
+      id: 1,
+      category: 'company_info',
+      questions: [
+        'what is your company',
+        'company ke bare mein batao',
+        'about your company',
+        'tell me about yourself',
+        'aap kya karte ho',
+        'aapki company kya karti hai',
+        'stratgenai kya hai',
+        'company about',
+        'company info',
+      ],
+      keywords: ['company', 'business', 'about', 'kya karte', 'services', 'stratgenai', 'aap', 'tum'],
+      answer: "We are **StratgenAI**, a cutting-edge AI software company specializing in intelligent business solutions.\n\nWe help businesses:\n• Automate processes with AI\n• Enhance productivity\n• Drive innovation\n\nOur tagline: *'From Silent Gen to Gen Alpha - AI that speaks your language'*\n\nWould you like to know about our products or services?",
+      followUp: ['Tell me about products', 'What services do you offer?', 'Who are the founders?'],
+    },
+    {
+      id: 2,
+      category: 'products',
+      questions: [
+        'what products do you have',
+        'aapke products kya hai',
+        'products batao',
+        'what do you sell',
+        'kya kya milta hai',
+        'product list',
+        'keiro kya hai',
+        'stratflow kya hai',
+        'products kya hai',
+        'what are your products',
+        'products list',
+        'kya products hai',
+        'aap kya bechte ho',
+        'offerings kya hai',
+        'solutions kya hai',
+      ],
+      keywords: ['product', 'sell', 'offer', 'kya milta', 'list', 'keiro', 'stratflow', 'solution', 'offerings', 'bechte'],
+      answer: "We offer **2 main products**:\n\n1. **Keirō** 🤖\n   Intelligent conversational AI chatbot\n   • Natural Language Processing\n   • Multi-language Support\n   • Customizable Workflows\n   • Analytics & Insights\n   • Easy Integration\n\n2. **Stratflow** 👗\n   AI-driven fashion marketing platform\n   • Trend Analysis & Prediction\n   • Personalized Recommendations\n   • Campaign Optimization\n   • Customer Segmentation\n   • Real-time Analytics\n\nWhich one interests you more?",
+      followUp: ['Tell me about Keirō', 'Tell me about Stratflow', 'How can I contact you?'],
+    },
+    {
+      id: 4,
+      category: 'contact',
+      questions: [
+        'how to contact you',
+        'contact details',
+        'phone number',
+        'email address',
+        'tumse kaise baat kare',
+        'contact kaise kare',
+        'reach out kaise',
+        'email kya hai',
+        'phone kya hai',
+        'contact number',
+        'phone number kya hai',
+        'email id',
+        'address kya hai',
+        'location kya hai',
+        'kaise contact kare',
+        'get in touch',
+        'connect karna hai',
+      ],
+      keywords: ['contact', 'phone', 'email', 'call', 'reach', 'baat', 'connect', 'touch', 'number', 'address', 'location'],
+      answer: "You can reach us at:\n\n📧 **Email**: hello@stratgenai.in\n📍 **Location**: Ahmedabad, India\n\nWould you like to:\n• Schedule a call\n• Send us an email\n• Get WhatsApp contact",
+      followUp: ['Schedule a call', 'Send email', 'WhatsApp us'],
+    },
+    {
+      id: 5,
+      category: 'demo',
+      questions: [
+        'can i see a demo',
+        'demo dikhao',
+        'product demo',
+        'free trial',
+        'test kar sakte hai',
+        'try karna hai',
+        'demo chahiye',
+        'trial',
+      ],
+      keywords: ['demo', 'trial', 'test', 'try', 'dikhao', 'dekh', 'preview', 'sample'],
+      answer: "Absolutely! 🎉\n\nWe offer a **free 14-day trial** with full features!\n\nWould you like to:\n1. Watch a 5-minute demo video\n2. Schedule a live demo call\n3. Start free trial now\n\nWhich option works for you?",
+      followUp: ['Watch demo video', 'Schedule live demo', 'Start free trial'],
+      requiresLeadCapture: true,
+    },
+    {
+      id: 6,
+      category: 'services',
+      questions: [
+        'what services do you offer',
+        'services kya hai',
+        'kya services milti hai',
+        'what can you do',
+        'capabilities kya hai',
+        'what services',
+        'services list',
+        'kya services hai',
+        'aap kya services dete ho',
+        'what do you provide',
+        'kya provide karte ho',
+      ],
+      keywords: ['service', 'capability', 'function', 'kya kar', 'options', 'offer', 'provide', 'dete'],
+      answer: "We provide comprehensive **AI solutions**:\n\n✅ Custom AI Development\n✅ AI Consulting & Strategy\n✅ Machine Learning Solutions\n✅ Natural Language Processing\n✅ Computer Vision Solutions\n✅ AI Integration Services\n✅ Data Analytics & Insights\n\nWhich service interests you?",
+      followUp: ['Tell me about AI Consulting', 'Custom Development', 'Integration Services'],
+    },
+    {
+      id: 7,
+      category: 'founders',
+      questions: [
+        'who are the founders',
+        'founders kaun hai',
+        'founder kya hai',
+        'founder ke bare mein',
+        'who started',
+        'founder info',
+        'founders ke bare mein',
+        'founder kaun hai',
+        'who created',
+        'who made',
+        'who built',
+        'founder team',
+        'founders list',
+      ],
+      keywords: ['founder', 'started', 'created', 'built', 'kaun', 'who', 'made', 'team'],
+      answer: "StratgenAI was founded by **three passionate co-founders**:\n\n👤 **Krisha Patel** - Dimension of Intelligence\nVisionary leader with deep AI/ML expertise\n\n👤 **Niyanta Meswaniya** - Creative Lens\nCreative force behind brand and communications\n\n👤 **Sheefa Memon** - Growth Lens\nFocused on growth, strategy, and scaling\n\nTogether, they bring technical expertise, creative vision, and business acumen!",
+      followUp: ['Tell me about company', 'What products do you have?'],
+    },
+    {
+      id: 8,
+      category: 'industries',
+      questions: [
+        'which industries do you serve',
+        'kaun se industry ke liye',
+        'sectors kya hai',
+        'kis field mein kaam karte ho',
+        'industries',
+        'what industries',
+        'industries list',
+        'kaun se industries',
+        'clients kya hai',
+        'customers kya hai',
+        'kis industry ke liye',
+      ],
+      keywords: ['industry', 'sector', 'domain', 'field', 'vertical', 'client', 'customer', 'industries'],
+      answer: "We serve multiple industries:\n\n🏪 E-commerce & Retail\n🏥 Healthcare\n🏦 Banking & Finance\n📚 Education\n🏭 Manufacturing\n🍔 Food & Hospitality\n🏠 Real Estate\n\nWhich industry are you from?",
+      followUp: ['E-commerce solutions', 'Healthcare use cases', 'Tell me more'],
+    },
+    {
+      id: 9,
+      category: 'implementation',
+      questions: [
+        'how long does implementation take',
+        'setup time kitna lagta hai',
+        'implementation kaise hoti hai',
+        'launch mein kitna time',
+      ],
+      keywords: ['implementation', 'setup', 'time', 'launch', 'deploy', 'install'],
+      answer: "Implementation timeline:\n\n⚡ **Quick Setup**: 2-3 days (basic chatbot)\n📅 **Standard**: 1-2 weeks (customized solution)\n🏢 **Enterprise**: 3-4 weeks (full integration)\n\nWe handle everything - you just provide the information!",
+      followUp: ['What do I need to provide?', 'Get started now'],
+    },
+    {
+      id: 10,
+      category: 'support',
+      questions: [
+        'customer support kaise hai',
+        'help milegi kya',
+        'support available hai',
+        'technical support',
+      ],
+      keywords: ['support', 'help', 'assist', 'problem', 'issue', 'madad'],
+      answer: "We provide comprehensive support:\n\n🎯 24/7 Technical Support\n📚 Detailed Documentation\n💬 Dedicated Account Manager\n🎓 Training Sessions\n⚡ <2 hour response time\n\nOur team is always here to help!",
+      followUp: ['Talk to support now', 'View documentation'],
+    },
+    {
+      id: 11,
+      category: 'community',
+      questions: [
+        'community kya hai',
+        'stratgenai community',
+        'community ke bare mein',
+        'join community',
+        'community join kaise kare',
+        'community details',
+        'community info',
+        'community kya hai',
+        'community join karna hai',
+        'community mein kaise aaye',
+        'community group',
+        'community network',
+      ],
+      keywords: ['community', 'join', 'group', 'network', 'connect', 'members', 'community'],
+      answer: "Welcome to **StratgenAI Community**! 🌟\n\n[COMMUNITY_IMAGE]\n\nWe have an active community of AI enthusiasts, developers, and business leaders who:\n\n✨ Share knowledge and insights\n✨ Collaborate on projects\n✨ Get early access to new features\n✨ Network with like-minded professionals\n✨ Learn from experts\n\nWould you like to join our community? Connect with us and become part of the StratgenAI family!",
+      followUp: ['How to join community?', 'Contact us', 'More about community'],
+    },
+  ]
+
+  // Levenshtein distance for typo tolerance
+  const levenshteinDistance = (str1: string, str2: string): number => {
+    const matrix: number[][] = []
+    for (let i = 0; i <= str2.length; i++) {
+      matrix[i] = [i]
+    }
+    for (let j = 0; j <= str1.length; j++) {
+      matrix[0][j] = j
+    }
+    for (let i = 1; i <= str2.length; i++) {
+      for (let j = 1; j <= str1.length; j++) {
+        if (str2[i - 1] === str1[j - 1]) {
+          matrix[i][j] = matrix[i - 1][j - 1]
+        } else {
+          matrix[i][j] = Math.min(
+            matrix[i - 1][j - 1] + 1,
+            matrix[i][j - 1] + 1,
+            matrix[i - 1][j] + 1
+          )
+        }
+      }
+    }
+    return matrix[str2.length][str1.length]
   }
 
-  const getBotResponse = (userMessage: string): string => {
-    // Normalize message - remove special chars, convert to lowercase, handle common typos
-    let normalizedMessage = userMessage.toLowerCase()
-      .replace(/[^\w\s]/g, ' ') // Remove special chars
-      .replace(/\s+/g, ' ') // Multiple spaces to single
-      .trim()
-    
-    // Common spelling corrections
-    normalizedMessage = normalizedMessage
-      .replace(/\bfounder\b/g, 'founder') // Standardize
-      .replace(/\bfounders\b/g, 'founder') // Plural to singular for matching
-      .replace(/\bfounder\b/g, 'founder')
-      .replace(/\bkon\b/g, 'who')
-      .replace(/\bkaun\b/g, 'who')
-      .replace(/\bkya\b/g, 'what')
-      .replace(/\bke\b/g, 'of')
-      .replace(/\bbare\b/g, 'about')
-      .replace(/\bme\b/g, 'in')
-    
-    // Extract all words for flexible matching
-    const words = normalizedMessage.split(/\s+/).filter(w => w.length > 0)
-    
-    // Ultra-flexible pattern matching - checks if ANY keyword exists
-    const hasAnyWord = (keywords: string[]): boolean => {
-      const keywordList = keywords.map(k => k.toLowerCase().replace(/\s+/g, ' '))
-      
-      // Check each keyword
-      for (const keyword of keywordList) {
-        const keywordWords = keyword.split(/\s+/)
-        
-        // Check if all words of keyword exist in message (in any order)
-        const allWordsFound = keywordWords.every(kw => {
-          // Direct match
-          if (words.some(w => w === kw)) return true
-          // Partial match (handles typos)
-          if (words.some(w => w.includes(kw) || kw.includes(w))) return true
-          // Similarity check for typos
-          return words.some(w => {
-            if (Math.abs(w.length - kw.length) > 3) return false
-            let matches = 0
-            const minLen = Math.min(w.length, kw.length)
-            for (let i = 0; i < minLen; i++) {
-              if (w[i] === kw[i]) matches++
-            }
-            return matches >= Math.max(2, minLen * 0.5) // At least 50% match or 2 chars
-          })
-        })
-        
-        if (allWordsFound) return true
-        
-        // Also check if message contains keyword as substring
-        if (normalizedMessage.includes(keyword)) return true
-      }
-      
-      return false
-    }
-    
-    // Check for individual important words (very flexible)
-    const hasImportantWord = (importantWords: string[]): boolean => {
-      return importantWords.some(word => {
-        const w = word.toLowerCase()
-        // Direct match
-        if (words.some(msgWord => msgWord === w || msgWord.includes(w) || w.includes(msgWord))) return true
-        // Similarity for typos
-        return words.some(msgWord => {
-          if (Math.abs(msgWord.length - w.length) > 3) return false
-          let matches = 0
-          const minLen = Math.min(msgWord.length, w.length)
-          for (let i = 0; i < minLen; i++) {
-            if (msgWord[i] === w[i]) matches++
-          }
-          return matches >= Math.max(2, minLen * 0.5)
-        })
+  // Calculate similarity percentage
+  const calculateSimilarity = (str1: string, str2: string): number => {
+    const maxLen = Math.max(str1.length, str2.length)
+    if (maxLen === 0) return 100
+    const distance = levenshteinDistance(str1, str2)
+    return ((maxLen - distance) / maxLen) * 100
+  }
+
+  // Common spelling mistakes
+  const commonMistakes: { [key: string]: string } = {
+    prise: 'price',
+    contct: 'contact',
+    prodct: 'product',
+    servce: 'service',
+    cmopany: 'company',
+    wat: 'what',
+    ur: 'your',
+    plz: 'please',
+    thnks: 'thanks',
+    kya: 'what',
+    kaun: 'who',
+    kaise: 'how',
+    batao: 'tell',
+    dikhao: 'show',
+    chahiye: 'want',
+    milta: 'available',
+  }
+
+  // Correct spelling
+  const correctSpelling = (text: string): string => {
+    let corrected = text.toLowerCase()
+    Object.keys(commonMistakes).forEach((mistake) => {
+      const regex = new RegExp(`\\b${mistake}\\b`, 'gi')
+      corrected = corrected.replace(regex, commonMistakes[mistake])
+    })
+    return corrected
+  }
+
+  // Detect language
+  const detectLanguage = (text: string): 'en' | 'hi-en' => {
+    const hindiPattern = /[\u0900-\u097F]/
+    return hindiPattern.test(text) ? 'hi-en' : 'en'
+  }
+
+  // Find best match using Fuse.js and keyword matching
+  const findBestMatch = (userInput: string): KnowledgeItem | null => {
+    const normalizedInput = userInput.toLowerCase().trim()
+    const correctedInput = correctSpelling(normalizedInput)
+
+    // Step 1: Keyword matching (fastest) - improved accuracy
+    let keywordMatches: { item: KnowledgeItem; score: number }[] = []
+    knowledgeBase.forEach((item) => {
+      let score = 0
+      // Check keywords
+      const matchedKeywords = item.keywords.filter((keyword) => {
+        const keywordLower = keyword.toLowerCase()
+        // Exact word match gets higher score
+        const words = correctedInput.split(/\s+/)
+        if (words.some(w => w === keywordLower)) {
+          score += 2 // Exact match
+          return true
+        } else if (correctedInput.includes(keywordLower)) {
+          score += 1 // Partial match
+          return true
+        }
+        return false
       })
+      
+      // Check questions for better matching
+      const matchedQuestions = item.questions.filter((q) => {
+        const qLower = q.toLowerCase()
+        if (correctedInput.includes(qLower) || qLower.includes(correctedInput)) {
+          score += 3 // Question match is very important
+          return true
+        }
+        return false
+      })
+      
+      if (matchedKeywords.length > 0 || matchedQuestions.length > 0) {
+        keywordMatches.push({
+          item,
+          score: score,
+        })
+      }
+    })
+
+    if (keywordMatches.length > 0) {
+      keywordMatches.sort((a, b) => b.score - a.score)
+      // Only return if score is high enough (at least 2 points)
+      if (keywordMatches[0].score >= 2) {
+        return keywordMatches[0].item
+      }
     }
 
-    // Products - Check FIRST (most specific)
-    if (hasImportantWord(['product', 'products', 'keiro', 'keirō', 'stratflow']) ||
-        hasAnyWord(['what product', 'which product', 'what products', 'which products', 'product list', 'products list', 'what offer', 'what do you offer', 'what you offer', 'product kya', 'products kya', 'keiro kya', 'stratflow kya']) ||
-        normalizedMessage.match(/\b(product|products|keiro|stratflow|solution|solutions|offering|offerings)\b/i)) {
-      return knowledgeBase.products.join('\n\n')
+    // Step 2: Fuzzy matching using Fuse.js
+    const fuse = new Fuse(knowledgeBase, {
+      keys: ['questions', 'keywords'],
+      threshold: 0.5, // 50% match required (more lenient)
+      includeScore: true,
+      ignoreLocation: true,
+      findAllMatches: true,
+      minMatchCharLength: 2,
+    })
+
+    const fuseResults = fuse.search(correctedInput)
+    if (fuseResults.length > 0 && fuseResults[0].score! < 0.5) {
+      return fuseResults[0].item
     }
 
-    // Contact - Check SECOND
-    if (hasImportantWord(['contact', 'email', 'reach', 'touch', 'phone', 'address', 'location', 'mail']) ||
-        hasAnyWord(['how contact', 'contact how', 'contact info', 'email info', 'phone number', 'get touch', 'reach out', 'contact details', 'how to contact', 'how to reach']) ||
-        normalizedMessage.match(/\b(contact|email|phone|address|location|reach|touch|mail)\b/i)) {
-      return knowledgeBase.contact.join('\n\n')
+    // Step 3: Similarity matching for individual words (more lenient)
+    const words = correctedInput.split(/\s+/).filter((w) => w.length > 1)
+    for (const word of words) {
+      for (const item of knowledgeBase) {
+        // Check keywords
+        for (const keyword of item.keywords) {
+          const similarity = calculateSimilarity(word, keyword.toLowerCase())
+          if (similarity >= 65) { // Lowered threshold from 70 to 65
+            return item
+          }
+        }
+        // Also check questions
+        for (const question of item.questions) {
+          const questionWords = question.toLowerCase().split(/\s+/)
+          for (const qWord of questionWords) {
+            const similarity = calculateSimilarity(word, qWord)
+            if (similarity >= 65) {
+              return item
+            }
+          }
+        }
+      }
     }
 
-    // Founders - Check THIRD (more specific patterns)
-    if ((hasImportantWord(['founder', 'founders', 'foundr', 'funder', 'cofounder', 'co-founder']) && 
-         !normalizedMessage.match(/\b(product|products|service|services|contact|email|price|pricing)\b/i)) ||
-        hasAnyWord(['who founder', 'who founders', 'founder who', 'founders who', 'founder name', 'founder names', 'founder info', 'founder details', 'founder about', 'founder ke', 'founder kaun', 'founder kon', 'founder kya', 'founder list', 'founder team', 'who started', 'who created', 'who made', 'who built']) ||
-        (normalizedMessage.match(/\b(founder|founders|foundr|funder|cofounder|co-founder)\b/i) && 
-         !normalizedMessage.match(/\b(product|products|service|services|contact|email)\b/i))) {
-      return knowledgeBase.founders.join('\n\n')
+    return null
+  }
+
+  // Handle user message
+  const handleUserMessage = (userInput: string): { answer: string; followUp?: string[]; category: string; requiresLead?: boolean } => {
+    const normalizedInput = userInput.toLowerCase().trim()
+
+    // Check for greetings EARLY
+    const greetings = ['hi', 'hello', 'hey', 'namaste', 'namaskar', 'kaise ho', 'kya haal', 'hey there']
+    if (greetings.some((g) => normalizedInput.includes(g))) {
+      return {
+        answer: "Hello! 👋 Great to meet you! I'm Keirō, your friendly AI assistant. How can I help you learn about StratgenAI today?",
+        followUp: ['Tell me about products', 'What services do you offer?', 'How can I contact you?'],
+        category: 'greeting',
+      }
     }
 
-    // Services - Check after products
-    if ((hasImportantWord(['service', 'services', 'capability', 'capabilities']) && 
-         !normalizedMessage.match(/\b(product|products|founder|founders)\b/i)) ||
-        hasAnyWord(['what service', 'which service', 'what services', 'which services', 'service list', 'services list', 'what can you', 'what you do', 'what do you', 'services kya', 'service kya']) ||
-        (normalizedMessage.match(/\b(service|services|capability|capabilities)\b/i) && 
-         !normalizedMessage.match(/\b(product|products|founder|founders)\b/i))) {
-      return knowledgeBase.services.join('\n\n')
+    // Check for thanks/bye EARLY
+    const thanks = ['thanks', 'thank you', 'bye', 'shukriya', 'dhanyawad', 'thanku', 'thankyou', 'thx']
+    if (thanks.some((t) => normalizedInput.includes(t))) {
+      return {
+        answer: "You're welcome! 😊\n\nIf you need anything else, I'm always here to help.\n\nWould you like to:\n• Talk to our sales team\n• Get updates on WhatsApp\n• Explore our website\n\nHave a great day! 🌟",
+        category: 'thanks',
+      }
     }
 
-    // Industries - ULTRA FLEXIBLE
-    if (hasImportantWord(['industry', 'industries', 'vertical', 'verticals', 'client', 'clients', 'customer', 'customers', 'healthcare', 'retail', 'fintech', 'manufacturing', 'education']) ||
-        hasAnyWord(['which industry', 'what industry', 'which industries', 'what industries', 'who serve', 'who you serve', 'clients who', 'customers who']) ||
-        normalizedMessage.match(/industry|vertical|client|customer|healthcare|retail|fintech/i)) {
-      return knowledgeBase.industries.join('\n\n')
+    // Check for pricing queries FIRST - redirect to contact (no cost shown)
+    const pricingKeywords = ['price', 'pricing', 'cost', 'charge', 'kitna', 'paisa', 'budget', 'fee', 'rate', 'plan', 'plans', 'kitne', 'kitna paisa', 'how much']
+    if (pricingKeywords.some(keyword => normalizedInput.includes(keyword))) {
+      return {
+        answer: "You can reach us at:\n\n📧 **Email**: hello@stratgenai.in\n📍 **Location**: Ahmedabad, India\n\nFor pricing details, please contact us and we'll provide a customized quote based on your needs!",
+        followUp: ['Schedule a call', 'Send email', 'WhatsApp us'],
+        category: 'contact',
+      }
     }
 
-    // Company info - ULTRA FLEXIBLE
-    if (hasImportantWord(['company', 'about', 'stratgenai', 'stratgen', 'who are', 'what is']) ||
-        hasAnyWord(['about company', 'company about', 'company info', 'company information', 'what company', 'who company', 'tell about', 'tell me about']) ||
-        normalizedMessage.match(/company|about|stratgenai|who are|what is/i)) {
-      return knowledgeBase.about.join('\n\n')
+    // Check for "Tell me more" or "More about" with context
+    if ((normalizedInput.includes('tell me more') || normalizedInput.includes('more about')) && context.lastCategory) {
+      // If last category was community, give more community info
+      if (context.lastCategory === 'community') {
+        return {
+          answer: "**More about StratgenAI Community** 🌟\n\nOur community is a vibrant space where:\n\n📚 **Learning Hub**: Access to exclusive AI resources, tutorials, and guides\n🤝 **Networking**: Connect with industry professionals and AI experts\n💡 **Innovation**: Share ideas, get feedback, and collaborate on projects\n🎯 **Early Access**: Be the first to know about new features and updates\n🏆 **Events**: Participate in webinars, workshops, and community meetups\n\nTo join, simply reach out to us at hello@stratgenai.in and we'll add you to our community!",
+          followUp: ['How to join?', 'Contact us', 'Tell me about products'],
+          category: 'community',
+        }
+      }
+      // If last category was products, give more product info
+      if (context.lastCategory === 'products') {
+        return {
+          answer: "**More about our Products** 🚀\n\n**Keirō** - Our flagship AI chatbot:\n• Deploy in minutes, not months\n• Understands 50+ languages\n• Integrates with 100+ platforms\n• Real-time analytics dashboard\n\n**Stratflow** - Fashion AI Platform:\n• Predict trends 6 months ahead\n• Personalize campaigns automatically\n• Increase ROI by 40% on average\n• Real-time customer insights\n\nWant detailed specs or a demo?",
+          followUp: ['Get a demo', 'Contact sales', 'Tell me about services'],
+          category: 'products',
+        }
+      }
     }
 
-    // Pricing - ULTRA FLEXIBLE
-    if (hasImportantWord(['price', 'pricing', 'cost', 'fee', 'charge', 'charges', 'rate', 'paisa', 'money']) ||
-        hasAnyWord(['how much', 'what price', 'what cost', 'pricing info', 'price info', 'cost info', 'kitna', 'kitna paisa', 'kitna cost']) ||
-        normalizedMessage.match(/price|pricing|cost|fee|charge|how much|kitna/i)) {
-      return "Great question! 💰 Our pricing depends on your specific needs and requirements. I'd recommend reaching out to us at hello@stratgenai.in for a personalized quote. We'd love to discuss how we can help your business!"
+    const matchedItem = findBestMatch(userInput)
+
+    if (matchedItem) {
+      // Update context
+      setContext((prev) => ({
+        ...prev,
+        lastCategory: matchedItem.category,
+        askedQuestions: [...prev.askedQuestions, userInput],
+        unclearAttempts: 0,
+      }))
+
+      return {
+        answer: matchedItem.answer,
+        followUp: matchedItem.followUp,
+        category: matchedItem.category,
+        requiresLead: matchedItem.requiresLeadCapture,
+      }
     }
 
-    // Help - ULTRA FLEXIBLE
-    if (hasImportantWord(['help', 'madad', 'sahayata', 'assist', 'what can', 'what do']) ||
-        hasAnyWord(['help me', 'can help', 'what help', 'how help', 'help karo', 'kaise help']) ||
-        normalizedMessage.match(/help|madad|sahayata|assist|what can|what do/i)) {
-      return "I can help you with information about:\n\n• Company Overview\n• Products (Keirō & Stratflow)\n• Services\n• Industries We Serve\n• Contact Information\n• Founders\n• Pricing\n\nJust ask me anything! 😊"
+    // Fallback for unclear queries
+    const currentAttempts = context.unclearAttempts + 1
+    setContext((prev) => ({
+      ...prev,
+      unclearAttempts: currentAttempts,
+    }))
+
+    if (currentAttempts >= 2) {
+      return {
+        answer: "I'd like to connect you with our team for better assistance! 💬\n\nWould you like to:\n• Chat with human agent\n• Schedule a callback\n• Send email to support\n\n📧 Email: hello@stratgenai.in",
+        followUp: ['Schedule a call', 'Send email'],
+        category: 'fallback',
+      }
     }
 
-    // Greetings (multiple languages) - Check this LAST
-    if (hasImportantWord(['hi', 'hello', 'hey', 'namaste', 'namaskar', 'hola', 'bonjour', 'good morning', 'good afternoon', 'good evening', 'sup', 'whats up', 'kaise ho', 'kya haal']) ||
-        normalizedMessage.match(/^(hi|hello|hey|namaste|namaskar|hola|bonjour|good morning|good afternoon|good evening|sup|whats up|kaise ho|kya haal)/i)) {
-      return "Hello! 👋 Great to meet you! I'm Keirō, your friendly AI assistant. How can I help you learn about StratgenAI today?"
+    return {
+      answer: "I'm not sure I understood that correctly. Could you rephrase your question? 🤔\n\nYou can ask me about:\n• Our products and services\n• Demo or free trial\n• Contact information\n• Implementation process\n• Founders\n• Industries we serve\n\nOr try asking in Hindi/Hinglish - I understand! 😊",
+      followUp: ['Tell me about products', 'What services do you offer?', 'How to contact?'],
+      category: 'fallback',
     }
-
-    // Default friendly response with suggestions
-    return "That's an interesting question! 🤔 I can help you with information about:\n\n• Our company and mission\n• Products (Keirō & Stratflow)\n• Services we offer\n• Industries we serve\n• Contact information\n• Founders\n• Pricing\n\nTry asking something like:\n• 'Tell me about founders'\n• 'What products do you have?'\n• 'What industries do you serve?'\n• 'How can I contact you?'\n\nOr ask in Hindi/any language - I understand! 😊"
   }
 
   const handleSend = () => {
@@ -259,20 +538,52 @@ export default function Chatbot() {
     }
 
     setMessages((prev) => [...prev, userMessage])
+    const userInput = input
     setInput('')
     setIsTyping(true)
 
     // Simulate AI thinking time
     setTimeout(() => {
+      const response = handleUserMessage(userInput)
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: getBotResponse(input),
+        text: response.answer,
         sender: 'bot',
         timestamp: new Date(),
       }
       setMessages((prev) => [...prev, botResponse])
+      setLastResponse(response)
+
+      // Show lead form if required
+      if (response.requiresLead && !showLeadForm) {
+        setTimeout(() => {
+          setShowLeadForm(true)
+        }, 500)
+      }
+
       setIsTyping(false)
     }, 800)
+  }
+
+  const handleLeadSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    // Here you would send lead data to your backend
+    // For now, just show success message
+    const successMessage: Message = {
+      id: Date.now().toString(),
+      text: `Thank you ${leadData.name}! 🙏\n\nWe've received your information. Our team will contact you soon at ${leadData.email}.\n\nIn the meantime, feel free to ask me anything else! 😊`,
+      sender: 'bot',
+      timestamp: new Date(),
+    }
+    setMessages((prev) => [...prev, successMessage])
+    setShowLeadForm(false)
+    setLeadData({ name: '', email: '', phone: '' })
+    setContext((prev) => ({
+      ...prev,
+      userName: leadData.name,
+      userEmail: leadData.email,
+      userPhone: leadData.phone,
+    }))
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -285,59 +596,47 @@ export default function Chatbot() {
   const quickQuestions = [
     'Tell me about StratgenAI',
     'What products do you offer?',
-    'What industries do you serve?',
+    'What services do you offer?',
     'How can I contact you?',
   ]
+
+  // Store last response for follow-up buttons
+  const [lastResponse, setLastResponse] = useState<{ followUp?: string[] } | null>(null)
 
   return (
     <>
       {/* Chatbot Button - Bottom Right */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 shadow-2xl flex items-center justify-center group hover:shadow-blue-500/50 transition-all"
+        className="fixed bottom-6 right-6 z-[9999] w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 shadow-xl border-2 border-white/20 flex items-center justify-center group hover:shadow-2xl hover:scale-110 transition-all relative"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+        style={{ 
+          position: 'fixed !important', 
+          bottom: '24px !important', 
+          right: '24px !important',
+          zIndex: 9999,
+          display: 'flex'
+        }}
       >
-        <AnimatePresence mode="wait">
-          {isOpen ? (
+        {isOpen ? (
+          <X className="w-6 h-6 text-white" />
+        ) : (
+          <>
+            <Image
+              src="/chatbot_logo.png"
+              alt="Keirō Chatbot"
+              width={32}
+              height={32}
+              className="w-8 h-8 object-contain brightness-0 invert"
+            />
             <motion.div
-              key="close"
-              initial={{ rotate: -90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: 90, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <X className="w-6 h-6 text-white" />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="open"
-              initial={{ rotate: 90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: -90, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="relative w-full h-full flex items-center justify-center"
-            >
-              <div className="absolute inset-0 bg-white/20 rounded-full backdrop-blur-sm"></div>
-              <Image
-                src="/chatbot_logo.png"
-                alt="Keirō Chatbot"
-                width={40}
-                height={40}
-                className="w-10 h-10 object-contain relative z-10 drop-shadow-lg"
-                style={{ filter: 'brightness(1.2) contrast(1.1)' }}
-              />
-              <motion.div
-                className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white z-20"
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+              className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-white rounded-full border-2 border-purple-500 shadow-lg"
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
+          </>
+        )}
       </motion.button>
 
       {/* Chatbot Window */}
@@ -348,42 +647,35 @@ export default function Chatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed bottom-24 right-6 z-50 w-[90vw] sm:w-96 h-[600px] bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden backdrop-blur-xl"
+            className="fixed bottom-24 right-6 z-50 w-[90vw] sm:w-[420px] h-[640px] bg-white rounded-2xl shadow-xl border border-gray-200 flex flex-col overflow-hidden"
           >
-            {/* Header - Enhanced Design */}
-            <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 p-5 flex items-center justify-between relative overflow-hidden">
-              {/* Animated Background Pattern */}
-              <div className="absolute inset-0 opacity-20">
-                <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full blur-2xl"></div>
-                <div className="absolute bottom-0 right-0 w-40 h-40 bg-white rounded-full blur-3xl"></div>
-              </div>
-              
-              <div className="flex items-center space-x-3 relative z-10">
+            {/* Header */}
+            <div className="bg-white border-b border-gray-200 px-5 py-4 flex items-center justify-between">
+              <div className="flex items-center space-x-3">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-white/30 rounded-full blur-md"></div>
-                  <div className="relative bg-white/20 backdrop-blur-sm rounded-full p-2 border-2 border-white/30">
+                  <div className="bg-gray-50 rounded-lg p-2 border border-gray-200">
                     <Image
                       src="/chatbot_logo.png"
                       alt="Keirō"
-                      width={36}
-                      height={36}
-                      className="w-9 h-9 object-contain"
+                      width={28}
+                      height={28}
+                      className="w-7 h-7 object-contain"
                     />
                   </div>
                   <motion.div
-                    className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-green-400 rounded-full border-2 border-white shadow-lg"
-                    animate={{ scale: [1, 1.3, 1], opacity: [1, 0.8, 1] }}
+                    className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white"
+                    animate={{ scale: [1, 1.2, 1], opacity: [1, 0.9, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   />
                 </div>
                 <div>
-                  <h3 className="text-white font-heading font-bold text-base drop-shadow-lg">Keirō</h3>
-                  <p className="text-white/90 text-xs font-medium">AI Assistant</p>
+                  <h3 className="text-gray-900 font-semibold text-[15px] leading-tight">Keirō</h3>
+                  <p className="text-gray-500 text-[11px] font-normal">AI Assistant</p>
                 </div>
               </div>
               <motion.button
                 onClick={() => setIsOpen(false)}
-                className="text-white hover:bg-white/20 rounded-xl p-2 transition-all relative z-10 backdrop-blur-sm"
+                className="text-gray-600 hover:bg-gray-100 rounded-lg p-2 transition-all"
                 whileHover={{ scale: 1.1, rotate: 90 }}
                 whileTap={{ scale: 0.9 }}
               >
@@ -391,8 +683,8 @@ export default function Chatbot() {
               </motion.button>
             </div>
 
-            {/* Messages - Enhanced Design */}
-            <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-gradient-to-b from-gray-50 to-white">
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3 bg-white">
               {messages.map((message) => (
                 <motion.div
                   key={message.id}
@@ -402,34 +694,47 @@ export default function Chatbot() {
                   className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   {message.sender === 'bot' && (
-                    <div className="flex-shrink-0 mr-2 mt-1">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
-                        <Bot className="w-4 h-4 text-white" />
+                    <div className="flex-shrink-0 mr-2.5 mt-0.5">
+                      <div className="w-7 h-7 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
+                        <Bot className="w-3.5 h-3.5 text-gray-600" />
                       </div>
                     </div>
                   )}
                   <div
-                    className={`max-w-[75%] rounded-2xl px-4 py-3 shadow-lg ${
+                    className={`max-w-[78%] rounded-lg px-3.5 py-2.5 ${
                       message.sender === 'user'
-                        ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white'
-                        : 'bg-white text-gray-800 border border-gray-100'
+                        ? 'bg-gray-900 text-white'
+                        : 'bg-gray-50 text-gray-800 border border-gray-200'
                     }`}
                   >
                     {message.sender === 'bot' && (
-                      <div className="flex items-center space-x-2 mb-2">
-                        <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">Keirō</span>
+                      <div className="flex items-center space-x-1.5 mb-1.5">
+                        <span className="text-[10px] font-medium text-gray-600 bg-white px-1.5 py-0.5 rounded border border-gray-200">Keirō</span>
                       </div>
                     )}
-                    <p className={`text-sm whitespace-pre-wrap font-body leading-relaxed ${
-                      message.sender === 'user' ? 'text-white' : 'text-gray-700'
-                    }`}>
-                      {message.text}
+                      {message.sender === 'bot' && message.text.includes('[COMMUNITY_IMAGE]') && (
+                      <div className="mb-2 rounded-md overflow-hidden border border-gray-200">
+                        <Image
+                          src="/WhatsApp Image 2026-01-06 at 1.07.06 PM.jpeg"
+                          alt="StratgenAI Community"
+                          width={300}
+                          height={200}
+                          className="w-full h-auto"
+                        />
+                      </div>
+                    )}
+                    <p
+                      className={`text-[13px] whitespace-pre-wrap leading-relaxed ${
+                        message.sender === 'user' ? 'text-white' : 'text-gray-700'
+                      }`}
+                    >
+                      {message.text.replace('[COMMUNITY_IMAGE]', '')}
                     </p>
                   </div>
                   {message.sender === 'user' && (
-                    <div className="flex-shrink-0 ml-2 mt-1">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
-                        <span className="text-white text-xs font-bold">U</span>
+                    <div className="flex-shrink-0 ml-2.5 mt-0.5">
+                      <div className="w-7 h-7 rounded-lg bg-gray-900 flex items-center justify-center">
+                        <User className="w-3.5 h-3.5 text-white" />
                       </div>
                     </div>
                   )}
@@ -442,28 +747,28 @@ export default function Chatbot() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="flex justify-start"
                 >
-                  <div className="flex-shrink-0 mr-2 mt-1">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
-                      <Bot className="w-4 h-4 text-white" />
+                  <div className="flex-shrink-0 mr-2.5 mt-0.5">
+                      <div className="w-7 h-7 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
+                        <Bot className="w-3.5 h-3.5 text-gray-600" />
+                      </div>
                     </div>
-                  </div>
-                  <div className="bg-white rounded-2xl px-4 py-3 shadow-lg border border-gray-100">
+                  <div className="bg-gray-50 rounded-lg px-3.5 py-2.5 border border-gray-200">
                     <div className="flex items-center space-x-2">
-                      <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">Keirō</span>
+                      <span className="text-[10px] font-medium text-gray-600 bg-white px-1.5 py-0.5 rounded border border-gray-200">Keirō</span>
                       <div className="flex space-x-1.5">
                         <motion.div
-                          className="w-2 h-2 bg-blue-500 rounded-full"
-                          animate={{ y: [0, -6, 0], opacity: [0.5, 1, 0.5] }}
+                          className="w-1.5 h-1.5 bg-gray-400 rounded-full"
+                          animate={{ y: [0, -4, 0], opacity: [0.5, 1, 0.5] }}
                           transition={{ duration: 0.8, repeat: Infinity, delay: 0 }}
                         />
                         <motion.div
-                          className="w-2 h-2 bg-purple-500 rounded-full"
-                          animate={{ y: [0, -6, 0], opacity: [0.5, 1, 0.5] }}
+                          className="w-1.5 h-1.5 bg-gray-500 rounded-full"
+                          animate={{ y: [0, -4, 0], opacity: [0.5, 1, 0.5] }}
                           transition={{ duration: 0.8, repeat: Infinity, delay: 0.2 }}
                         />
                         <motion.div
-                          className="w-2 h-2 bg-pink-500 rounded-full"
-                          animate={{ y: [0, -6, 0], opacity: [0.5, 1, 0.5] }}
+                          className="w-1.5 h-1.5 bg-gray-600 rounded-full"
+                          animate={{ y: [0, -4, 0], opacity: [0.5, 1, 0.5] }}
                           transition={{ duration: 0.8, repeat: Infinity, delay: 0.4 }}
                         />
                       </div>
@@ -472,27 +777,76 @@ export default function Chatbot() {
                 </motion.div>
               )}
 
+              {/* Lead Capture Form */}
+              {showLeadForm && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-4 border border-blue-200"
+                >
+                  <form onSubmit={handleLeadSubmit} className="space-y-3">
+                    <p className="text-sm font-heading font-semibold text-gray-700 mb-3">
+                      To provide you with the best solution, may I have:
+                    </p>
+                    <input
+                      type="text"
+                      placeholder="Your Name"
+                      required
+                      value={leadData.name}
+                      onChange={(e) => setLeadData({ ...leadData, name: e.target.value })}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    />
+                    <input
+                      type="email"
+                      placeholder="Email Address"
+                      required
+                      value={leadData.email}
+                      onChange={(e) => setLeadData({ ...leadData, email: e.target.value })}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    />
+                    <input
+                      type="tel"
+                      placeholder="Phone (optional)"
+                      value={leadData.phone}
+                      onChange={(e) => setLeadData({ ...leadData, phone: e.target.value })}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        type="submit"
+                        className="flex-1 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-heading font-semibold text-sm hover:shadow-lg transition-all"
+                      >
+                        Submit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowLeadForm(false)}
+                        className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-heading font-semibold text-sm hover:bg-gray-300 transition-all"
+                      >
+                        Skip
+                      </button>
+                    </div>
+                  </form>
+                </motion.div>
+              )}
+
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Quick Questions - Enhanced */}
-            {messages.length === 1 && (
-              <div className="px-5 py-3 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 border-t border-gray-100">
-                <p className="text-xs text-gray-700 mb-3 font-bold flex items-center space-x-2">
-                  <Sparkles className="w-3 h-3 text-blue-600" />
-                  <span>Quick questions:</span>
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {quickQuestions.map((q, idx) => (
+            {/* Quick Reply Buttons */}
+            {messages.length > 1 && lastResponse?.followUp && (
+              <div className="px-5 py-3 bg-gray-50 border-t border-gray-200">
+                <div className="flex flex-wrap gap-1.5">
+                  {lastResponse.followUp.slice(0, 3).map((q, idx) => (
                     <motion.button
                       key={idx}
                       onClick={() => {
                         setInput(q)
                         setTimeout(() => handleSend(), 100)
                       }}
-                      className="text-xs px-4 py-2 bg-white rounded-full border border-gray-200 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-all shadow-sm font-medium"
-                      whileHover={{ scale: 1.05, y: -2 }}
-                      whileTap={{ scale: 0.95 }}
+                      className="text-[11px] px-3 py-1.5 bg-white rounded-md border border-gray-300 hover:border-gray-900 hover:text-gray-900 hover:bg-gray-100 transition-all font-medium text-gray-700"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                     >
                       {q}
                     </motion.button>
@@ -501,9 +855,35 @@ export default function Chatbot() {
               </div>
             )}
 
-            {/* Input - Enhanced */}
-            <div className="p-4 bg-white border-t border-gray-100 shadow-lg">
-              <div className="flex items-center space-x-3">
+            {/* Quick Questions - Show only on first message */}
+            {messages.length === 1 && (
+              <div className="px-5 py-3 bg-gray-50 border-t border-gray-200">
+                <p className="text-[11px] text-gray-600 mb-2.5 font-medium flex items-center space-x-1.5">
+                  <Sparkles className="w-3 h-3 text-gray-600" />
+                  <span>Quick questions:</span>
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {quickQuestions.map((q, idx) => (
+                    <motion.button
+                      key={idx}
+                      onClick={() => {
+                        setInput(q)
+                        setTimeout(() => handleSend(), 100)
+                      }}
+                      className="text-[11px] px-3 py-1.5 bg-white rounded-md border border-gray-300 hover:border-gray-900 hover:text-gray-900 hover:bg-gray-100 transition-all font-medium text-gray-700"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      {q}
+                    </motion.button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Input */}
+            <div className="px-5 py-4 bg-white border-t border-gray-200">
+              <div className="flex items-center space-x-2.5">
                 <input
                   ref={inputRef}
                   type="text"
@@ -511,16 +891,16 @@ export default function Chatbot() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Type your message..."
-                  className="flex-1 px-4 py-3 rounded-2xl border-2 border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-gray-50 transition-all"
+                  className="flex-1 px-3.5 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-[13px] bg-white transition-all"
                 />
                 <motion.button
                   onClick={handleSend}
                   disabled={!input.trim()}
-                  className="w-12 h-12 rounded-2xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  whileTap={{ scale: 0.9 }}
+                  className="w-10 h-10 rounded-lg bg-gray-900 text-white flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-800 transition-all"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <Send className="w-5 h-5" />
+                  <Send className="w-4 h-4" />
                 </motion.button>
               </div>
             </div>
@@ -530,4 +910,3 @@ export default function Chatbot() {
     </>
   )
 }
-

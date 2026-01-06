@@ -2,57 +2,56 @@
 
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { Download, FileText, BookOpen, Calculator, CheckCircle2, ArrowRight } from 'lucide-react'
-import { useState } from 'react'
+import { ArrowRight, Lightbulb, Target, TrendingUp, Users, Zap } from 'lucide-react'
 
 const resources = [
   {
     category: 'Level 0-1',
-    title: 'AI Starter Kit',
-    description: 'Your First 30 Days',
-    icon: BookOpen,
-    type: 'PDF',
+    title: 'AI Starter Guide',
+    description: 'Learn the basics of AI implementation and get started on your journey',
+    icon: Lightbulb,
     color: 'from-red-500 to-orange-500',
+    href: '/ai-maturity-model/ai-starter-guide',
   },
   {
     category: 'Level 0-1',
-    title: '10 AI Tools Checklist',
-    description: 'Tools You Can Implement Today',
-    icon: CheckCircle2,
-    type: 'Checklist',
+    title: 'AI Tools Overview',
+    description: 'Discover the best AI tools you can implement today for your business',
+    icon: Zap,
     color: 'from-orange-500 to-yellow-500',
+    href: '/ai-maturity-model/ai-tools-overview',
   },
   {
     category: 'Level 0-1',
-    title: 'AI ROI Calculator',
-    description: 'Calculate Your Potential Returns',
-    icon: Calculator,
-    type: 'Excel',
+    title: 'ROI Assessment',
+    description: 'Understand the potential returns and benefits of AI for your business',
+    icon: TrendingUp,
     color: 'from-yellow-500 to-green-500',
+    href: '/ai-maturity-model/roi-assessment',
   },
   {
     category: 'Level 2-3',
-    title: 'AI Scale-Up Playbook',
-    description: 'From Pilot to Production (40 pages)',
-    icon: FileText,
-    type: 'PDF',
+    title: 'Scale-Up Strategy',
+    description: 'Learn how to scale your AI initiatives from pilot to production',
+    icon: Target,
     color: 'from-green-500 to-blue-500',
+    href: '/ai-maturity-model/scale-up-strategy',
   },
   {
     category: 'Level 2-3',
-    title: 'AI Integration Checklist',
-    description: 'Step-by-step integration guide',
-    icon: CheckCircle2,
-    type: 'PDF',
+    title: 'Integration Support',
+    description: 'Get expert guidance on integrating AI into your existing systems',
+    icon: Users,
     color: 'from-blue-500 to-purple-500',
+    href: '/ai-maturity-model/integration-support',
   },
   {
     category: 'Level 4-5',
-    title: 'AI Leadership Framework',
-    description: 'Strategic guide for AI leaders',
-    icon: BookOpen,
-    type: 'PDF',
+    title: 'AI Leadership',
+    description: 'Strategic insights for advanced AI implementation and transformation',
+    icon: Target,
     color: 'from-purple-500 to-pink-500',
+    href: '/ai-maturity-model/ai-leadership',
   },
 ]
 
@@ -61,27 +60,6 @@ export default function ResourcesSection() {
     triggerOnce: true,
     threshold: 0.1,
   })
-
-  const [showForm, setShowForm] = useState<number | null>(null)
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    company: '',
-    level: '',
-  })
-
-  const handleDownload = (index: number) => {
-    setShowForm(index)
-  }
-
-  const handleSubmit = (e: React.FormEvent, index: number) => {
-    e.preventDefault()
-    // Here you would typically send the form data to your backend
-    // For now, we'll just show a success message
-    alert('Thank you! Your download will start shortly.')
-    setShowForm(null)
-    setFormData({ name: '', email: '', company: '', level: '' })
-  }
 
   return (
     <section className="py-20 md:py-32 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
@@ -97,14 +75,13 @@ export default function ResourcesSection() {
               Take Your <span className="gradient-text">Next Step</span>
             </h2>
             <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto font-body">
-              Download free resources tailored to your AI maturity level
+              Explore resources and services tailored to your AI maturity level
             </p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {resources.map((resource, index) => {
               const Icon = resource.icon
-              const isFormOpen = showForm === index
 
               return (
                 <motion.div
@@ -128,60 +105,26 @@ export default function ResourcesSection() {
                     <p className="text-gray-600 font-body text-sm mb-4">
                       {resource.description}
                     </p>
-                    <span className="inline-block px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-semibold">
-                      {resource.type}
-                    </span>
                   </div>
 
-                  {!isFormOpen ? (
-                    <motion.button
-                      onClick={() => handleDownload(index)}
-                      className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-heading font-semibold flex items-center justify-center space-x-2 hover:shadow-lg transition-all duration-300"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <Download className="w-5 h-5" />
-                      <span>Download Free</span>
-                    </motion.button>
-                  ) : (
-                    <motion.form
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      onSubmit={(e) => handleSubmit(e, index)}
-                      className="space-y-3"
-                    >
-                      <input
-                        type="text"
-                        placeholder="Your Name"
-                        required
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                      <input
-                        type="email"
-                        placeholder="Email Address"
-                        required
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                      <input
-                        type="text"
-                        placeholder="Company Name"
-                        value={formData.company}
-                        onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                      <button
-                        type="submit"
-                        className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-heading font-semibold flex items-center justify-center space-x-2"
-                      >
-                        <Download className="w-5 h-5" />
-                        <span>Get Download</span>
-                      </button>
-                    </motion.form>
-                  )}
+                  <motion.a
+                    href={resource.href}
+                    className="block w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-heading font-semibold flex items-center justify-center space-x-2 hover:shadow-lg transition-all duration-300"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={(e) => {
+                      if (resource.href.startsWith('#')) {
+                        e.preventDefault()
+                        const element = document.querySelector(resource.href)
+                        if (element) {
+                          element.scrollIntoView({ behavior: 'smooth' })
+                        }
+                      }
+                    }}
+                  >
+                    <span>Learn More</span>
+                    <ArrowRight className="w-5 h-5" />
+                  </motion.a>
                 </motion.div>
               )
             })}

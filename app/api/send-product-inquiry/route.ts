@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@supabase/supabase-js'
+
+export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
+  // Initialize Supabase client in the route handler
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://sofqnssapadlsiuojwcl.supabase.co'
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+  const supabase = createClient(supabaseUrl, supabaseAnonKey)
   try {
     const body = await request.json()
     const { name, email, company, message, productName } = body

@@ -344,24 +344,24 @@ export default function MaturityLevels() {
   }
 
   return (
-    <section id="maturity-levels" className="py-20 md:py-32 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
+    <section id="maturity-levels" className="py-12 sm:py-20 md:py-32 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div ref={ref} className="max-w-6xl mx-auto">
           <motion.div
-            className="text-center mb-16"
+            className="text-center mb-8 sm:mb-16"
             initial={{ opacity: 0, y: 30 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-black mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-black mb-4 sm:mb-6 px-2 sm:px-0">
               The 6 <span className="gradient-text">Maturity Levels</span>
             </h2>
-            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto font-body">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto font-body px-2 sm:px-0">
               Explore each level to understand where you stand and what it takes to advance
             </p>
           </motion.div>
 
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {levels.map((level, index) => {
               const Icon = level.icon
               const isExpanded = expandedLevel === level.number
@@ -376,22 +376,22 @@ export default function MaturityLevels() {
                 >
                   <button
                     onClick={() => toggleLevel(level.number)}
-                    className="w-full p-6 md:p-8 flex items-center justify-between text-left group"
+                    className="w-full p-4 sm:p-6 md:p-8 flex items-center justify-between text-left group"
                   >
-                    <div className="flex items-center space-x-4 md:space-x-6 flex-1">
+                    <div className="flex items-center space-x-3 sm:space-x-4 md:space-x-6 flex-1 min-w-0">
                       <div
-                        className="w-16 h-16 md:w-20 md:h-20 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg"
+                        className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg"
                         style={{ backgroundColor: level.color }}
                       >
-                        <Icon className="w-8 h-8 md:w-10 md:h-10 text-white" />
+                        <Icon className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 space-y-1 sm:space-y-0 mb-2">
-                          <span className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 space-y-1 sm:space-y-0 mb-1 sm:mb-2">
+                          <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-gray-900">
                             Level {level.number}
                           </span>
                           <span
-                            className="text-lg sm:text-xl md:text-2xl font-heading font-bold"
+                            className="text-base sm:text-lg md:text-xl lg:text-2xl font-heading font-bold"
                             style={{ color: level.color }}
                           >
                             {level.name}
@@ -420,7 +420,7 @@ export default function MaturityLevels() {
                         transition={{ duration: 0.3 }}
                         className="overflow-hidden"
                       >
-                        <div className="px-6 md:px-8 pb-6 md:pb-8 space-y-6">
+                        <div className="px-4 sm:px-6 md:px-8 pb-4 sm:pb-6 md:pb-8 space-y-4 sm:space-y-6">
                           {/* What It Means */}
                           <div>
                             <h3 className="text-lg font-heading font-bold text-gray-900 mb-3">What It Means</h3>

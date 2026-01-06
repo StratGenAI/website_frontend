@@ -743,7 +743,7 @@ export default function Chatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed top-20 sm:top-auto bottom-28 sm:bottom-24 left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0 right-4 sm:right-6 z-[99998] w-[calc(100vw-2rem)] sm:w-[420px] max-w-[calc(100vw-2rem)] sm:max-w-[420px] h-[calc(100vh-6rem)] sm:h-[640px] max-h-[calc(100vh-6rem)] sm:max-h-[640px] bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden"
+            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 sm:top-auto sm:left-auto sm:translate-x-0 sm:translate-y-0 sm:bottom-24 right-4 sm:right-6 z-[99998] w-[calc(100vw-1.5rem)] sm:w-[420px] max-w-[calc(100vw-1.5rem)] sm:max-w-[420px] h-[85vh] sm:h-[640px] max-h-[85vh] sm:max-h-[640px] bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 px-5 py-4 flex items-center justify-between relative overflow-hidden">

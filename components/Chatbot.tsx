@@ -38,7 +38,7 @@ export default function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hi! 👋 I'm Keirō, your AI assistant from StratgenAI. I'm here to help you learn about our company, products, and services.\n\nYou can ask me in English, Hindi, or Hinglish - I understand all! 😊\n\nWhat would you like to know?",
+      text: "Hello, I'm Keirō, your AI assistant at StratgenAI.\n\nI'm here to help you understand our AI solutions, services, and how we can transform your business operations.\n\nHow can I assist you today?",
       sender: 'bot',
       timestamp: new Date(),
     },
@@ -83,11 +83,14 @@ export default function Chatbot() {
         'company ke bare mein batao',
         'about your company',
         'tell me about yourself',
+        'tell me about stratgenai',
+        'stratgenai ke bare mein batao',
         'aap kya karte ho',
         'aapki company kya karti hai',
         'stratgenai kya hai',
         'company about',
         'company info',
+        'about stratgenai',
       ],
       keywords: ['company', 'business', 'about', 'kya karte', 'services', 'stratgenai', 'aap', 'tum'],
       answer: "We are **StratgenAI**, a cutting-edge AI software company specializing in intelligent business solutions.\n\nWe help businesses:\n• Automate processes with AI\n• Enhance productivity\n• Drive innovation\n\nOur tagline: *'From Silent Gen to Gen Alpha - AI that speaks your language'*\n\nWould you like to know about our products or services?",

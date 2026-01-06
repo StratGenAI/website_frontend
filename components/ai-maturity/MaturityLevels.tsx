@@ -345,7 +345,7 @@ export default function MaturityLevels() {
 
   return (
     <section id="maturity-levels" className="py-12 sm:py-20 md:py-32 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 overflow-x-hidden">
         <div ref={ref} className="max-w-6xl mx-auto">
           <motion.div
             className="text-center mb-8 sm:mb-16"
@@ -372,32 +372,32 @@ export default function MaturityLevels() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={inView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: index * 0.1 }}
-                  className={`rounded-2xl border-2 ${level.borderColor} ${level.bgColor} overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300`}
+                  className={`rounded-2xl border-2 ${level.borderColor} ${level.bgColor} overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 mx-0`}
                 >
                   <button
                     onClick={() => toggleLevel(level.number)}
                     className="w-full p-4 sm:p-6 md:p-8 flex items-center justify-between text-left group"
                   >
-                    <div className="flex items-center space-x-3 sm:space-x-4 md:space-x-6 flex-1 min-w-0">
+                    <div className="flex items-center space-x-3 sm:space-x-4 md:space-x-6 flex-1 min-w-0 overflow-hidden">
                       <div
                         className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg"
                         style={{ backgroundColor: level.color }}
                       >
                         <Icon className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white" />
                       </div>
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0 overflow-hidden">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 space-y-1 sm:space-y-0 mb-1 sm:mb-2">
-                          <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-gray-900">
+                          <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-gray-900 whitespace-nowrap">
                             Level {level.number}
                           </span>
                           <span
-                            className="text-base sm:text-lg md:text-xl lg:text-2xl font-heading font-bold"
+                            className="text-base sm:text-lg md:text-xl lg:text-2xl font-heading font-bold truncate"
                             style={{ color: level.color }}
                           >
                             {level.name}
                           </span>
                         </div>
-                        <p className="text-gray-600 font-body text-xs sm:text-sm md:text-base line-clamp-2 sm:line-clamp-none">
+                        <p className="text-gray-600 font-body text-xs sm:text-sm md:text-base line-clamp-2 sm:line-clamp-none break-words">
                           {level.content.whatItMeans}
                         </p>
                       </div>

@@ -170,13 +170,13 @@ export default function ComparisonTable() {
                         return (
                           <td
                             key={level}
-                            className="p-2 sm:p-4 text-center font-body border-b border-gray-200 text-xs sm:text-sm"
+                            className="p-2 sm:p-4 text-center font-body border-b border-gray-200 text-xs sm:text-sm whitespace-nowrap"
                             style={{
                               backgroundColor: `${levelColors[level].bg}15`,
                               color: levelColors[level].text === '#FFFFFF' ? '#1F2937' : '#1F2937',
                             }}
                           >
-                            {value}
+                            <span className="inline-block">{value}</span>
                           </td>
                         )
                       })}

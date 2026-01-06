@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { Calendar, Download, Users, ArrowRight, Sparkles } from 'lucide-react'
+import { Calendar, MessageSquare, Users, ArrowRight, Sparkles } from 'lucide-react'
 
 export default function CTASection() {
   const [ref, inView] = useInView({
@@ -21,13 +21,13 @@ export default function CTASection() {
       href: '#contact',
     },
     {
-      title: 'Download Detailed Report',
-      subtitle: 'The Complete AI Maturity Guide',
-      description: '50-page comprehensive framework, industry-specific examples, implementation checklists',
-      icon: Download,
-      buttonText: 'Download Now',
+      title: 'AI Strategy Session',
+      subtitle: 'Get Expert Guidance',
+      description: 'One-on-one session with our AI experts, discuss your challenges, get personalized recommendations and strategic insights',
+      icon: MessageSquare,
+      buttonText: 'Schedule Session',
       color: 'from-purple-600 to-pink-600',
-      href: '#resources',
+      href: '#contact',
     },
     {
       title: 'Workshop',

@@ -152,13 +152,13 @@ export default function Navbar() {
       }`}
       style={{ overflow: 'visible' }}
     >
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="flex items-center justify-between h-16 md:h-20 lg:h-24 w-full gap-2 md:gap-4">
+    <div className="container mx-auto px-2 sm:px-4 lg:px-6">
+      <div className="flex items-center justify-between h-16 md:h-20 lg:h-24 w-full gap-2 md:gap-3">
   
-        {/* Logo - Properly Aligned */}
+        {/* Logo - Left Aligned */}
         <Link
           href="/"
-          className="flex items-center flex-shrink-0 z-10"
+          className="flex items-center flex-shrink-0 z-10 -ml-2 sm:ml-0"
         >
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -177,12 +177,12 @@ export default function Navbar() {
                 height={1400}
                 priority
                 unoptimized
-                className="object-contain md:h-[140px] md:max-w-[280px] lg:h-[180px] lg:max-w-[360px]"
+                className="object-contain md:h-[100px] md:max-w-[200px] lg:h-[120px] lg:max-w-[240px]"
                 style={{
                   backgroundColor: 'transparent',
-                  height: '120px',
+                  height: '90px',
                   width: 'auto',
-                  maxWidth: '240px',
+                  maxWidth: '180px',
                   display: 'block'
                 }}
               />

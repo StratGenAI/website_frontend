@@ -38,7 +38,7 @@ export default function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hello, I'm Keirō, your AI assistant at StratgenAI.\n\nI'm here to help you understand our AI solutions, services, and how we can transform your business operations.\n\nHow can I assist you today?",
+      text: "Hi! 👋 I'm Keirō, your AI assistant from StratgenAI. I'm here to help you learn about our company, products, and services.\n\nYou can ask me in English, Hindi, or Hinglish - I understand all! 😊\n\nWhat would you like to know?",
       sender: 'bot',
       timestamp: new Date(),
     },
@@ -83,17 +83,14 @@ export default function Chatbot() {
         'company ke bare mein batao',
         'about your company',
         'tell me about yourself',
-        'tell me about stratgenai',
-        'stratgenai ke bare mein batao',
         'aap kya karte ho',
         'aapki company kya karti hai',
         'stratgenai kya hai',
         'company about',
         'company info',
-        'about stratgenai',
       ],
-      keywords: ['company', 'business', 'about', 'kya karte', 'services', 'stratgenai', 'aap', 'tum', 'tell me about stratgenai', 'stratgenai ke bare mein'],
-      answer: "We are **StratgenAI**, a cutting-edge AI software company specializing in intelligent business solutions.\n\n**What We Do:**\n• Automate processes with AI\n• Enhance productivity\n• Drive innovation\n• Transform businesses with intelligent solutions\n\n**Our Mission:**\nWe help businesses of all sizes leverage the power of AI to streamline operations, reduce costs, and accelerate growth.\n\n**Our Tagline:**\n*'From Silent Gen to Gen Alpha - AI that speaks your language'*\n\nThis means we create AI solutions that work for everyone, regardless of age or technical expertise.\n\nWould you like to know about our products or services?",
+      keywords: ['company', 'business', 'about', 'kya karte', 'services', 'stratgenai', 'aap', 'tum'],
+      answer: "We are **StratgenAI**, a cutting-edge AI software company specializing in intelligent business solutions.\n\nWe help businesses:\n• Automate processes with AI\n• Enhance productivity\n• Drive innovation\n\nOur tagline: *'From Silent Gen to Gen Alpha - AI that speaks your language'*\n\nWould you like to know about our products or services?",
       followUp: ['Tell me about products', 'What services do you offer?', 'Who are the founders?'],
     },
     {
@@ -611,125 +608,28 @@ export default function Chatbot() {
       {/* Chatbot Button - Bottom Right */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-[99999] w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 shadow-2xl border-2 border-white/30 flex items-center justify-center group hover:shadow-3xl transition-all relative overflow-hidden"
-        initial={{ scale: 0, opacity: 0, y: 20 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        transition={{ 
-          type: 'spring', 
-          stiffness: 300, 
-          damping: 25,
-          delay: 0.3
-        }}
-        whileHover={{ scale: 1.1, y: -2 }}
-        whileTap={{ scale: 0.95 }}
+        className="fixed bottom-6 right-6 z-[9999] w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 shadow-xl border-2 border-white/20 flex items-center justify-center group hover:shadow-2xl hover:scale-110 transition-all relative"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
         style={{ 
-          position: 'fixed',
-          bottom: '24px',
-          right: '24px',
-          zIndex: 99999
+          zIndex: 9999
         }}
       >
-        {/* Animated background glow */}
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-br from-blue-500/30 via-purple-500/30 to-pink-500/30 rounded-full"
-          animate={{
-            scale: [1, 1.15, 1],
-            opacity: [0.3, 0.6, 0.3],
-          }}
-          transition={{
-            duration: 2.5,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-        
-        {/* Pulsing ring animation */}
-        <motion.div
-          className="absolute inset-0 rounded-full border-2 border-white/50"
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.8, 0, 0.8],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-
         {isOpen ? (
-          <motion.div
-            initial={{ rotate: -90, opacity: 0, scale: 0 }}
-            animate={{ rotate: 0, opacity: 1, scale: 1 }}
-            transition={{ 
-              type: 'spring',
-              stiffness: 300,
-              damping: 20
-            }}
-            className="relative z-10"
-          >
-            <X className="w-6 h-6 text-white" />
-          </motion.div>
+          <X className="w-6 h-6 text-white" />
         ) : (
           <>
+            <Image
+              src="/chatbot_logo.png"
+              alt="Keirō Chatbot"
+              width={32}
+              height={32}
+              className="w-8 h-8 object-contain brightness-0 invert"
+            />
             <motion.div
-              initial={{ scale: 0, rotate: -180, opacity: 0 }}
-              animate={{ scale: 1, rotate: 0, opacity: 1 }}
-              transition={{ 
-                type: 'spring', 
-                stiffness: 250, 
-                damping: 20,
-                delay: 0.5
-              }}
-              className="relative z-10"
-            >
-              {/* Round container for icon */}
-              <motion.div
-                className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border-2 border-white/30 shadow-lg"
-                animate={{
-                  scale: [1, 1.08, 1],
-                  rotate: [0, 3, -3, 0],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-              >
-                <motion.div
-                  animate={{
-                    scale: [1, 1.1, 1],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                >
-                  <Image
-                    src="/chatbot_logo.png"
-                    alt="Keirō Chatbot"
-                    width={32}
-                    height={32}
-                    className="w-8 h-8 object-contain rounded-full"
-                    priority
-                    unoptimized
-                  />
-                </motion.div>
-              </motion.div>
-            </motion.div>
-            <motion.div
-              className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full border-2 border-white shadow-lg z-20"
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ 
-                scale: [1, 1.3, 1], 
-                opacity: [1, 0.8, 1],
-              }}
-              transition={{ 
-                duration: 2, 
-                repeat: Infinity,
-                delay: 0.8
-              }}
+              className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-white rounded-full border-2 border-purple-500 shadow-lg"
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
             />
           </>
         )}
@@ -739,23 +639,17 @@ export default function Chatbot() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 sm:top-auto sm:left-auto sm:translate-x-0 sm:translate-y-0 sm:bottom-24 sm:right-6 z-[99998] w-[calc(100vw-1.5rem)] sm:w-[420px] max-w-[calc(100vw-1.5rem)] sm:max-w-[420px] h-[85vh] sm:h-[640px] max-h-[85vh] sm:max-h-[640px] bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 px-5 py-4 flex items-center justify-between relative overflow-hidden">
-              <div className="absolute inset-0 opacity-20">
-                <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full blur-2xl"></div>
-                <div className="absolute bottom-0 right-0 w-40 h-40 bg-white rounded-full blur-3xl"></div>
-              </div>
-              
-              <div className="flex items-center space-x-3 relative z-10">
+            <div className="bg-white border-b border-gray-200 px-5 py-4 flex items-center justify-between">
+              <div className="flex items-center space-x-3">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-white/30 rounded-full blur-md"></div>
-                  <div className="relative bg-white/20 backdrop-blur-sm rounded-full p-2 border-2 border-white/30">
+                  <div className="bg-gray-50 rounded-lg p-2 border border-gray-200">
                     <Image
                       src="/chatbot_logo.png"
                       alt="Keirō"
@@ -765,19 +659,19 @@ export default function Chatbot() {
                     />
                   </div>
                   <motion.div
-                    className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-white shadow-lg"
-                    animate={{ scale: [1, 1.3, 1], opacity: [1, 0.8, 1] }}
+                    className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white"
+                    animate={{ scale: [1, 1.2, 1], opacity: [1, 0.9, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   />
                 </div>
                 <div>
-                  <h3 className="text-white font-heading font-bold text-base drop-shadow-lg">Keirō</h3>
-                  <p className="text-white/90 text-xs font-medium">AI Assistant</p>
+                  <h3 className="text-gray-900 font-semibold text-[15px] leading-tight">Keirō</h3>
+                  <p className="text-gray-500 text-[11px] font-normal">AI Assistant</p>
                 </div>
               </div>
               <motion.button
                 onClick={() => setIsOpen(false)}
-                className="text-white hover:bg-white/20 rounded-xl p-2 transition-all relative z-10 backdrop-blur-sm"
+                className="text-gray-600 hover:bg-gray-100 rounded-lg p-2 transition-all"
                 whileHover={{ scale: 1.1, rotate: 90 }}
                 whileTap={{ scale: 0.9 }}
               >
@@ -786,7 +680,7 @@ export default function Chatbot() {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3 bg-gradient-to-b from-gray-50 to-white">
+            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3 bg-white">
               {messages.map((message) => (
                 <motion.div
                   key={message.id}
@@ -797,21 +691,21 @@ export default function Chatbot() {
                 >
                   {message.sender === 'bot' && (
                     <div className="flex-shrink-0 mr-2.5 mt-0.5">
-                      <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
-                        <Bot className="w-3.5 h-3.5 text-white" />
+                      <div className="w-7 h-7 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
+                        <Bot className="w-3.5 h-3.5 text-gray-600" />
                       </div>
                     </div>
                   )}
                   <div
-                    className={`max-w-[75%] rounded-xl px-4 py-3 shadow-lg ${
+                    className={`max-w-[78%] rounded-lg px-3.5 py-2.5 ${
                       message.sender === 'user'
-                        ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white'
-                        : 'bg-white text-gray-800 border border-gray-100'
+                        ? 'bg-gray-900 text-white'
+                        : 'bg-gray-50 text-gray-800 border border-gray-200'
                     }`}
                   >
                     {message.sender === 'bot' && (
-                      <div className="flex items-center space-x-2 mb-2">
-                        <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200">Keirō</span>
+                      <div className="flex items-center space-x-1.5 mb-1.5">
+                        <span className="text-[10px] font-medium text-gray-600 bg-white px-1.5 py-0.5 rounded border border-gray-200">Keirō</span>
                       </div>
                     )}
                       {message.sender === 'bot' && message.text.includes('[COMMUNITY_IMAGE]') && (
@@ -826,7 +720,7 @@ export default function Chatbot() {
                       </div>
                     )}
                     <p
-                      className={`text-sm whitespace-pre-wrap font-body leading-relaxed ${
+                      className={`text-[13px] whitespace-pre-wrap leading-relaxed ${
                         message.sender === 'user' ? 'text-white' : 'text-gray-700'
                       }`}
                     >
@@ -835,7 +729,7 @@ export default function Chatbot() {
                   </div>
                   {message.sender === 'user' && (
                     <div className="flex-shrink-0 ml-2.5 mt-0.5">
-                      <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
+                      <div className="w-7 h-7 rounded-lg bg-gray-900 flex items-center justify-center">
                         <User className="w-3.5 h-3.5 text-white" />
                       </div>
                     </div>
@@ -850,26 +744,26 @@ export default function Chatbot() {
                   className="flex justify-start"
                 >
                   <div className="flex-shrink-0 mr-2.5 mt-0.5">
-                      <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
-                        <Bot className="w-3.5 h-3.5 text-white" />
+                      <div className="w-7 h-7 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
+                        <Bot className="w-3.5 h-3.5 text-gray-600" />
                       </div>
                     </div>
-                  <div className="bg-white rounded-xl px-4 py-3 shadow-sm border border-gray-100">
+                  <div className="bg-gray-50 rounded-lg px-3.5 py-2.5 border border-gray-200">
                     <div className="flex items-center space-x-2">
-                      <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200">Keirō</span>
+                      <span className="text-[10px] font-medium text-gray-600 bg-white px-1.5 py-0.5 rounded border border-gray-200">Keirō</span>
                       <div className="flex space-x-1.5">
                         <motion.div
-                          className="w-1.5 h-1.5 bg-blue-500 rounded-full"
+                          className="w-1.5 h-1.5 bg-gray-400 rounded-full"
                           animate={{ y: [0, -4, 0], opacity: [0.5, 1, 0.5] }}
                           transition={{ duration: 0.8, repeat: Infinity, delay: 0 }}
                         />
                         <motion.div
-                          className="w-1.5 h-1.5 bg-purple-500 rounded-full"
+                          className="w-1.5 h-1.5 bg-gray-500 rounded-full"
                           animate={{ y: [0, -4, 0], opacity: [0.5, 1, 0.5] }}
                           transition={{ duration: 0.8, repeat: Infinity, delay: 0.2 }}
                         />
                         <motion.div
-                          className="w-1.5 h-1.5 bg-pink-500 rounded-full"
+                          className="w-1.5 h-1.5 bg-gray-600 rounded-full"
                           animate={{ y: [0, -4, 0], opacity: [0.5, 1, 0.5] }}
                           transition={{ duration: 0.8, repeat: Infinity, delay: 0.4 }}
                         />
@@ -937,8 +831,8 @@ export default function Chatbot() {
 
             {/* Quick Reply Buttons */}
             {messages.length > 1 && lastResponse?.followUp && (
-              <div className="px-5 py-3 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 border-t border-gray-100">
-                <div className="flex flex-wrap gap-2">
+              <div className="px-5 py-3 bg-gray-50 border-t border-gray-200">
+                <div className="flex flex-wrap gap-1.5">
                   {lastResponse.followUp.slice(0, 3).map((q, idx) => (
                     <motion.button
                       key={idx}
@@ -946,9 +840,9 @@ export default function Chatbot() {
                         setInput(q)
                         setTimeout(() => handleSend(), 100)
                       }}
-                      className="text-xs px-4 py-2 bg-white rounded-lg border border-gray-300 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-all shadow-sm font-medium text-gray-700"
-                      whileHover={{ scale: 1.05, y: -2 }}
-                      whileTap={{ scale: 0.95 }}
+                      className="text-[11px] px-3 py-1.5 bg-white rounded-md border border-gray-300 hover:border-gray-900 hover:text-gray-900 hover:bg-gray-100 transition-all font-medium text-gray-700"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                     >
                       {q}
                     </motion.button>
@@ -959,12 +853,12 @@ export default function Chatbot() {
 
             {/* Quick Questions - Show only on first message */}
             {messages.length === 1 && (
-              <div className="px-5 py-3 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 border-t border-gray-100">
-                <p className="text-xs text-gray-700 mb-3 font-bold flex items-center space-x-2">
-                  <Sparkles className="w-3 h-3 text-blue-600" />
+              <div className="px-5 py-3 bg-gray-50 border-t border-gray-200">
+                <p className="text-[11px] text-gray-600 mb-2.5 font-medium flex items-center space-x-1.5">
+                  <Sparkles className="w-3 h-3 text-gray-600" />
                   <span>Quick questions:</span>
                 </p>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   {quickQuestions.map((q, idx) => (
                     <motion.button
                       key={idx}
@@ -972,9 +866,9 @@ export default function Chatbot() {
                         setInput(q)
                         setTimeout(() => handleSend(), 100)
                       }}
-                      className="text-xs px-4 py-2 bg-white rounded-lg border border-gray-300 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-all shadow-sm font-medium text-gray-700"
-                      whileHover={{ scale: 1.05, y: -2 }}
-                      whileTap={{ scale: 0.95 }}
+                      className="text-[11px] px-3 py-1.5 bg-white rounded-md border border-gray-300 hover:border-gray-900 hover:text-gray-900 hover:bg-gray-100 transition-all font-medium text-gray-700"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                     >
                       {q}
                     </motion.button>
@@ -984,8 +878,8 @@ export default function Chatbot() {
             )}
 
             {/* Input */}
-            <div className="p-4 bg-white border-t border-gray-100 shadow-lg">
-              <div className="flex items-center space-x-3">
+            <div className="px-5 py-4 bg-white border-t border-gray-200">
+              <div className="flex items-center space-x-2.5">
                 <input
                   ref={inputRef}
                   type="text"
@@ -993,16 +887,16 @@ export default function Chatbot() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Type your message..."
-                  className="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white transition-all"
+                  className="flex-1 px-3.5 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-[13px] bg-white transition-all"
                 />
                 <motion.button
                   onClick={handleSend}
                   disabled={!input.trim()}
-                  className="w-12 h-12 rounded-lg bg-gray-900 text-white flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed shadow-sm hover:bg-gray-800 transition-all"
+                  className="w-10 h-10 rounded-lg bg-gray-900 text-white flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-800 transition-all"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Send className="w-5 h-5" />
+                  <Send className="w-4 h-4" />
                 </motion.button>
               </div>
             </div>

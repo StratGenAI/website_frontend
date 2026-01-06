@@ -12,7 +12,7 @@ import CTASection from '@/components/ai-maturity/CTASection'
 
 export default function AIMaturityModelPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20">
+    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/20 pt-24 md:pt-32">
       <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
         <HeroSection />
         <OverviewSection />

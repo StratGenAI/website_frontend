@@ -612,11 +612,7 @@ export default function Chatbot() {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         style={{ 
-          position: 'fixed !important', 
-          bottom: '24px !important', 
-          right: '24px !important',
-          zIndex: 9999,
-          display: 'flex'
+          zIndex: 9999
         }}
       >
         {isOpen ? (

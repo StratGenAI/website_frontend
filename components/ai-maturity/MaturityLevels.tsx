@@ -372,32 +372,33 @@ export default function MaturityLevels() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={inView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: index * 0.1 }}
-                  className={`rounded-2xl border-2 ${level.borderColor} ${level.bgColor} overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 mx-0`}
+                  className={`rounded-2xl border-2 ${level.borderColor} ${level.bgColor} overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300`}
+                  style={{ maxWidth: '100%', width: '100%', boxSizing: 'border-box' }}
                 >
                   <button
                     onClick={() => toggleLevel(level.number)}
-                    className="w-full p-4 sm:p-6 md:p-8 flex items-center justify-between text-left group"
+                    className="w-full p-4 sm:p-6 md:p-8 flex items-center justify-between text-left group overflow-hidden"
                   >
-                    <div className="flex items-center space-x-3 sm:space-x-4 md:space-x-6 flex-1 min-w-0 overflow-hidden">
+                    <div className="flex items-center space-x-3 sm:space-x-4 md:space-x-6 flex-1 min-w-0 overflow-hidden max-w-full">
                       <div
                         className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg"
                         style={{ backgroundColor: level.color }}
                       >
                         <Icon className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white" />
                       </div>
-                      <div className="flex-1 min-w-0 overflow-hidden">
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 space-y-1 sm:space-y-0 mb-1 sm:mb-2">
-                          <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-gray-900 whitespace-nowrap">
+                      <div className="flex-1 min-w-0 overflow-hidden max-w-full">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 space-y-1 sm:space-y-0 mb-1 sm:mb-2 overflow-hidden">
+                          <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-gray-900 whitespace-nowrap flex-shrink-0">
                             Level {level.number}
                           </span>
                           <span
-                            className="text-base sm:text-lg md:text-xl lg:text-2xl font-heading font-bold truncate"
+                            className="text-base sm:text-lg md:text-xl lg:text-2xl font-heading font-bold truncate min-w-0"
                             style={{ color: level.color }}
                           >
                             {level.name}
                           </span>
                         </div>
-                        <p className="text-gray-600 font-body text-xs sm:text-sm md:text-base line-clamp-2 sm:line-clamp-none break-words">
+                        <p className="text-gray-600 font-body text-xs sm:text-sm md:text-base line-clamp-2 sm:line-clamp-none break-words overflow-hidden">
                           {level.content.whatItMeans}
                         </p>
                       </div>

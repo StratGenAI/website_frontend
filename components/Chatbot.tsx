@@ -93,7 +93,7 @@ export default function Chatbot() {
         'about stratgenai',
       ],
       keywords: ['company', 'business', 'about', 'kya karte', 'services', 'stratgenai', 'aap', 'tum'],
-      answer: "We are **StratgenAI**, a cutting-edge AI software company specializing in intelligent business solutions.\n\nWe help businesses:\n• Automate processes with AI\n• Enhance productivity\n• Drive innovation\n\nOur tagline: *'From Silent Gen to Gen Alpha - AI that speaks your language'*\n\nWould you like to know about our products or services?",
+      answer: "We are **StratgenAI**, a cutting-edge AI software company specializing in intelligent business solutions.\n\nWe help businesses:\n• Automate processes with AI\n• Enhance productivity\n• Drive innovation\n\nWould you like to know about our products or services?",
       followUp: ['Tell me about products', 'What services do you offer?', 'Who are the founders?'],
     },
     {

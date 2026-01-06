@@ -111,16 +111,6 @@ export default function OurCulture() {
         {/* Section Header */}
         <ScrollReveal direction="scale" delay={0.2}>
           <div className="text-center mb-16">
-            <motion.div
-              className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-100 to-pink-100 mb-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6 }}
-            >
-              <Sparkles className="w-5 h-5 text-blue-600" />
-              <span className="text-sm font-heading font-semibold text-gray-700">Our Culture</span>
-            </motion.div>
-            
             <motion.h2
               className="text-5xl md:text-6xl lg:text-7xl font-display font-black mb-6"
               initial={{ opacity: 0, y: 30 }}

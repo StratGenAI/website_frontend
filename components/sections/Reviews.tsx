@@ -85,16 +85,6 @@ export default function Reviews() {
         {/* Section Header */}
         <ScrollReveal direction="scale" delay={0.2}>
           <div className="text-center mb-24">
-            <motion.div
-              className="inline-flex items-center space-x-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-100/80 via-purple-100/80 to-pink-100/80 backdrop-blur-sm border border-white/50 mb-8 shadow-lg"
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6 }}
-            >
-              <Sparkles className="w-5 h-5 text-blue-600" />
-              <span className="text-sm font-heading font-semibold text-gray-700">Client Testimonials</span>
-            </motion.div>
-            
             <motion.h2
               className="text-5xl md:text-6xl lg:text-7xl font-display font-black mb-8 leading-tight"
               initial={{ opacity: 0, y: 30 }}

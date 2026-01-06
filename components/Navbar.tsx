@@ -411,13 +411,13 @@ export default function Navbar() {
           {/* Let's Collaborate Button - Right Aligned */}
           <motion.a
             href="#contact"
-            className="hidden md:flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white font-heading font-bold text-base lg:text-lg rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden group ml-4"
+            className="hidden md:flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white font-heading font-bold text-base lg:text-lg rounded-xl shadow-lg hover:shadow-xl transition-all relative group ml-4"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             {/* Animated Background */}
             <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              className="absolute inset-0 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"
               animate={{
                 backgroundPosition: ['0%', '100%'],
               }}
@@ -430,7 +430,7 @@ export default function Navbar() {
                 backgroundSize: '200% auto',
               }}
             />
-            <span className="relative z-10">Let's Collaborate</span>
+            <span className="relative z-10 whitespace-nowrap">Let's Collaborate</span>
           </motion.a>
 
           {/* Mobile Menu Button */}

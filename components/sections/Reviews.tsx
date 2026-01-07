@@ -12,7 +12,8 @@ const reviews = [
     company: 'Rumi Energizer',
     name: 'Rumi Energizer Team',
     role: 'Client',
-    content: 'StratgenAI transformed our business operations with their intelligent AI solutions. Their team delivered exceptional results, helping us automate processes and improve efficiency significantly. Highly professional and innovative approach!',
+    location: '',
+    content: 'StratgenAI built a complete automated pipeline for us that revolutionized our data processing workflow. Their AI-powered solutions transformed our operations, enabling us to process complex data efficiently and accurately. The automated pipeline they created has significantly improved our productivity and reduced manual errors. Highly professional team with exceptional technical expertise!',
     rating: 5,
     gradient: 'from-blue-500 via-cyan-500 to-teal-500',
     bgGradient: 'from-blue-50 via-cyan-50 to-teal-50',
@@ -22,7 +23,8 @@ const reviews = [
     company: 'D&G Consultant',
     name: 'D&G Consultant Team',
     role: 'Client',
-    content: 'Working with StratgenAI has been a game-changer for our consultancy. Their AI-powered solutions helped us streamline our workflows and deliver better results to our clients. Outstanding service and cutting-edge technology!',
+    location: 'Dubai, UAE | Ahmedabad, India',
+    content: 'Working with StratgenAI has been a game-changer for our consultancy. Their AI-powered chatbot solutions helped us streamline customer interactions and deliver exceptional service to our clients. Outstanding service and cutting-edge technology that transformed how we engage with our customers!',
     rating: 5,
     gradient: 'from-purple-500 via-pink-500 to-rose-500',
     bgGradient: 'from-purple-50 via-pink-50 to-rose-50',
@@ -228,9 +230,11 @@ export default function Reviews() {
                         <h4 className="text-lg sm:text-xl font-heading font-black text-gray-900 mb-0.5 sm:mb-1">
                           {review.company}
                         </h4>
-                        <p className="text-xs sm:text-sm text-gray-600 font-body font-medium">
-                          Business Partner
-                        </p>
+                        {review.location && (
+                          <p className="text-xs sm:text-sm text-gray-600 font-body font-medium">
+                            {review.location}
+                          </p>
+                        )}
                       </div>
                     </div>
 

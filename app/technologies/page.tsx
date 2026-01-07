@@ -196,7 +196,7 @@ export default function TechnologiesPage() {
                 Let's discuss how our technology expertise can power your next project
               </motion.p>
               <motion.a
-                href="#contact"
+                href="/contact"
                 className="inline-block px-8 md:px-10 py-4 md:py-5 bg-white text-gray-900 font-bold rounded-xl shadow-2xl hover:shadow-3xl transition-all font-heading text-base md:text-lg"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

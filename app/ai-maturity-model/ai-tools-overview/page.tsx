@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ArrowLeft, Zap, CheckCircle2, Star, TrendingUp, DollarSign } from 'lucide-react'
+import { ArrowLeft, Zap, CheckCircle2, Star, TrendingUp, Wallet } from 'lucide-react'
 import Link from 'next/link'
 
 export default function AIToolsOverviewPage() {
@@ -48,6 +48,65 @@ export default function AIToolsOverviewPage() {
               <p className="text-base md:text-lg text-gray-700 leading-relaxed font-body">
                 This guide focuses on proven, accessible AI tools that businesses at Level 0-1 can implement quickly and see immediate results.
               </p>
+            </div>
+          </motion.section>
+
+          {/* Tool Adoption Chart */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.08 }}
+            className="mb-16"
+          >
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-display font-black mb-6 text-gray-900">AI Tool Market Overview</h2>
+            <div className="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-xl p-6 border border-orange-200 shadow-lg mb-8">
+              <h3 className="text-lg font-heading font-bold mb-6 text-gray-900 text-center">Tool Category Adoption Rates</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  {[
+                    { category: 'Customer Service', adoption: 78, color: 'from-blue-500 to-cyan-500' },
+                    { category: 'Content & Marketing', adoption: 72, color: 'from-purple-500 to-pink-500' },
+                    { category: 'Productivity', adoption: 68, color: 'from-green-500 to-emerald-500' },
+                  ].map((item, index) => (
+                    <div key={index}>
+                      <div className="flex justify-between mb-2">
+                        <span className="text-sm font-semibold text-gray-700">{item.category}</span>
+                        <span className="text-sm font-bold text-gray-900">{item.adoption}%</span>
+                      </div>
+                      <div className="h-5 bg-white/50 rounded-full overflow-hidden shadow-inner">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${item.adoption}%` }}
+                          transition={{ duration: 1, delay: 0.3 + index * 0.15 }}
+                          className={`h-full bg-gradient-to-r ${item.color} rounded-full`}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="space-y-4">
+                  {[
+                    { category: 'Sales & CRM', adoption: 65, color: 'from-orange-500 to-red-500' },
+                    { category: 'Data Analytics', adoption: 58, color: 'from-yellow-500 to-orange-500' },
+                    { category: 'HR & Operations', adoption: 52, color: 'from-indigo-500 to-purple-500' },
+                  ].map((item, index) => (
+                    <div key={index}>
+                      <div className="flex justify-between mb-2">
+                        <span className="text-sm font-semibold text-gray-700">{item.category}</span>
+                        <span className="text-sm font-bold text-gray-900">{item.adoption}%</span>
+                      </div>
+                      <div className="h-5 bg-white/50 rounded-full overflow-hidden shadow-inner">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${item.adoption}%` }}
+                          transition={{ duration: 1, delay: 0.5 + index * 0.15 }}
+                          className={`h-full bg-gradient-to-r ${item.color} rounded-full`}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </motion.section>
 
@@ -173,6 +232,42 @@ export default function AIToolsOverviewPage() {
             </div>
           </motion.section>
 
+          {/* ROI Comparison Chart */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
+            className="mb-16"
+          >
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-display font-black mb-6 text-gray-900">ROI Comparison: Tool Categories</h2>
+            <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-lg">
+              <div className="space-y-4">
+                {[
+                  { tool: 'Customer Service Tools', roi: 320, color: 'from-blue-500 to-cyan-500' },
+                  { tool: 'Content Creation Tools', roi: 280, color: 'from-purple-500 to-pink-500' },
+                  { tool: 'Productivity Tools', roi: 250, color: 'from-green-500 to-emerald-500' },
+                  { tool: 'Sales & CRM Tools', roi: 220, color: 'from-orange-500 to-red-500' },
+                  { tool: 'Analytics Tools', roi: 200, color: 'from-yellow-500 to-orange-500' },
+                ].map((item, index) => (
+                  <div key={index}>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-sm font-semibold text-gray-700">{item.tool}</span>
+                      <span className="text-sm font-bold text-gray-900">{item.roi}% ROI</span>
+                    </div>
+                    <div className="h-6 bg-gray-100 rounded-full overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${(item.roi / 350) * 100}%` }}
+                        transition={{ duration: 1, delay: 0.6 + index * 0.15, type: 'spring' }}
+                        className={`h-full bg-gradient-to-r ${item.color} rounded-full shadow-md`}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.section>
+
           {/* ROI Considerations */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
@@ -181,7 +276,7 @@ export default function AIToolsOverviewPage() {
             className="mb-16 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl p-8 border border-yellow-200"
           >
             <div className="flex items-center mb-4">
-              <DollarSign className="w-8 h-8 text-yellow-600 mr-3" />
+              <Wallet className="w-8 h-8 text-yellow-600 mr-3" />
               <h2 className="text-3xl font-bold text-gray-900">Understanding ROI</h2>
             </div>
             <p className="text-lg text-gray-700 mb-6">
@@ -245,7 +340,7 @@ export default function AIToolsOverviewPage() {
                 <ArrowLeft className="w-5 h-5 rotate-180" />
               </Link>
               <Link
-                href="#contact"
+                href="/contact"
                 className="px-6 py-3 bg-white text-gray-900 rounded-xl font-heading font-semibold border-2 border-gray-300 hover:border-gray-400 transition-all flex items-center justify-center space-x-2"
               >
                 <span>Get Free Consultation</span>

@@ -179,16 +179,6 @@ export default function Services() {
         {/* Enhanced Section Header */}
         <ScrollReveal direction="scale" delay={0.2}>
           <div className="text-center mb-24">
-            <motion.div
-              className="inline-flex items-center space-x-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 mb-8 border border-white/50 shadow-sm"
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6 }}
-            >
-              <Sparkles className="w-5 h-5 text-blue-600" />
-              <span className="text-sm font-heading font-semibold text-gray-700">What We Offer</span>
-            </motion.div>
-            
             <motion.h2
               className="text-5xl md:text-6xl lg:text-7xl font-display font-black mb-8"
               initial={{ opacity: 0, y: 30 }}
@@ -317,20 +307,6 @@ export default function Services() {
                               ))}
                             </div>
 
-                            {/* Enhanced Learn More Button */}
-                            <motion.button
-                              className={`w-full flex items-center justify-center space-x-2 px-8 py-4 rounded-xl bg-gradient-to-r ${category.color} text-white font-heading font-semibold shadow-lg hover:shadow-xl transition-all group/btn`}
-                              whileHover={{ scale: 1.05, x: 5 }}
-                              whileTap={{ scale: 0.95 }}
-                            >
-                              <span>Learn More</span>
-                              <motion.div
-                                animate={{ x: [0, 5, 0] }}
-                                transition={{ duration: 1.5, repeat: Infinity }}
-                              >
-                                <ArrowRight className="w-5 h-5" />
-                              </motion.div>
-                            </motion.button>
                           </div>
                         </div>
                       </motion.div>

@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { CheckCircle2, ArrowRight, Download, Clock, DollarSign, Target, TrendingUp, Crown, BookOpen, Users, Zap, FlaskConical } from 'lucide-react'
+import { CheckCircle2, ArrowRight, Download, Clock, Wallet, Target, TrendingUp, Crown, BookOpen, Users, Zap, FlaskConical } from 'lucide-react'
 
 const levelInfo = [
   {
@@ -177,7 +177,7 @@ export default function QuizResults({ score }: QuizResultsProps) {
                 <span>Download Your Roadmap (PDF)</span>
               </motion.button>
               <motion.a
-                href="#contact"
+                href="/contact"
                 className="flex-1 px-8 py-4 bg-white text-gray-800 rounded-xl font-heading font-semibold text-lg border-2 border-gray-300 shadow-lg hover:shadow-xl hover:border-blue-500 transition-all duration-300 flex items-center justify-center space-x-2"
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}

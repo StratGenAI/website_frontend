@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { ChevronDown, ChevronUp, XCircle, Lightbulb, FlaskConical, TrendingUp, Target, Crown, CheckCircle2, AlertCircle, Clock, DollarSign, Users, ArrowRight } from 'lucide-react'
+import { ChevronDown, ChevronUp, XCircle, Lightbulb, FlaskConical, TrendingUp, Target, Crown, CheckCircle2, AlertCircle, Clock, Wallet, Users, ArrowRight } from 'lucide-react'
 
 const levels = [
   {
@@ -490,7 +490,7 @@ export default function MaturityLevels() {
                           <div className="grid md:grid-cols-3 gap-4">
                             <div className="bg-white rounded-xl p-4 border border-gray-200">
                               <div className="flex items-center space-x-2 mb-2">
-                                <DollarSign className="w-5 h-5 text-green-600" />
+                                <Wallet className="w-5 h-5 text-green-600" />
                                 <h4 className="font-heading font-semibold text-gray-900">Investment</h4>
                               </div>
                               <p className="text-gray-700 font-body">{level.content.investment}</p>

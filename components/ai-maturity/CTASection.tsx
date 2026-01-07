@@ -1,14 +1,17 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { MessageSquare, Rocket, ArrowRight, Sparkles } from 'lucide-react'
+import SessionRequestModal from '@/components/SessionRequestModal'
 
 export default function CTASection() {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   })
+  const [isSessionModalOpen, setIsSessionModalOpen] = useState(false)
 
   const ctaOptions = [
     {
@@ -110,30 +113,48 @@ export default function CTASection() {
                   <p className="text-gray-600 font-body mb-6">
                     {option.description}
                   </p>
-                  <motion.a
-                    href={option.href}
-                    className={`block w-full px-6 py-4 bg-gradient-to-r ${option.color} text-white rounded-xl font-heading font-bold text-center shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2`}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={(e) => {
-                      if (option.href.startsWith('#')) {
-                        e.preventDefault()
-                        const element = document.querySelector(option.href)
-                        if (element) {
-                          element.scrollIntoView({ behavior: 'smooth' })
+                  {option.buttonText === 'Schedule Session' ? (
+                    <motion.button
+                      onClick={() => setIsSessionModalOpen(true)}
+                      className={`block w-full px-6 py-4 bg-gradient-to-r ${option.color} text-white rounded-xl font-heading font-bold text-center shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2`}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <span>{option.buttonText}</span>
+                      <ArrowRight className="w-5 h-5" />
+                    </motion.button>
+                  ) : (
+                    <motion.a
+                      href={option.href}
+                      className={`block w-full px-6 py-4 bg-gradient-to-r ${option.color} text-white rounded-xl font-heading font-bold text-center shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2`}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={(e) => {
+                        if (option.href.startsWith('#')) {
+                          e.preventDefault()
+                          const element = document.querySelector(option.href)
+                          if (element) {
+                            element.scrollIntoView({ behavior: 'smooth' })
+                          }
                         }
-                      }
-                    }}
-                  >
-                    <span>{option.buttonText}</span>
-                    <ArrowRight className="w-5 h-5" />
-                  </motion.a>
+                      }}
+                    >
+                      <span>{option.buttonText}</span>
+                      <ArrowRight className="w-5 h-5" />
+                    </motion.a>
+                  )}
                 </motion.div>
               )
             })}
           </div>
         </div>
       </div>
+
+      {/* Session Request Modal */}
+      <SessionRequestModal 
+        isOpen={isSessionModalOpen} 
+        onClose={() => setIsSessionModalOpen(false)} 
+      />
     </section>
   )
 }

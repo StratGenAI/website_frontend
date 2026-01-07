@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ArrowLeft, TrendingUp, Calculator, DollarSign, BarChart3, Target, CheckCircle2 } from 'lucide-react'
+import { ArrowLeft, TrendingUp, Calculator, Wallet, BarChart3, Target, CheckCircle2 } from 'lucide-react'
 import Link from 'next/link'
 
 export default function ROIAssessmentPage() {
@@ -62,7 +62,7 @@ export default function ROIAssessmentPage() {
             <div className="grid md:grid-cols-2 gap-6">
               {[
                 {
-                  icon: DollarSign,
+                  icon: Wallet,
                   title: 'Cost Savings',
                   description: 'Reduced operational costs through automation',
                   examples: ['Labor cost reduction', 'Error reduction', 'Process efficiency'],
@@ -179,6 +179,188 @@ export default function ROIAssessmentPage() {
                 </div>
               </div>
             </div>
+
+            {/* Fun Bar Chart - ROI by Industry */}
+            <div className="mb-8 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200 shadow-lg">
+              <h3 className="text-lg font-heading font-bold mb-6 text-gray-900 text-center">Average ROI by Industry</h3>
+              <div className="space-y-4">
+                {[
+                  { industry: 'Healthcare', roi: 85, color: 'from-blue-500 to-cyan-500' },
+                  { industry: 'E-commerce', roi: 75, color: 'from-purple-500 to-pink-500' },
+                  { industry: 'Finance', roi: 70, color: 'from-green-500 to-emerald-500' },
+                  { industry: 'Manufacturing', roi: 65, color: 'from-orange-500 to-red-500' },
+                  { industry: 'Retail', roi: 60, color: 'from-yellow-500 to-orange-500' },
+                ].map((item, index) => (
+                  <div key={index}>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-sm font-heading font-semibold text-gray-700">{item.industry}</span>
+                      <span className="text-sm font-bold text-gray-900">{item.roi}% ROI</span>
+                    </div>
+                    <div className="h-6 bg-white/50 rounded-full overflow-hidden shadow-inner">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${item.roi}%` }}
+                        transition={{ duration: 1, delay: 1 + index * 0.15, type: 'spring' }}
+                        className={`h-full bg-gradient-to-r ${item.color} rounded-full shadow-md`}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Pie Chart Visualization - Benefit Distribution */}
+            <div className="mb-8 bg-white rounded-xl p-6 border border-gray-200 shadow-lg">
+              <h3 className="text-lg font-heading font-bold mb-6 text-gray-900 text-center">AI Benefits Distribution</h3>
+              <div className="grid md:grid-cols-2 gap-8 items-center">
+                <div className="flex flex-col items-center">
+                  <div className="relative w-48 h-48 mb-4">
+                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 200 200">
+                      {[
+                        { value: 40, color: '#3B82F6', label: 'Cost Savings' },
+                        { value: 30, color: '#10B981', label: 'Time Saved' },
+                        { value: 20, color: '#F59E0B', label: 'Revenue Growth' },
+                        { value: 10, color: '#8B5CF6', label: 'Other Benefits' },
+                      ].map((segment, index, array) => {
+                        const previousSum = array.slice(0, index).reduce((sum, s) => sum + s.value, 0)
+                        const percentage = segment.value
+                        const circumference = 2 * Math.PI * 90
+                        const offset = circumference - (previousSum / 100) * circumference
+                        const dashArray = (percentage / 100) * circumference
+                        return (
+                          <circle
+                            key={index}
+                            cx="100"
+                            cy="100"
+                            r="90"
+                            fill="none"
+                            stroke={segment.color}
+                            strokeWidth="20"
+                            strokeDasharray={dashArray}
+                            strokeDashoffset={offset}
+                            className="transition-all duration-1000"
+                            style={{ strokeLinecap: 'round' }}
+                          />
+                        )
+                      })}
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="text-3xl font-black text-gray-900">100%</div>
+                        <div className="text-xs text-gray-600">Total Benefits</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  {[
+                    { value: 40, color: '#3B82F6', label: 'Cost Savings', amount: '₹40L/year' },
+                    { value: 30, color: '#10B981', label: 'Time Saved', amount: '₹30L/year' },
+                    { value: 20, color: '#F59E0B', label: 'Revenue Growth', amount: '₹20L/year' },
+                    { value: 10, color: '#8B5CF6', label: 'Other Benefits', amount: '₹10L/year' },
+                  ].map((item, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 1.5 + index * 0.1 }}
+                      className="flex items-center gap-3"
+                    >
+                      <div className="w-4 h-4 rounded-full" style={{ backgroundColor: item.color }} />
+                      <div className="flex-1">
+                        <div className="flex justify-between">
+                          <span className="text-sm font-semibold text-gray-700">{item.label}</span>
+                          <span className="text-sm font-bold text-gray-900">{item.amount}</span>
+                        </div>
+                        <div className="h-2 bg-gray-100 rounded-full mt-1">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${item.value}%` }}
+                            transition={{ duration: 0.8, delay: 1.8 + index * 0.1 }}
+                            className="h-full rounded-full"
+                            style={{ backgroundColor: item.color }}
+                          />
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Line Chart - ROI Over Time */}
+            <div className="mb-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200 shadow-lg">
+              <h3 className="text-lg font-heading font-bold mb-6 text-gray-900 text-center">ROI Growth Over 12 Months</h3>
+              <div className="relative h-64">
+                <svg className="w-full h-full" viewBox="0 0 400 200" preserveAspectRatio="none">
+                  {/* Grid lines */}
+                  {[0, 25, 50, 75, 100, 125, 150, 175, 200].map((y, i) => (
+                    <line
+                      key={i}
+                      x1="0"
+                      y1={y}
+                      x2="400"
+                      y2={y}
+                      stroke="#E5E7EB"
+                      strokeWidth="1"
+                      strokeDasharray="4,4"
+                    />
+                  ))}
+                  {/* ROI Line */}
+                  <motion.polyline
+                    points="0,180 50,160 100,140 150,120 200,100 250,80 300,60 350,50 400,40"
+                    fill="none"
+                    stroke="url(#gradient)"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 2, delay: 2 }}
+                  />
+                  <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#3B82F6" />
+                      <stop offset="100%" stopColor="#8B5CF6" />
+                    </linearGradient>
+                  </defs>
+                  {/* Data points */}
+                  {[
+                    { x: 0, y: 180, month: 'Month 0', roi: '0%' },
+                    { x: 50, y: 160, month: 'Month 3', roi: '25%' },
+                    { x: 100, y: 140, month: 'Month 6', roi: '50%' },
+                    { x: 150, y: 120, month: 'Month 9', roi: '75%' },
+                    { x: 200, y: 100, month: 'Month 12', roi: '100%' },
+                  ].map((point, index) => (
+                    <motion.circle
+                      key={index}
+                      cx={point.x}
+                      cy={point.y}
+                      r="6"
+                      fill="#3B82F6"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ duration: 0.3, delay: 2 + index * 0.2 }}
+                    />
+                  ))}
+                </svg>
+                {/* Labels */}
+                <div className="absolute bottom-0 left-0 right-0 flex justify-between text-xs text-gray-600 px-2">
+                  <span>0</span>
+                  <span>3</span>
+                  <span>6</span>
+                  <span>9</span>
+                  <span>12 Months</span>
+                </div>
+                <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs text-gray-600 py-2">
+                  <span>200%</span>
+                  <span>150%</span>
+                  <span>100%</span>
+                  <span>50%</span>
+                  <span>0%</span>
+                </div>
+              </div>
+            </div>
             <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-8 border border-blue-200">
               <div className="space-y-6">
                 <div>
@@ -186,19 +368,19 @@ export default function ROIAssessmentPage() {
                   <div className="bg-white rounded-lg p-4 space-y-3">
                     <div className="flex justify-between items-center">
                       <span className="text-gray-700">Software/Tool Costs</span>
-                      <span className="font-semibold text-gray-900">$X/month</span>
+                      <span className="font-semibold text-gray-900">₹X/month</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-gray-700">Implementation & Setup</span>
-                      <span className="font-semibold text-gray-900">$X (one-time)</span>
+                      <span className="font-semibold text-gray-900">₹X (one-time)</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-gray-700">Training & Onboarding</span>
-                      <span className="font-semibold text-gray-900">$X</span>
+                      <span className="font-semibold text-gray-900">₹X</span>
                     </div>
                     <div className="flex justify-between items-center border-t pt-3">
                       <span className="font-bold text-gray-900">Total Investment</span>
-                      <span className="font-bold text-gray-900">$X</span>
+                      <span className="font-bold text-gray-900">₹X</span>
                     </div>
                   </div>
                 </div>
@@ -208,19 +390,19 @@ export default function ROIAssessmentPage() {
                   <div className="bg-white rounded-lg p-4 space-y-3">
                     <div className="flex justify-between items-center">
                       <span className="text-gray-700">Time Saved (hours/month)</span>
-                      <span className="font-semibold text-gray-900">X hours × $Y/hour = $Z</span>
+                      <span className="font-semibold text-gray-900">X hours × ₹Y/hour = ₹Z</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-gray-700">Cost Reduction</span>
-                      <span className="font-semibold text-gray-900">$X/month</span>
+                      <span className="font-semibold text-gray-900">₹X/month</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-gray-700">Revenue Increase</span>
-                      <span className="font-semibold text-gray-900">$X/month</span>
+                      <span className="font-semibold text-gray-900">₹X/month</span>
                     </div>
                     <div className="flex justify-between items-center border-t pt-3">
                       <span className="font-bold text-gray-900">Total Monthly Benefits</span>
-                      <span className="font-bold text-gray-900">$X</span>
+                      <span className="font-bold text-gray-900">₹X</span>
                     </div>
                   </div>
                 </div>
@@ -272,7 +454,7 @@ export default function ROIAssessmentPage() {
                   >
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs font-heading font-semibold text-gray-700">{stage.label}</span>
-                      <span className="text-xs font-body text-gray-600">${stage.value}</span>
+                      <span className="text-xs font-body text-gray-600">₹{stage.value * 80}</span>
                     </div>
                     <div className="h-6 bg-gray-200 rounded-full overflow-hidden">
                       <motion.div
@@ -290,28 +472,28 @@ export default function ROIAssessmentPage() {
               {[
                 {
                   useCase: 'Customer Support Chatbot',
-                  investment: '$500/month',
+                  investment: '₹40,000/month',
                   benefits: 'Saves 20 hours/week of support time',
                   roi: '300%+ annual ROI',
                   timeframe: '3-6 months',
                 },
                 {
                   useCase: 'Email Automation',
-                  investment: '$200/month',
+                  investment: '₹16,000/month',
                   benefits: 'Increases email efficiency by 60%',
                   roi: '250%+ annual ROI',
                   timeframe: '1-2 months',
                 },
                 {
                   useCase: 'Document Processing AI',
-                  investment: '$800/month',
+                  investment: '₹64,000/month',
                   benefits: 'Processes 10x more documents',
                   roi: '400%+ annual ROI',
                   timeframe: '2-4 months',
                 },
                 {
                   useCase: 'Sales Forecasting AI',
-                  investment: '$600/month',
+                  investment: '₹48,000/month',
                   benefits: 'Improves sales accuracy by 30%',
                   roi: '200%+ annual ROI',
                   timeframe: '4-6 months',
@@ -323,7 +505,7 @@ export default function ROIAssessmentPage() {
                       <h3 className="text-xl font-bold text-gray-900 mb-2">{scenario.useCase}</h3>
                       <div className="space-y-1 text-sm">
                         <div className="flex items-center">
-                          <DollarSign className="w-4 h-4 text-gray-500 mr-2" />
+                          <Wallet className="w-4 h-4 text-gray-500 mr-2" />
                           <span className="text-gray-700"><strong>Investment:</strong> {scenario.investment}</span>
                         </div>
                         <div className="flex items-center">
@@ -355,7 +537,7 @@ export default function ROIAssessmentPage() {
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
-                href="#contact"
+                href="/contact"
                 className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all flex items-center space-x-2"
               >
                 <span>Get Free ROI Assessment</span>

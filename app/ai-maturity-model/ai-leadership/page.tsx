@@ -51,6 +51,43 @@ export default function AILeadershipPage() {
             </div>
           </motion.section>
 
+          {/* Maturity Progression Chart */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.08 }}
+            className="mb-16"
+          >
+            <h2 className="text-3xl font-bold mb-6 text-gray-900">AI Maturity Progression</h2>
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200 shadow-lg">
+              <h3 className="text-lg font-heading font-bold mb-6 text-gray-900 text-center">Leadership Level Capabilities</h3>
+              <div className="space-y-4">
+                {[
+                  { capability: 'Strategic Vision', score: 95, color: 'from-purple-500 to-pink-500' },
+                  { capability: 'Innovation Pipeline', score: 90, color: 'from-pink-500 to-rose-500' },
+                  { capability: 'Talent Development', score: 88, color: 'from-rose-500 to-red-500' },
+                  { capability: 'Data Excellence', score: 92, color: 'from-red-500 to-orange-500' },
+                  { capability: 'Market Leadership', score: 85, color: 'from-orange-500 to-yellow-500' },
+                ].map((item, index) => (
+                  <div key={index}>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-sm font-semibold text-gray-700">{item.capability}</span>
+                      <span className="text-sm font-bold text-gray-900">{item.score}%</span>
+                    </div>
+                    <div className="h-6 bg-white/50 rounded-full overflow-hidden shadow-inner">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${item.score}%` }}
+                        transition={{ duration: 1, delay: 0.3 + index * 0.15 }}
+                        className={`h-full bg-gradient-to-r ${item.color} rounded-full shadow-md`}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.section>
+
           {/* Leadership Pillars */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
@@ -195,6 +232,70 @@ export default function AILeadershipPage() {
             </div>
           </motion.section>
 
+          {/* Competitive Advantage Chart */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
+            className="mb-16"
+          >
+            <h2 className="text-3xl font-bold mb-6 text-gray-900">Competitive Advantage Metrics</h2>
+            <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-lg">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="text-lg font-bold mb-4 text-gray-900">Market Position</h3>
+                  <div className="space-y-3">
+                    {[
+                      { metric: 'Market Share', value: 85, color: 'from-purple-500 to-pink-500' },
+                      { metric: 'Innovation Index', value: 92, color: 'from-pink-500 to-rose-500' },
+                      { metric: 'Customer Satisfaction', value: 88, color: 'from-rose-500 to-red-500' },
+                    ].map((item, index) => (
+                      <div key={index}>
+                        <div className="flex justify-between mb-1">
+                          <span className="text-xs font-semibold text-gray-700">{item.metric}</span>
+                          <span className="text-xs font-bold text-gray-900">{item.value}%</span>
+                        </div>
+                        <div className="h-4 bg-gray-100 rounded-full overflow-hidden">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${item.value}%` }}
+                            transition={{ duration: 1, delay: 0.5 + index * 0.15 }}
+                            className={`h-full bg-gradient-to-r ${item.color} rounded-full`}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold mb-4 text-gray-900">Operational Excellence</h3>
+                  <div className="space-y-3">
+                    {[
+                      { metric: 'Efficiency Gain', value: 90, color: 'from-blue-500 to-cyan-500' },
+                      { metric: 'Cost Reduction', value: 75, color: 'from-cyan-500 to-teal-500' },
+                      { metric: 'Revenue Growth', value: 82, color: 'from-teal-500 to-green-500' },
+                    ].map((item, index) => (
+                      <div key={index}>
+                        <div className="flex justify-between mb-1">
+                          <span className="text-xs font-semibold text-gray-700">{item.metric}</span>
+                          <span className="text-xs font-bold text-gray-900">{item.value}%</span>
+                        </div>
+                        <div className="h-4 bg-gray-100 rounded-full overflow-hidden">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${item.value}%` }}
+                            transition={{ duration: 1, delay: 0.7 + index * 0.15 }}
+                            className={`h-full bg-gradient-to-r ${item.color} rounded-full`}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.section>
+
           {/* Maintaining Competitive Edge */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
@@ -267,7 +368,7 @@ export default function AILeadershipPage() {
                 <ArrowLeft className="w-5 h-5 rotate-180" />
               </Link>
               <Link
-                href="#contact"
+                href="/contact"
                 className="px-6 py-3 bg-white text-gray-900 rounded-xl font-semibold border-2 border-gray-300 hover:border-gray-400 transition-all flex items-center space-x-2"
               >
                 <span>Get Strategic Consultation</span>

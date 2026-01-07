@@ -51,6 +51,41 @@ export default function IntegrationSupportPage() {
             </div>
           </motion.section>
 
+          {/* Integration Success Chart */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.08 }}
+            className="mb-16"
+          >
+            <h2 className="text-3xl font-bold mb-6 text-gray-900">Integration Success Metrics</h2>
+            <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-200 shadow-lg">
+              <h3 className="text-lg font-heading font-bold mb-6 text-gray-900 text-center">Integration Approach Success Rates</h3>
+              <div className="space-y-4">
+                {[
+                  { approach: 'API Integration', success: 92, color: 'from-blue-500 to-cyan-500' },
+                  { approach: 'Database Integration', success: 85, color: 'from-purple-500 to-pink-500' },
+                  { approach: 'Workflow Integration', success: 78, color: 'from-green-500 to-emerald-500' },
+                ].map((item, index) => (
+                  <div key={index}>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-sm font-semibold text-gray-700">{item.approach}</span>
+                      <span className="text-sm font-bold text-gray-900">{item.success}% Success</span>
+                    </div>
+                    <div className="h-6 bg-white/50 rounded-full overflow-hidden shadow-inner">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${item.success}%` }}
+                        transition={{ duration: 1, delay: 0.3 + index * 0.15 }}
+                        className={`h-full bg-gradient-to-r ${item.color} rounded-full shadow-md`}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.section>
+
           {/* Integration Approaches */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
@@ -149,6 +184,61 @@ export default function IntegrationSupportPage() {
             </div>
           </motion.section>
 
+          {/* Integration Process Flow Chart */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.18 }}
+            className="mb-16"
+          >
+            <h2 className="text-3xl font-bold mb-6 text-gray-900">Integration Process Flow</h2>
+            <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-lg">
+              <div className="relative h-48">
+                <svg className="w-full h-full" viewBox="0 0 400 150" preserveAspectRatio="none">
+                  {/* Process flow arrows */}
+                  <motion.path
+                    d="M 50 75 L 150 75 L 150 50 L 250 50 L 250 75 L 350 75"
+                    fill="none"
+                    stroke="url(#flowGradient)"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 2, delay: 0.4 }}
+                  />
+                  <defs>
+                    <linearGradient id="flowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#3B82F6" />
+                      <stop offset="100%" stopColor="#8B5CF6" />
+                    </linearGradient>
+                  </defs>
+                  {/* Process stages */}
+                  {[
+                    { x: 50, y: 75, stage: 'Pre-Integration', color: '#3B82F6' },
+                    { x: 150, y: 50, stage: 'Planning', color: '#6366F1' },
+                    { x: 250, y: 75, stage: 'Implementation', color: '#8B5CF6' },
+                    { x: 350, y: 75, stage: 'Deployment', color: '#A855F7' },
+                  ].map((point, index) => (
+                    <motion.g key={index}>
+                      <motion.circle
+                        cx={point.x}
+                        cy={point.y}
+                        r="12"
+                        fill={point.color}
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ duration: 0.4, delay: 0.6 + index * 0.2 }}
+                      />
+                      <text x={point.x} y={point.y - 25} textAnchor="middle" className="text-xs font-bold fill-gray-700">
+                        {point.stage}
+                      </text>
+                    </motion.g>
+                  ))}
+                </svg>
+              </div>
+            </div>
+          </motion.section>
+
           {/* Integration Checklist */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
@@ -230,7 +320,7 @@ export default function IntegrationSupportPage() {
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
-                href="#contact"
+                href="/contact"
                 className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all flex items-center space-x-2"
               >
                 <span>Get Integration Support</span>

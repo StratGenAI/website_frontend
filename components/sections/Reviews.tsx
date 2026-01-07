@@ -12,8 +12,7 @@ const reviews = [
     company: 'Rumi Energizer',
     name: 'Rumi Energizer Team',
     role: 'Client',
-    location: 'Dubai, UAE',
-    content: 'StratgenAI transformed our business operations by building a complete automated pipeline that streamlined our entire workflow. Their intelligent AI solutions eliminated manual processes and significantly improved our efficiency. The automated pipeline they created handles everything seamlessly, allowing us to focus on growth. Highly professional and innovative approach!',
+    content: 'StratgenAI transformed our business operations with their intelligent AI solutions. Their team delivered exceptional results, helping us automate processes and improve efficiency significantly. Highly professional and innovative approach!',
     rating: 5,
     gradient: 'from-blue-500 via-cyan-500 to-teal-500',
     bgGradient: 'from-blue-50 via-cyan-50 to-teal-50',
@@ -23,8 +22,7 @@ const reviews = [
     company: 'D&G Consultant',
     name: 'D&G Consultant Team',
     role: 'Client',
-    location: 'Ahmedabad, India',
-    content: 'Working with StratgenAI has been a game-changer for our consultancy. They implemented an intelligent AI chatbot that handles client inquiries 24/7, and their AI-powered solutions helped us streamline our workflows and deliver better results to our clients. The chatbot integration was seamless and has significantly improved our customer engagement. Outstanding service and cutting-edge technology!',
+    content: 'Working with StratgenAI has been a game-changer for our consultancy. Their AI-powered solutions helped us streamline our workflows and deliver better results to our clients. Outstanding service and cutting-edge technology!',
     rating: 5,
     gradient: 'from-purple-500 via-pink-500 to-rose-500',
     bgGradient: 'from-purple-50 via-pink-50 to-rose-50',
@@ -85,13 +83,23 @@ export default function Reviews() {
         {/* Section Header */}
         <ScrollReveal direction="scale" delay={0.2}>
           <div className="text-center mb-24">
+            <motion.div
+              className="inline-flex items-center space-x-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-100/80 via-purple-100/80 to-pink-100/80 backdrop-blur-sm border border-white/50 mb-8 shadow-lg"
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6 }}
+            >
+              <Sparkles className="w-5 h-5 text-blue-600" />
+              <span className="text-sm font-heading font-semibold text-gray-700">Client Testimonials</span>
+            </motion.div>
+            
             <motion.h2
               className="text-5xl md:text-6xl lg:text-7xl font-display font-black mb-8 leading-tight"
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              Let's Hear From Our <span className="gradient-text">Clients</span>
+              Let's Hear From <span className="gradient-text">Our Clients</span>
             </motion.h2>
             
             <motion.p
@@ -221,7 +229,7 @@ export default function Reviews() {
                           {review.company}
                         </h4>
                         <p className="text-xs sm:text-sm text-gray-600 font-body font-medium">
-                          {review.location}
+                          Business Partner
                         </p>
                       </div>
                     </div>

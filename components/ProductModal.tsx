@@ -49,25 +49,49 @@ export default function ProductModal({ isOpen, onClose, product }: ProductModalP
     setSubmitMessage('')
 
     try {
-      const response = await fetch('/api/send-product-inquiry', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          productName: product.name,
-        }),
-      })
+      // Save to Supabase
+      const { supabase } = await import('@/lib/supabase')
+      
+      const { error: dbError } = await supabase
+        .from('product_inquiries')
+        .insert([
+          {
+            name: formData.name,
+            email: formData.email,
+            company: formData.company || null,
+            message: formData.message || null,
+            product_name: product.name,
+            created_at: new Date().toISOString(),
+          },
+        ])
 
-      const data = await response.json()
+      if (dbError) {
+        console.error('Error saving to Supabase:', dbError)
+        throw new Error('Failed to save inquiry. Please try again.')
+      }
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to send inquiry')
+      // Also send email via API (optional)
+      try {
+        const response = await fetch('/api/send-product-inquiry', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...formData,
+            productName: product.name,
+          }),
+        })
+        // Don't fail if email fails, data is already saved
+        if (!response.ok) {
+          console.warn('Email sending failed, but data saved to database')
+        }
+      } catch (emailError) {
+        console.warn('Email sending failed, but data saved to database:', emailError)
       }
 
       setSubmitStatus('success')
-      setSubmitMessage(data.message || 'Thank you for your inquiry! We will get back to you soon.')
+      setSubmitMessage('Thank you for your inquiry! We will get back to you soon.')
       setFormData({ name: '', email: '', company: '', message: '' })
 
       // Close modal after 2 seconds

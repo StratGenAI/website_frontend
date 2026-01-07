@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Send, Bot, Sparkles, User } from 'lucide-react'
 import Image from 'next/image'
-import Fuse from 'fuse.js'
 
 interface Message {
   id: string
@@ -13,24 +12,31 @@ interface Message {
   timestamp: Date
 }
 
-interface KnowledgeItem {
-  id: number
-  category: string
-  questions: string[]
-  keywords: string[]
-  answer: string
+interface IntentResponse {
+  text: string
   followUp?: string[]
-  requiresLeadCapture?: boolean
+  requiresLead?: boolean
+}
+
+interface Intent {
+  id: string
+  description: string
+  examples: string[]
+  confidenceThreshold: number
+  response: (context: ConversationContext) => IntentResponse
 }
 
 interface ConversationContext {
+  activeIntent: string | null
+  intentHistory: string[]
+  entities: {
+    product?: 'Keiro' | 'Stratflow'
+    interest?: 'demo' | 'pricing'
+  }
+  unclearAttempts: number
   userName: string | null
   userEmail: string | null
   userPhone: string | null
-  interest: string | null
-  lastCategory: string | null
-  askedQuestions: string[]
-  unclearAttempts: number
 }
 
 export default function Chatbot() {
@@ -48,13 +54,13 @@ export default function Chatbot() {
   const [showLeadForm, setShowLeadForm] = useState(false)
   const [leadData, setLeadData] = useState({ name: '', email: '', phone: '' })
   const [context, setContext] = useState<ConversationContext>({
+    activeIntent: null,
+    intentHistory: [],
+    entities: {},
+    unclearAttempts: 0,
     userName: null,
     userEmail: null,
     userPhone: null,
-    interest: null,
-    lastCategory: null,
-    askedQuestions: [],
-    unclearAttempts: 0,
   })
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -73,464 +79,594 @@ export default function Chatbot() {
     }
   }, [isOpen])
 
-  // Enhanced Knowledge Base with questions, keywords, and answers
-  const knowledgeBase: KnowledgeItem[] = [
+  // ========== INTENT-BASED NLP ENGINE ==========
+  
+  // Stopwords for normalization
+  const stopwords = new Set([
+    'a', 'an', 'the', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
+    'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'should',
+    'could', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those',
+    'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them',
+    'to', 'of', 'in', 'on', 'at', 'for', 'with', 'by', 'from', 'about', 'into',
+    'ka', 'ki', 'ke', 'ko', 'se', 'mein', 'par', 'kaun', 'kya', 'kab', 'kahan'
+  ])
+
+  // Sentence normalization
+  const normalizeSentence = (text: string): string[] => {
+    return text
+      .toLowerCase()
+      .replace(/[^\w\s]/g, ' ')
+      .split(/\s+/)
+      .filter(word => word.length > 1 && !stopwords.has(word))
+  }
+
+  // Semantic similarity using word overlap and position
+  const calculateSemanticSimilarity = (input: string, examples: string[]): number => {
+    const inputWords = normalizeSentence(input)
+    if (inputWords.length === 0) return 0
+
+    let maxSimilarity = 0
+    for (const example of examples) {
+      const exampleWords = normalizeSentence(example)
+      const commonWords = inputWords.filter(w => exampleWords.includes(w))
+      const similarity = commonWords.length / Math.max(inputWords.length, exampleWords.length)
+      maxSimilarity = Math.max(maxSimilarity, similarity)
+    }
+    return maxSimilarity
+  }
+
+  // Intent Registry
+  const intents: Intent[] = [
     {
-      id: 1,
-      category: 'company_info',
-      questions: [
-        'what is your company',
-        'company ke bare mein batao',
-        'about your company',
-        'tell me about yourself',
-        'tell me about stratgenai',
-        'stratgenai ke bare mein batao',
-        'aap kya karte ho',
-        'aapki company kya karti hai',
-        'stratgenai kya hai',
-        'company about',
-        'company info',
-        'about stratgenai',
+      id: 'GREETING',
+      description: 'User greets the chatbot',
+      examples: [
+        'hi', 'hello', 'hey', 'namaste', 'namaskar', 'kaise ho', 'kya haal', 'hey there',
+        'good morning', 'good afternoon', 'good evening'
       ],
-      keywords: ['company', 'business', 'about', 'kya karte', 'services', 'stratgenai', 'aap', 'tum'],
-      answer: "We are **StratgenAI**, a cutting-edge AI software company specializing in intelligent business solutions.\n\nWe help businesses:\n• Automate processes with AI\n• Enhance productivity\n• Drive innovation\n\nWould you like to know about our products or services?",
-      followUp: ['Tell me about products', 'What services do you offer?', 'Who are the founders?'],
+      confidenceThreshold: 0.6,
+      response: () => ({
+        text: "Hello! 👋 Great to meet you! I'm Keirō, your friendly AI assistant. How can I help you learn about StratgenAI today?",
+        followUp: ['Tell me about products', 'What services do you offer?', 'How can I contact you?']
+      })
     },
     {
-      id: 2,
-      category: 'products',
-      questions: [
-        'what products do you have',
-        'aapke products kya hai',
-        'products batao',
-        'what do you sell',
-        'kya kya milta hai',
-        'product list',
-        'keiro kya hai',
-        'stratflow kya hai',
-        'products kya hai',
-        'what are your products',
-        'products list',
-        'kya products hai',
-        'aap kya bechte ho',
-        'offerings kya hai',
-        'solutions kya hai',
+      id: 'COMPANY_INFO',
+      description: 'User asks about the company',
+      examples: [
+        'what is your company', 'company ke bare mein batao', 'about your company',
+        'tell me about yourself', 'tell me about stratgenai', 'stratgenai ke bare mein batao',
+        'aap kya karte ho', 'aapki company kya karti hai', 'stratgenai kya hai',
+        'company about', 'company info', 'about stratgenai'
       ],
-      keywords: ['product', 'sell', 'offer', 'kya milta', 'list', 'keiro', 'stratflow', 'solution', 'offerings', 'bechte'],
-      answer: "We offer **2 main products**:\n\n1. **Keirō** 🤖\n   Intelligent conversational AI chatbot\n   • Natural Language Processing\n   • Multi-language Support\n   • Customizable Workflows\n   • Analytics & Insights\n   • Easy Integration\n\n2. **Stratflow** 👗\n   AI-driven fashion marketing platform\n   • Trend Analysis & Prediction\n   • Personalized Recommendations\n   • Campaign Optimization\n   • Customer Segmentation\n   • Real-time Analytics\n\nWhich one interests you more?",
-      followUp: ['Tell me about Keirō', 'Tell me about Stratflow', 'How can I contact you?'],
+      confidenceThreshold: 0.7,
+      response: () => ({
+        text: "We are **StratgenAI**, a cutting-edge AI software company specializing in intelligent business solutions.\n\nWe help businesses:\n• Automate processes with AI\n• Enhance productivity\n• Drive innovation\n\nWould you like to know about our products or services?",
+        followUp: ['Tell me about products', 'What services do you offer?', 'Who are the founders?']
+      })
     },
     {
-      id: 4,
-      category: 'contact',
-      questions: [
-        'how to contact you',
-        'contact details',
-        'phone number',
-        'email address',
-        'tumse kaise baat kare',
-        'contact kaise kare',
-        'reach out kaise',
-        'email kya hai',
-        'phone kya hai',
-        'contact number',
-        'phone number kya hai',
-        'email id',
-        'address kya hai',
-        'location kya hai',
-        'kaise contact kare',
-        'get in touch',
-        'connect karna hai',
+      id: 'PRODUCT_INFO',
+      description: 'User asks about products',
+      examples: [
+        'what products do you have', 'aapke products kya hai', 'products batao',
+        'what do you sell', 'kya kya milta hai', 'product list', 'keiro kya hai',
+        'stratflow kya hai', 'products kya hai', 'what are your products',
+        'products list', 'kya products hai', 'aap kya bechte ho', 'offerings kya hai', 'solutions kya hai'
       ],
-      keywords: ['contact', 'phone', 'email', 'call', 'reach', 'baat', 'connect', 'touch', 'number', 'address', 'location'],
-      answer: "You can reach us at:\n\n📧 **Email**: hello@stratgenai.in\n📍 **Location**: Ahmedabad, India\n\nWould you like to:\n• Schedule a call\n• Send us an email\n• Get WhatsApp contact",
-      followUp: ['Schedule a call', 'Send email', 'WhatsApp us'],
+      confidenceThreshold: 0.7,
+      response: () => ({
+        text: "We offer **2 main products**:\n\n1. **Keirō** 🤖\n   Intelligent conversational AI chatbot\n   • Natural Language Processing\n   • Multi-language Support\n   • Customizable Workflows\n   • Analytics & Insights\n   • Easy Integration\n\n2. **Stratflow** 👗\n   AI-driven fashion marketing platform\n   • Trend Analysis & Prediction\n   • Personalized Recommendations\n   • Campaign Optimization\n   • Customer Segmentation\n   • Real-time Analytics\n\nWhich one interests you more?",
+        followUp: ['Tell me about Keirō', 'Tell me about Stratflow', 'How can I contact you?']
+      })
     },
     {
-      id: 5,
-      category: 'demo',
-      questions: [
-        'can i see a demo',
-        'demo dikhao',
-        'product demo',
-        'free trial',
-        'test kar sakte hai',
-        'try karna hai',
-        'demo chahiye',
-        'trial',
+      id: 'CONTACT',
+      description: 'User asks for contact information',
+      examples: [
+        'how to contact you', 'contact details', 'phone number', 'email address',
+        'tumse kaise baat kare', 'contact kaise kare', 'reach out kaise',
+        'email kya hai', 'phone kya hai', 'contact number', 'phone number kya hai',
+        'email id', 'address kya hai', 'location kya hai', 'kaise contact kare',
+        'get in touch', 'connect karna hai'
       ],
-      keywords: ['demo', 'trial', 'test', 'try', 'dikhao', 'dekh', 'preview', 'sample'],
-      answer: "Absolutely! 🎉\n\nWe offer a **free 14-day trial** with full features!\n\nWould you like to:\n1. Watch a 5-minute demo video\n2. Schedule a live demo call\n3. Start free trial now\n\nWhich option works for you?",
-      followUp: ['Watch demo video', 'Schedule live demo', 'Start free trial'],
-      requiresLeadCapture: true,
+      confidenceThreshold: 0.7,
+      response: () => ({
+        text: "You can reach us at:\n\n📧 **Email**: hello@stratgenai.in\n📍 **Location**: Ahmedabad, India\n\nWould you like to:\n• Schedule a call\n• Send us an email\n• Get WhatsApp contact",
+        followUp: ['Schedule a call', 'Send email', 'WhatsApp us']
+      })
     },
     {
-      id: 6,
-      category: 'services',
-      questions: [
-        'what services do you offer',
-        'services kya hai',
-        'kya services milti hai',
-        'what can you do',
-        'capabilities kya hai',
-        'what services',
-        'services list',
-        'kya services hai',
-        'aap kya services dete ho',
-        'what do you provide',
-        'kya provide karte ho',
+      id: 'DEMO_REQUEST',
+      description: 'User requests a demo',
+      examples: [
+        'can i see a demo', 'demo dikhao', 'product demo', 'free trial',
+        'test kar sakte hai', 'try karna hai', 'demo chahiye', 'trial'
       ],
-      keywords: ['service', 'capability', 'function', 'kya kar', 'options', 'offer', 'provide', 'dete'],
-      answer: "We provide comprehensive **AI solutions**:\n\n✅ Custom AI Development\n✅ AI Consulting & Strategy\n✅ Machine Learning Solutions\n✅ Natural Language Processing\n✅ Computer Vision Solutions\n✅ AI Integration Services\n✅ Data Analytics & Insights\n\nWhich service interests you?",
-      followUp: ['Tell me about AI Consulting', 'Custom Development', 'Integration Services'],
+      confidenceThreshold: 0.7,
+      response: () => ({
+        text: "Absolutely! 🎉\n\nWe offer a **free 14-day trial** with full features!\n\nWould you like to:\n1. Watch a 5-minute demo video\n2. Schedule a live demo call\n3. Start free trial now\n\nWhich option works for you?",
+        followUp: ['Watch demo video', 'Schedule live demo', 'Start free trial'],
+        requiresLead: true
+      })
     },
     {
-      id: 7,
-      category: 'founders',
-      questions: [
-        'who are the founders',
-        'founders kaun hai',
-        'founder kya hai',
-        'founder ke bare mein',
-        'who started',
-        'founder info',
-        'founders ke bare mein',
-        'founder kaun hai',
-        'who created',
-        'who made',
-        'who built',
-        'founder team',
-        'founders list',
+      id: 'SERVICE_INFO',
+      description: 'User asks about services',
+      examples: [
+        'what services do you offer', 'services kya hai', 'kya services milti hai',
+        'what can you do', 'capabilities kya hai', 'what services', 'services list',
+        'kya services hai', 'aap kya services dete ho', 'what do you provide', 'kya provide karte ho'
       ],
-      keywords: ['founder', 'started', 'created', 'built', 'kaun', 'who', 'made', 'team'],
-      answer: "StratgenAI was founded by **three passionate co-founders**:\n\n👤 **Krisha Patel** - Dimension of Intelligence\nVisionary leader with deep AI/ML expertise\n\n👤 **Niyanta Meswaniya** - Creative Lens\nCreative force behind brand and communications\n\n👤 **Sheefa Memon** - Growth Lens\nFocused on growth, strategy, and scaling\n\nTogether, they bring technical expertise, creative vision, and business acumen!",
-      followUp: ['Tell me about company', 'What products do you have?'],
+      confidenceThreshold: 0.7,
+      response: () => ({
+        text: "We provide comprehensive **AI solutions**:\n\n✅ Custom AI Development\n✅ AI Consulting & Strategy\n✅ Machine Learning Solutions\n✅ Natural Language Processing\n✅ Computer Vision Solutions\n✅ AI Integration Services\n✅ Data Analytics & Insights\n\nWhich service interests you?",
+        followUp: ['Tell me about AI Consulting', 'Custom Development', 'Integration Services']
+      })
     },
     {
-      id: 8,
-      category: 'industries',
-      questions: [
-        'which industries do you serve',
-        'kaun se industry ke liye',
-        'sectors kya hai',
-        'kis field mein kaam karte ho',
-        'industries',
-        'what industries',
-        'industries list',
-        'kaun se industries',
-        'clients kya hai',
-        'customers kya hai',
-        'kis industry ke liye',
+      id: 'FOUNDERS',
+      description: 'User asks about founders',
+      examples: [
+        'who are the founders', 'founders kaun hai', 'founder kya hai',
+        'founder ke bare mein', 'who started', 'founder info', 'founders ke bare mein',
+        'founder kaun hai', 'who created', 'who made', 'who built', 'founder team', 'founders list'
       ],
-      keywords: ['industry', 'sector', 'domain', 'field', 'vertical', 'client', 'customer', 'industries'],
-      answer: "We serve multiple industries:\n\n🏪 E-commerce & Retail\n🏥 Healthcare\n🏦 Banking & Finance\n📚 Education\n🏭 Manufacturing\n🍔 Food & Hospitality\n🏠 Real Estate\n\nWhich industry are you from?",
-      followUp: ['E-commerce solutions', 'Healthcare use cases', 'Tell me more'],
+      confidenceThreshold: 0.7,
+      response: () => ({
+        text: "StratgenAI was founded by **three passionate co-founders**:\n\n👤 **Krisha Patel** - Dimension of Intelligence\nVisionary leader with deep AI/ML expertise\n\n👤 **Niyanta Meswaniya** - Creative Lens\nCreative force behind brand and communications\n\n👤 **Sheefa Memon** - Growth Lens\nFocused on growth, strategy, and scaling\n\nTogether, they bring technical expertise, creative vision, and business acumen!",
+        followUp: ['Tell me about company', 'What products do you have?']
+      })
     },
     {
-      id: 9,
-      category: 'implementation',
-      questions: [
-        'how long does implementation take',
-        'setup time kitna lagta hai',
-        'implementation kaise hoti hai',
-        'launch mein kitna time',
+      id: 'INDUSTRIES',
+      description: 'User asks about industries served',
+      examples: [
+        'which industries do you serve', 'kaun se industry ke liye', 'sectors kya hai',
+        'kis field mein kaam karte ho', 'industries', 'what industries', 'industries list',
+        'kaun se industries', 'clients kya hai', 'customers kya hai', 'kis industry ke liye'
       ],
-      keywords: ['implementation', 'setup', 'time', 'launch', 'deploy', 'install'],
-      answer: "Implementation timeline:\n\n⚡ **Quick Setup**: 2-3 days (basic chatbot)\n📅 **Standard**: 1-2 weeks (customized solution)\n🏢 **Enterprise**: 3-4 weeks (full integration)\n\nWe handle everything - you just provide the information!",
-      followUp: ['What do I need to provide?', 'Get started now'],
+      confidenceThreshold: 0.7,
+      response: () => ({
+        text: "We serve multiple industries:\n\n🏪 E-commerce & Retail\n🏥 Healthcare\n🏦 Banking & Finance\n📚 Education\n🏭 Manufacturing\n🍔 Food & Hospitality\n🏠 Real Estate\n\nWhich industry are you from?",
+        followUp: ['E-commerce solutions', 'Healthcare use cases', 'Tell me more']
+      })
     },
     {
-      id: 10,
-      category: 'support',
-      questions: [
-        'customer support kaise hai',
-        'help milegi kya',
-        'support available hai',
-        'technical support',
+      id: 'SUPPORT',
+      description: 'User asks about support',
+      examples: [
+        'customer support kaise hai', 'help milegi kya', 'support available hai', 'technical support'
       ],
-      keywords: ['support', 'help', 'assist', 'problem', 'issue', 'madad'],
-      answer: "We provide comprehensive support:\n\n🎯 24/7 Technical Support\n📚 Detailed Documentation\n💬 Dedicated Account Manager\n🎓 Training Sessions\n⚡ <2 hour response time\n\nOur team is always here to help!",
-      followUp: ['Talk to support now', 'View documentation'],
+      confidenceThreshold: 0.7,
+      response: () => ({
+        text: "We provide comprehensive support:\n\n🎯 24/7 Technical Support\n📚 Detailed Documentation\n💬 Dedicated Account Manager\n🎓 Training Sessions\n⚡ <2 hour response time\n\nOur team is always here to help!",
+        followUp: ['Talk to support now', 'View documentation']
+      })
     },
     {
-      id: 11,
-      category: 'community',
-      questions: [
-        'community kya hai',
-        'stratgenai community',
-        'community ke bare mein',
-        'join community',
-        'community join kaise kare',
-        'community details',
-        'community info',
-        'community kya hai',
-        'community join karna hai',
-        'community mein kaise aaye',
-        'community group',
-        'community network',
+      id: 'COMMUNITY',
+      description: 'User asks about community',
+      examples: [
+        'community kya hai', 'stratgenai community', 'community ke bare mein',
+        'join community', 'community join kaise kare', 'community details', 'community info',
+        'community join karna hai', 'community mein kaise aaye', 'community group', 'community network'
       ],
-      keywords: ['community', 'join', 'group', 'network', 'connect', 'members', 'community'],
-      answer: "Welcome to **StratgenAI Community**! 🌟\n\n[COMMUNITY_IMAGE]\n\nWe have an active community of AI enthusiasts, developers, and business leaders who:\n\n✨ Share knowledge and insights\n✨ Collaborate on projects\n✨ Get early access to new features\n✨ Network with like-minded professionals\n✨ Learn from experts\n\nWould you like to join our community? Connect with us and become part of the StratgenAI family!",
-      followUp: ['How to join community?', 'Contact us', 'More about community'],
+      confidenceThreshold: 0.7,
+      response: () => ({
+        text: "Welcome to **StratgenAI Community**! 🌟\n\n[COMMUNITY_IMAGE]\n\nWe have an active community of AI enthusiasts, developers, and business leaders who:\n\n✨ Share knowledge and insights\n✨ Collaborate on projects\n✨ Get early access to new features\n✨ Network with like-minded professionals\n✨ Learn from experts\n\nWould you like to join our community? Connect with us and become part of the StratgenAI family!",
+        followUp: ['How to join community?', 'Contact us', 'More about community']
+      })
     },
+    {
+      id: 'AREA_OF_EXPERTISE',
+      description: 'User asks about area of expertise or skills',
+      examples: [
+        'area of expertise', 'expertise kya hai', 'skills kya hai', 'aapki expertise',
+        'kya skills hai', 'what skills', 'what expertise', 'aap kya jante ho',
+        'technologies kon si', 'kon si technologies', 'tech stack', 'skills list',
+        'expertise areas', 'what are your skills', 'aapki skills', 'kya aap jante ho'
+      ],
+      confidenceThreshold: 0.6,
+      response: () => ({
+        text: "Our **Areas of Expertise** include:\n\n🤖 **AI & ML**:\n• Artificial Intelligence\n• Machine Learning\n• Deep Learning\n• Natural Language Processing\n• Computer Vision\n\n💻 **Development**:\n• Full-stack Web Development\n• API Development\n• Cloud Solutions\n• DevOps & MLOps\n\n📊 **Data Science**:\n• Data Analytics\n• Big Data Processing\n• Business Intelligence\n\nFor detailed information, visit our **Area of Expertise** page!",
+        followUp: ['Tell me about technologies', 'What services do you offer?', 'Contact us']
+      })
+    },
+    {
+      id: 'TECHNOLOGIES',
+      description: 'User asks about technologies used',
+      examples: [
+        'technologies', 'technology', 'tech stack', 'kon si technology use karte ho',
+        'what technologies', 'kya technologies', 'tech kya hai', 'technologies list',
+        'which technologies', 'aap kon si technology use karte ho', 'tech stack kya hai',
+        'frontend technologies', 'backend technologies', 'database technologies'
+      ],
+      confidenceThreshold: 0.6,
+      response: () => ({
+        text: "We use modern **technologies** across the stack:\n\n**Frontend**:\n• React, Next.js, TypeScript\n• Tailwind CSS\n\n**Backend**:\n• Python, Node.js, FastAPI\n• REST APIs\n\n**Databases**:\n• PostgreSQL, MySQL, MongoDB\n• Vector DBs (Pinecone, Weaviate)\n\n**Cloud & DevOps**:\n• AWS, Azure, GCP\n• Docker, CI/CD\n\nFor complete details, visit our **Technologies** page!",
+        followUp: ['Tell me about area of expertise', 'What services do you offer?', 'Contact us']
+      })
+    },
+    {
+      id: 'PRICING_REQUEST',
+      description: 'User asks about pricing',
+      examples: [
+        'price', 'pricing', 'cost', 'charge', 'kitna', 'paisa', 'budget', 'fee', 'rate', 'plan', 'plans', 'kitne', 'kitna paisa', 'how much'
+      ],
+      confidenceThreshold: 0.7,
+      response: () => ({
+        text: "You can reach us at:\n\n📧 **Email**: hello@stratgenai.in\n📍 **Location**: Ahmedabad, India\n\nFor pricing details, please contact us and we'll provide a customized quote based on your needs!",
+        followUp: ['Schedule a call', 'Send email', 'WhatsApp us']
+      })
+    },
+    {
+      id: 'GOODBYE',
+      description: 'User says goodbye or thanks',
+      examples: [
+        'thanks', 'thank you', 'bye', 'shukriya', 'dhanyawad', 'thanku', 'thankyou', 'thx', 'goodbye', 'see you'
+      ],
+      confidenceThreshold: 0.6,
+      response: () => ({
+        text: "You're welcome! 😊\n\nIf you need anything else, I'm always here to help.\n\nWould you like to:\n• Talk to our sales team\n• Get updates on WhatsApp\n• Explore our website\n\nHave a great day! 🌟"
+      })
+    },
+    {
+      id: 'UNKNOWN',
+      description: 'Unknown or unclear intent',
+      examples: [],
+      confidenceThreshold: 0,
+      response: (ctx) => {
+        if (ctx.unclearAttempts >= 2) {
+          return {
+            text: "I'd like to connect you with our team for better assistance! 💬\n\nWould you like to:\n• Chat with human agent\n• Schedule a callback\n• Send email to support\n\n📧 Email: hello@stratgenai.in",
+            followUp: ['Schedule a call', 'Send email']
+          }
+        }
+        return {
+          text: "I'm not sure I understood that correctly. Could you rephrase your question? 🤔\n\nYou can ask me about:\n• Our products and services\n• Demo or free trial\n• Contact information\n• Implementation process\n• Founders\n• Industries we serve\n\nOr try asking in Hindi/Hinglish - I understand! 😊",
+          followUp: ['Tell me about products', 'What services do you offer?', 'How to contact?']
+        }
+      }
+    }
   ]
 
-  // Levenshtein distance for typo tolerance
-  const levenshteinDistance = (str1: string, str2: string): number => {
-    const matrix: number[][] = []
-    for (let i = 0; i <= str2.length; i++) {
-      matrix[i] = [i]
-    }
-    for (let j = 0; j <= str1.length; j++) {
-      matrix[0][j] = j
-    }
-    for (let i = 1; i <= str2.length; i++) {
-      for (let j = 1; j <= str1.length; j++) {
-        if (str2[i - 1] === str1[j - 1]) {
-          matrix[i][j] = matrix[i - 1][j - 1]
-        } else {
-          matrix[i][j] = Math.min(
-            matrix[i - 1][j - 1] + 1,
-            matrix[i][j - 1] + 1,
-            matrix[i - 1][j] + 1
-          )
-        }
+  // Detect intent from user input with comprehensive keyword override for ALL intents
+  const detectIntent = (input: string): { intent: Intent; confidence: number } | null => {
+    const normalizedInput = input.toLowerCase().trim()
+
+    // ========== RULE 1: Handle Follow-up Context FIRST ==========
+    if (
+      (normalizedInput.includes('tell me more') || 
+       normalizedInput.includes('more about') || 
+       normalizedInput.includes('explain') || 
+       normalizedInput.includes('continue')) && 
+      context.activeIntent
+    ) {
+      const activeIntentObj = intents.find(i => i.id === context.activeIntent)
+      if (activeIntentObj) {
+        return { intent: activeIntentObj, confidence: 0.9 }
       }
     }
-    return matrix[str2.length][str1.length]
-  }
 
-  // Calculate similarity percentage
-  const calculateSimilarity = (str1: string, str2: string): number => {
-    const maxLen = Math.max(str1.length, str2.length)
-    if (maxLen === 0) return 100
-    const distance = levenshteinDistance(str1, str2)
-    return ((maxLen - distance) / maxLen) * 100
-  }
+    // ========== RULE 2: Comprehensive Keyword Override (ALL INTENTS) ==========
+    
+    // GREETING - Check early (more lenient)
+    if (
+      normalizedInput === 'hi' || normalizedInput === 'hello' || normalizedInput === 'hey' ||
+      normalizedInput === 'hii' || normalizedInput === 'helloo' || normalizedInput === 'heyy' ||
+      normalizedInput.startsWith('hi ') || normalizedInput.startsWith('hello ') ||
+      normalizedInput.includes('namaste') || normalizedInput.includes('namaskar') ||
+      normalizedInput.includes('kaise ho') || normalizedInput.includes('kya haal') ||
+      normalizedInput.includes('good morning') || normalizedInput.includes('good afternoon') ||
+      normalizedInput.includes('good evening') || normalizedInput.includes('gm') ||
+      normalizedInput.includes('hey there') || normalizedInput.length <= 5 && (
+        normalizedInput.includes('h') && normalizedInput.includes('i') ||
+        normalizedInput.includes('h') && normalizedInput.includes('e') && normalizedInput.includes('l')
+      )
+    ) {
+      const greetingIntent = intents.find(i => i.id === 'GREETING')
+      if (greetingIntent) return { intent: greetingIntent, confidence: 0.95 }
+    }
 
-  // Common spelling mistakes
-  const commonMistakes: { [key: string]: string } = {
-    prise: 'price',
-    contct: 'contact',
-    prodct: 'product',
-    servce: 'service',
-    cmopany: 'company',
-    wat: 'what',
-    ur: 'your',
-    plz: 'please',
-    thnks: 'thanks',
-    kya: 'what',
-    kaun: 'who',
-    kaise: 'how',
-    batao: 'tell',
-    dikhao: 'show',
-    chahiye: 'want',
-    milta: 'available',
-  }
+    // GOODBYE
+    if (
+      normalizedInput.includes('thanks') || normalizedInput.includes('thank you') ||
+      normalizedInput.includes('bye') || normalizedInput.includes('goodbye') ||
+      normalizedInput.includes('shukriya') || normalizedInput.includes('dhanyawad') ||
+      normalizedInput.includes('thanku') || normalizedInput.includes('thx') ||
+      normalizedInput.includes('see you')
+    ) {
+      const goodbyeIntent = intents.find(i => i.id === 'GOODBYE')
+      if (goodbyeIntent) return { intent: goodbyeIntent, confidence: 0.95 }
+    }
 
-  // Correct spelling
-  const correctSpelling = (text: string): string => {
-    let corrected = text.toLowerCase()
-    Object.keys(commonMistakes).forEach((mistake) => {
-      const regex = new RegExp(`\\b${mistake}\\b`, 'gi')
-      corrected = corrected.replace(regex, commonMistakes[mistake])
-    })
-    return corrected
-  }
+    // PRODUCT_INFO - High priority
+    if (
+      normalizedInput.includes('product') || normalizedInput.includes('products') ||
+      normalizedInput.includes('keiro') || normalizedInput.includes('stratflow') ||
+      normalizedInput.includes('offerings') || normalizedInput.includes('solutions') ||
+      normalizedInput.includes('what do you sell') || normalizedInput.includes('aap kya bechte') ||
+      normalizedInput.includes('kya milta hai') || normalizedInput.includes('product list')
+    ) {
+      const productIntent = intents.find(i => i.id === 'PRODUCT_INFO')
+      if (productIntent) return { intent: productIntent, confidence: 0.95 }
+    }
 
-  // Detect language
-  const detectLanguage = (text: string): 'en' | 'hi-en' => {
-    const hindiPattern = /[\u0900-\u097F]/
-    return hindiPattern.test(text) ? 'hi-en' : 'en'
-  }
+    // COMPANY_INFO
+    if (
+      normalizedInput.includes('stratgenai') ||
+      (normalizedInput.includes('company') && (normalizedInput.includes('about') || normalizedInput.includes('kya') || normalizedInput.includes('what'))) ||
+      normalizedInput.includes('about your company') || normalizedInput.includes('about stratgenai') ||
+      normalizedInput.includes('who are you') || normalizedInput.includes('aap kya karte') ||
+      normalizedInput.includes('tell me about yourself') || normalizedInput.includes('company ke bare')
+    ) {
+      const companyIntent = intents.find(i => i.id === 'COMPANY_INFO')
+      if (companyIntent) return { intent: companyIntent, confidence: 0.95 }
+    }
 
-  // Find best match using Fuse.js and keyword matching
-  const findBestMatch = (userInput: string): KnowledgeItem | null => {
-    const normalizedInput = userInput.toLowerCase().trim()
-    const correctedInput = correctSpelling(normalizedInput)
+    // SERVICE_INFO
+    if (
+      normalizedInput.includes('service') || normalizedInput.includes('services') ||
+      normalizedInput.includes('what can you do') || normalizedInput.includes('capabilities') ||
+      normalizedInput.includes('what do you provide') || normalizedInput.includes('kya provide') ||
+      normalizedInput.includes('kya services') || normalizedInput.includes('services list')
+    ) {
+      const serviceIntent = intents.find(i => i.id === 'SERVICE_INFO')
+      if (serviceIntent) return { intent: serviceIntent, confidence: 0.95 }
+    }
 
-    // Step 1: Keyword matching (fastest) - improved accuracy
-    let keywordMatches: { item: KnowledgeItem; score: number }[] = []
-    knowledgeBase.forEach((item) => {
-      let score = 0
-      // Check keywords
-      const matchedKeywords = item.keywords.filter((keyword) => {
-        const keywordLower = keyword.toLowerCase()
-        // Exact word match gets higher score
-        const words = correctedInput.split(/\s+/)
-        if (words.some(w => w === keywordLower)) {
-          score += 2 // Exact match
-          return true
-        } else if (correctedInput.includes(keywordLower)) {
-          score += 1 // Partial match
-          return true
-        }
-        return false
-      })
+    // FOUNDERS
+    if (
+      normalizedInput.includes('founder') || normalizedInput.includes('founders') ||
+      normalizedInput.includes('who started') || normalizedInput.includes('who created') ||
+      normalizedInput.includes('who made') || normalizedInput.includes('who built') ||
+      normalizedInput.includes('founder kaun') || normalizedInput.includes('founders kaun') ||
+      normalizedInput.includes('founder ke bare')
+    ) {
+      const foundersIntent = intents.find(i => i.id === 'FOUNDERS')
+      if (foundersIntent) return { intent: foundersIntent, confidence: 0.95 }
+    }
+
+    // CONTACT - Very comprehensive (HIGHEST PRIORITY for contact queries)
+    if (
+      normalizedInput.includes('contact') || normalizedInput.includes('email') ||
+      normalizedInput.includes('phone') || normalizedInput.includes('reach') ||
+      normalizedInput.includes('connect') || normalizedInput.includes('address') ||
+      normalizedInput.includes('location') || normalizedInput.includes('get in touch') ||
+      normalizedInput.includes('kaise contact') || normalizedInput.includes('tumse kaise baat') ||
+      normalizedInput.includes('contact karna') || normalizedInput.includes('contact kare') ||
+      normalizedInput.includes('contact kese') || normalizedInput.includes('contact kaise') ||
+      normalizedInput.includes('stratgenai ko contact') || normalizedInput.includes('stratgenai contact') ||
+      normalizedInput.includes('contact stratgenai') || normalizedInput.includes('stratgenai se contact') ||
+      normalizedInput.includes('whatsapp') || normalizedInput.includes('whats app') ||
+      normalizedInput.includes('number') || normalizedInput.includes('phone number') ||
+      normalizedInput.includes('email id') || normalizedInput.includes('email address') ||
+      normalizedInput.includes('reach out') || normalizedInput.includes('reach karna') ||
+      normalizedInput.includes('baat karna') || normalizedInput.includes('baat kare') ||
+      normalizedInput.includes('call') || normalizedInput.includes('call karna')
+    ) {
+      const contactIntent = intents.find(i => i.id === 'CONTACT')
+      if (contactIntent) return { intent: contactIntent, confidence: 0.98 }
+    }
+
+    // DEMO_REQUEST
+    if (
+      normalizedInput.includes('demo') || normalizedInput.includes('trial') ||
+      normalizedInput.includes('test') || normalizedInput.includes('try') ||
+      normalizedInput.includes('dikhao') || normalizedInput.includes('dekh') ||
+      normalizedInput.includes('preview') || normalizedInput.includes('sample') ||
+      normalizedInput.includes('demo chahiye') || normalizedInput.includes('test kar sakte')
+    ) {
+      const demoIntent = intents.find(i => i.id === 'DEMO_REQUEST')
+      if (demoIntent) return { intent: demoIntent, confidence: 0.95 }
+    }
+
+    // PRICING_REQUEST
+    if (
+      normalizedInput.includes('price') || normalizedInput.includes('pricing') ||
+      normalizedInput.includes('cost') || normalizedInput.includes('charge') ||
+      normalizedInput.includes('kitna') || normalizedInput.includes('paisa') ||
+      normalizedInput.includes('budget') || normalizedInput.includes('fee') ||
+      normalizedInput.includes('rate') || normalizedInput.includes('how much') ||
+      normalizedInput.includes('plan') || normalizedInput.includes('plans')
+    ) {
+      const pricingIntent = intents.find(i => i.id === 'PRICING_REQUEST')
+      if (pricingIntent) return { intent: pricingIntent, confidence: 0.95 }
+    }
+
+    // INDUSTRIES
+    if (
+      normalizedInput.includes('industry') || normalizedInput.includes('industries') ||
+      normalizedInput.includes('sector') || normalizedInput.includes('sectors') ||
+      normalizedInput.includes('clients') || normalizedInput.includes('customers') ||
+      normalizedInput.includes('kis industry') || normalizedInput.includes('kaun se industry') ||
+      normalizedInput.includes('kis field') || normalizedInput.includes('which industries')
+    ) {
+      const industriesIntent = intents.find(i => i.id === 'INDUSTRIES')
+      if (industriesIntent) return { intent: industriesIntent, confidence: 0.95 }
+    }
+
+    // SUPPORT
+    if (
+      normalizedInput.includes('support') || normalizedInput.includes('help') ||
+      normalizedInput.includes('assist') || normalizedInput.includes('problem') ||
+      normalizedInput.includes('issue') || normalizedInput.includes('madad') ||
+      normalizedInput.includes('technical support') || normalizedInput.includes('customer support')
+    ) {
+      const supportIntent = intents.find(i => i.id === 'SUPPORT')
+      if (supportIntent) return { intent: supportIntent, confidence: 0.95 }
+    }
+
+    // COMMUNITY
+    if (
+      normalizedInput.includes('community') || normalizedInput.includes('join community') ||
+      normalizedInput.includes('community group') || normalizedInput.includes('community network') ||
+      normalizedInput.includes('community join') || normalizedInput.includes('community kya') ||
+      normalizedInput.includes('community ke bare') || normalizedInput.includes('community join karna') ||
+      normalizedInput.includes('community mein') || normalizedInput.includes('community se') ||
+      normalizedInput.includes('community kaise join')
+    ) {
+      const communityIntent = intents.find(i => i.id === 'COMMUNITY')
+      if (communityIntent) return { intent: communityIntent, confidence: 0.95 }
+    }
+
+    // AREA_OF_EXPERTISE
+    if (
+      normalizedInput.includes('area of expertise') || normalizedInput.includes('expertise') ||
+      normalizedInput.includes('skills') || normalizedInput.includes('skill') ||
+      normalizedInput.includes('aapki expertise') || normalizedInput.includes('kya skills') ||
+      normalizedInput.includes('what skills') || normalizedInput.includes('what expertise') ||
+      normalizedInput.includes('aap kya jante') || normalizedInput.includes('expertise areas') ||
+      normalizedInput.includes('skills list') || normalizedInput.includes('expertise kya')
+    ) {
+      const expertiseIntent = intents.find(i => i.id === 'AREA_OF_EXPERTISE')
+      if (expertiseIntent) return { intent: expertiseIntent, confidence: 0.95 }
+    }
+
+    // TECHNOLOGIES
+    if (
+      normalizedInput.includes('technolog') || normalizedInput.includes('tech stack') ||
+      normalizedInput.includes('kon si technology') || normalizedInput.includes('kya technology') ||
+      normalizedInput.includes('what technologies') || normalizedInput.includes('which technologies') ||
+      normalizedInput.includes('tech kya') || normalizedInput.includes('technologies list') ||
+      normalizedInput.includes('tech stack kya') || normalizedInput.includes('aap kon si technology') ||
+      normalizedInput.includes('frontend') || normalizedInput.includes('backend') ||
+      normalizedInput.includes('database') || normalizedInput.includes('tech use')
+    ) {
+      const techIntent = intents.find(i => i.id === 'TECHNOLOGIES')
+      if (techIntent) return { intent: techIntent, confidence: 0.95 }
+    }
+
+    // ========== RULE 3: Semantic Matching with Dynamic Thresholds ==========
+    let bestMatch: { intent: Intent; confidence: number } | null = null
+    let maxConfidence = 0
+
+    for (const intent of intents) {
+      if (intent.id === 'UNKNOWN') continue
       
-      // Check questions for better matching
-      const matchedQuestions = item.questions.filter((q) => {
-        const qLower = q.toLowerCase()
-        if (correctedInput.includes(qLower) || qLower.includes(correctedInput)) {
-          score += 3 // Question match is very important
-          return true
-        }
-        return false
-      })
+      const confidence = calculateSemanticSimilarity(input, intent.examples)
       
-      if (matchedKeywords.length > 0 || matchedQuestions.length > 0) {
-        keywordMatches.push({
-          item,
-          score: score,
-        })
-      }
-    })
-
-    if (keywordMatches.length > 0) {
-      keywordMatches.sort((a, b) => b.score - a.score)
-      // Only return if score is high enough (at least 2 points)
-      if (keywordMatches[0].score >= 2) {
-        return keywordMatches[0].item
-      }
-    }
-
-    // Step 2: Fuzzy matching using Fuse.js
-    const fuse = new Fuse(knowledgeBase, {
-      keys: ['questions', 'keywords'],
-      threshold: 0.5, // 50% match required (more lenient)
-      includeScore: true,
-      ignoreLocation: true,
-      findAllMatches: true,
-      minMatchCharLength: 2,
-    })
-
-    const fuseResults = fuse.search(correctedInput)
-    if (fuseResults.length > 0 && fuseResults[0].score! < 0.5) {
-      return fuseResults[0].item
-    }
-
-    // Step 3: Similarity matching for individual words (more lenient)
-    const words = correctedInput.split(/\s+/).filter((w) => w.length > 1)
-    for (const word of words) {
-      for (const item of knowledgeBase) {
-        // Check keywords
-        for (const keyword of item.keywords) {
-          const similarity = calculateSimilarity(word, keyword.toLowerCase())
-          if (similarity >= 65) { // Lowered threshold from 70 to 65
-            return item
-          }
-        }
-        // Also check questions
-        for (const question of item.questions) {
-          const questionWords = question.toLowerCase().split(/\s+/)
-          for (const qWord of questionWords) {
-            const similarity = calculateSimilarity(word, qWord)
-            if (similarity >= 65) {
-              return item
-            }
-          }
-        }
+      // Dynamic threshold: Lower for common intents
+      const threshold = 
+        intent.id === 'COMPANY_INFO' ? 0.4 :
+        intent.id === 'PRODUCT_INFO' ? 0.4 :
+        intent.id === 'SERVICE_INFO' ? 0.4 :
+        intent.id === 'CONTACT' ? 0.4 :
+        intent.id === 'AREA_OF_EXPERTISE' ? 0.4 :
+        intent.id === 'TECHNOLOGIES' ? 0.4 :
+        intent.id === 'COMMUNITY' ? 0.4 :
+        intent.id === 'GREETING' ? 0.3 :
+        intent.confidenceThreshold
+      
+      if (confidence >= threshold && confidence > maxConfidence) {
+        maxConfidence = confidence
+        bestMatch = { intent, confidence }
       }
     }
 
-    return null
+    // ========== RULE 4: UNKNOWN is LAST option ==========
+    if (!bestMatch) {
+      const unknownIntent = intents.find(i => i.id === 'UNKNOWN')
+      if (unknownIntent) {
+        return { intent: unknownIntent, confidence: 0 }
+      }
+    }
+
+    return bestMatch
   }
 
-  // Handle user message
-  const handleUserMessage = (userInput: string): { answer: string; followUp?: string[]; category: string; requiresLead?: boolean } => {
+  // AI Fallback using OpenAI (optional - can be enabled with API key)
+  const generateAIResponse = async (userInput: string, ctx: ConversationContext): Promise<string> => {
+    // For now, return a helpful fallback message
+    // To enable OpenAI, uncomment and add API key:
+    /*
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          {
+            role: 'system',
+            content: `You are Keirō, an AI assistant for StratgenAI, a cutting-edge AI software company. 
+            You help users learn about:
+            - Products: Keirō (AI chatbot) and Stratflow (Fashion AI platform)
+            - Services: Custom AI development, consulting, ML solutions
+            - Company info, founders, industries served
+            Be professional, friendly, and concise. If asked about something outside these topics, politely redirect.`
+          },
+          {
+            role: 'user',
+            content: userInput
+          }
+        ],
+        max_tokens: 150,
+        temperature: 0.7
+      })
+    })
+    const data = await response.json()
+    return data.choices[0].message.content
+    */
+    
+    return "I'm here to help! Could you rephrase your question? I can assist with information about StratgenAI's products, services, founders, and how to contact us."
+  }
+
+  // Handle user message with intent-based system
+  const handleUserMessage = async (userInput: string): Promise<{ answer: string; followUp?: string[]; requiresLead?: boolean }> => {
     const normalizedInput = userInput.toLowerCase().trim()
 
-    // Check for greetings EARLY
-    const greetings = ['hi', 'hello', 'hey', 'namaste', 'namaskar', 'kaise ho', 'kya haal', 'hey there']
-    if (greetings.some((g) => normalizedInput.includes(g))) {
+    // Detect intent
+    const intentResult = detectIntent(userInput)
+    
+    if (!intentResult) {
+      // Fallback to AI or unknown
+      const aiResponse = await generateAIResponse(userInput, context)
+      setContext(prev => ({ ...prev, unclearAttempts: prev.unclearAttempts + 1 }))
       return {
-        answer: "Hello! 👋 Great to meet you! I'm Keirō, your friendly AI assistant. How can I help you learn about StratgenAI today?",
-        followUp: ['Tell me about products', 'What services do you offer?', 'How can I contact you?'],
-        category: 'greeting',
+        answer: aiResponse,
+        followUp: ['Tell me about products', 'What services do you offer?', 'How to contact?']
       }
     }
 
-    // Check for thanks/bye EARLY
-    const thanks = ['thanks', 'thank you', 'bye', 'shukriya', 'dhanyawad', 'thanku', 'thankyou', 'thx']
-    if (thanks.some((t) => normalizedInput.includes(t))) {
-      return {
-        answer: "You're welcome! 😊\n\nIf you need anything else, I'm always here to help.\n\nWould you like to:\n• Talk to our sales team\n• Get updates on WhatsApp\n• Explore our website\n\nHave a great day! 🌟",
-        category: 'thanks',
-      }
-    }
+    const { intent, confidence } = intentResult
 
-    // Check for pricing queries FIRST - redirect to contact (no cost shown)
-    const pricingKeywords = ['price', 'pricing', 'cost', 'charge', 'kitna', 'paisa', 'budget', 'fee', 'rate', 'plan', 'plans', 'kitne', 'kitna paisa', 'how much']
-    if (pricingKeywords.some(keyword => normalizedInput.includes(keyword))) {
-      return {
-        answer: "You can reach us at:\n\n📧 **Email**: hello@stratgenai.in\n📍 **Location**: Ahmedabad, India\n\nFor pricing details, please contact us and we'll provide a customized quote based on your needs!",
-        followUp: ['Schedule a call', 'Send email', 'WhatsApp us'],
-        category: 'contact',
-      }
-    }
-
-    // Check for "Tell me more" or "More about" with context
-    if ((normalizedInput.includes('tell me more') || normalizedInput.includes('more about')) && context.lastCategory) {
-      // If last category was community, give more community info
-      if (context.lastCategory === 'community') {
+    // Use AI fallback if confidence is low
+    if (confidence < 0.7 || intent.id === 'UNKNOWN') {
+      if (context.unclearAttempts >= 1) {
+        const aiResponse = await generateAIResponse(userInput, context)
+        setContext(prev => ({ ...prev, unclearAttempts: prev.unclearAttempts + 1 }))
         return {
-          answer: "**More about StratgenAI Community** 🌟\n\nOur community is a vibrant space where:\n\n📚 **Learning Hub**: Access to exclusive AI resources, tutorials, and guides\n🤝 **Networking**: Connect with industry professionals and AI experts\n💡 **Innovation**: Share ideas, get feedback, and collaborate on projects\n🎯 **Early Access**: Be the first to know about new features and updates\n🏆 **Events**: Participate in webinars, workshops, and community meetups\n\nTo join, simply reach out to us at hello@stratgenai.in and we'll add you to our community!",
-          followUp: ['How to join?', 'Contact us', 'Tell me about products'],
-          category: 'community',
-        }
-      }
-      // If last category was products, give more product info
-      if (context.lastCategory === 'products') {
-        return {
-          answer: "**More about our Products** 🚀\n\n**Keirō** - Our flagship AI chatbot:\n• Deploy in minutes, not months\n• Understands 50+ languages\n• Integrates with 100+ platforms\n• Real-time analytics dashboard\n\n**Stratflow** - Fashion AI Platform:\n• Predict trends 6 months ahead\n• Personalize campaigns automatically\n• Increase ROI by 40% on average\n• Real-time customer insights\n\nWant detailed specs or a demo?",
-          followUp: ['Get a demo', 'Contact sales', 'Tell me about services'],
-          category: 'products',
+          answer: aiResponse,
+          followUp: ['Tell me about products', 'What services do you offer?', 'How to contact?']
         }
       }
     }
 
-    const matchedItem = findBestMatch(userInput)
-
-    if (matchedItem) {
-      // Update context
-      setContext((prev) => ({
-        ...prev,
-        lastCategory: matchedItem.category,
-        askedQuestions: [...prev.askedQuestions, userInput],
-        unclearAttempts: 0,
-      }))
-
-      return {
-        answer: matchedItem.answer,
-        followUp: matchedItem.followUp,
-        category: matchedItem.category,
-        requiresLead: matchedItem.requiresLeadCapture,
-      }
-    }
-
-    // Fallback for unclear queries
-    const currentAttempts = context.unclearAttempts + 1
-    setContext((prev) => ({
+    // Update context
+    setContext(prev => ({
       ...prev,
-      unclearAttempts: currentAttempts,
+      activeIntent: intent.id,
+      intentHistory: [...prev.intentHistory, intent.id],
+      unclearAttempts: 0
     }))
 
-    if (currentAttempts >= 2) {
-      return {
-        answer: "I'd like to connect you with our team for better assistance! 💬\n\nWould you like to:\n• Chat with human agent\n• Schedule a callback\n• Send email to support\n\n📧 Email: hello@stratgenai.in",
-        followUp: ['Schedule a call', 'Send email'],
-        category: 'fallback',
-      }
-    }
-
+    // Get response from intent
+    const response = intent.response(context)
+    
     return {
-      answer: "I'm not sure I understood that correctly. Could you rephrase your question? 🤔\n\nYou can ask me about:\n• Our products and services\n• Demo or free trial\n• Contact information\n• Implementation process\n• Founders\n• Industries we serve\n\nOr try asking in Hindi/Hinglish - I understand! 😊",
-      followUp: ['Tell me about products', 'What services do you offer?', 'How to contact?'],
-      category: 'fallback',
+      answer: response.text,
+      followUp: response.followUp,
+      requiresLead: response.requiresLead
     }
   }
 
-  const handleSend = () => {
+  // Old matching logic removed - using intent-based system above
+
+  const handleSend = async () => {
     if (!input.trim()) return
 
     const userMessage: Message = {
@@ -546,8 +682,8 @@ export default function Chatbot() {
     setIsTyping(true)
 
     // Simulate AI thinking time
-    setTimeout(() => {
-      const response = handleUserMessage(userInput)
+    setTimeout(async () => {
+      const response = await handleUserMessage(userInput)
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
         text: response.answer,
@@ -555,7 +691,7 @@ export default function Chatbot() {
         timestamp: new Date(),
       }
       setMessages((prev) => [...prev, botResponse])
-      setLastResponse(response)
+      setLastResponse({ followUp: response.followUp })
 
       // Show lead form if required
       if (response.requiresLead && !showLeadForm) {
@@ -570,23 +706,60 @@ export default function Chatbot() {
 
   const handleLeadSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would send lead data to your backend
-    // For now, just show success message
-    const successMessage: Message = {
-      id: Date.now().toString(),
-      text: `Thank you ${leadData.name}! 🙏\n\nWe've received your information. Our team will contact you soon at ${leadData.email}.\n\nIn the meantime, feel free to ask me anything else! 😊`,
-      sender: 'bot',
-      timestamp: new Date(),
+    
+    try {
+      // Save to Supabase session_requests table
+      const { supabase } = await import('@/lib/supabase')
+      
+      const { error: dbError } = await supabase
+        .from('session_requests')
+        .insert([
+          {
+            name: leadData.name,
+            email: leadData.email,
+            phone: leadData.phone || null,
+            company: null,
+            session_type: 'demo_request',
+            preferred_date: null,
+            message: null,
+            source: 'chatbot',
+            created_at: new Date().toISOString(),
+          },
+        ])
+
+      if (dbError) {
+        console.error('Error saving to Supabase:', dbError)
+        // Continue anyway, show success message
+      }
+
+      const successMessage: Message = {
+        id: Date.now().toString(),
+        text: `Thank you ${leadData.name}! 🙏\n\nWe've received your information. Our team will contact you soon at ${leadData.email}.\n\nIn the meantime, feel free to ask me anything else! 😊`,
+        sender: 'bot',
+        timestamp: new Date(),
+      }
+      setMessages((prev) => [...prev, successMessage])
+      setShowLeadForm(false)
+      setLeadData({ name: '', email: '', phone: '' })
+      setContext((prev) => ({
+        ...prev,
+        userName: leadData.name,
+        userEmail: leadData.email,
+        userPhone: leadData.phone,
+      }))
+    } catch (error: any) {
+      console.error('Error submitting lead form:', error)
+      // Still show success to user
+      const successMessage: Message = {
+        id: Date.now().toString(),
+        text: `Thank you ${leadData.name}! 🙏\n\nWe've received your information. Our team will contact you soon.`,
+        sender: 'bot',
+        timestamp: new Date(),
+      }
+      setMessages((prev) => [...prev, successMessage])
+      setShowLeadForm(false)
+      setLeadData({ name: '', email: '', phone: '' })
     }
-    setMessages((prev) => [...prev, successMessage])
-    setShowLeadForm(false)
-    setLeadData({ name: '', email: '', phone: '' })
-    setContext((prev) => ({
-      ...prev,
-      userName: leadData.name,
-      userEmail: leadData.email,
-      userPhone: leadData.phone,
-    }))
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

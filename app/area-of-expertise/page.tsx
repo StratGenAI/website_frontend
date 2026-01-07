@@ -132,7 +132,7 @@ export default function AreaOfExpertisePage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/20 to-purple-50/20 pt-28 md:pt-32 lg:pt-36 pb-12 md:pb-16 lg:pb-20 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/20 to-purple-50/20 pt-28 md:pt-36 lg:pt-40 pb-12 md:pb-16 lg:pb-20 relative overflow-hidden">
       {/* Animated Background Orbs */}
       <motion.div
         className="absolute top-20 right-5 md:right-10 w-64 h-64 md:w-96 md:h-96 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full blur-3xl opacity-20"
@@ -466,7 +466,7 @@ export default function AreaOfExpertisePage() {
                 Let's discuss how our expertise can help you achieve your goals
               </motion.p>
               <motion.a
-                href="#contact"
+                href="/contact"
                 className="inline-block px-8 md:px-10 py-4 md:py-5 bg-white text-gray-900 font-bold rounded-xl shadow-2xl hover:shadow-3xl transition-all font-heading text-base md:text-lg"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

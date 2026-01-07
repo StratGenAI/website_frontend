@@ -51,6 +51,48 @@ export default function ScaleUpStrategyPage() {
             </div>
           </motion.section>
 
+          {/* Scaling Growth Funnel */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.08 }}
+            className="mb-16"
+          >
+            <h2 className="text-3xl font-bold mb-6 text-gray-900">Scaling Growth Funnel</h2>
+            <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-6 border border-green-200 shadow-lg">
+              <h3 className="text-lg font-heading font-bold mb-6 text-gray-900 text-center">From Pilot to Enterprise Scale</h3>
+              <div className="max-w-2xl mx-auto space-y-3">
+                {[
+                  { stage: 'Pilot (1-10 users)', value: 100, color: 'from-green-500 to-emerald-500', width: '100%' },
+                  { stage: 'Department (10-50 users)', value: 75, color: 'from-emerald-500 to-cyan-500', width: '85%' },
+                  { stage: 'Division (50-200 users)', value: 50, color: 'from-cyan-500 to-blue-500', width: '70%' },
+                  { stage: 'Enterprise (200+ users)', value: 25, color: 'from-blue-500 to-purple-500', width: '55%' },
+                ].map((item, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ width: 0 }}
+                    animate={{ width: '100%' }}
+                    transition={{ duration: 0.8, delay: 0.3 + index * 0.15 }}
+                    className="relative"
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm font-heading font-semibold text-gray-700">{item.stage}</span>
+                      <span className="text-sm font-bold text-gray-900">{item.value}%</span>
+                    </div>
+                    <div className="h-8 bg-white/50 rounded-full overflow-hidden shadow-inner">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: item.width }}
+                        transition={{ duration: 1, delay: 0.5 + index * 0.15, type: 'spring' }}
+                        className={`h-full bg-gradient-to-r ${item.color} rounded-full shadow-md`}
+                      />
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.section>
+
           {/* Scaling Framework */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
@@ -212,6 +254,68 @@ export default function ScaleUpStrategyPage() {
             </div>
           </motion.section>
 
+          {/* Scaling Timeline Chart */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
+            className="mb-16"
+          >
+            <h2 className="text-3xl font-bold mb-6 text-gray-900">Scaling Timeline & Milestones</h2>
+            <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-lg">
+              <div className="relative h-48">
+                <svg className="w-full h-full" viewBox="0 0 400 150" preserveAspectRatio="none">
+                  {/* Grid lines */}
+                  {[0, 30, 60, 90, 120, 150].map((y, i) => (
+                    <line key={i} x1="0" y1={y} x2="400" y2={y} stroke="#E5E7EB" strokeWidth="1" strokeDasharray="4,4" />
+                  ))}
+                  {/* Scaling curve */}
+                  <motion.polyline
+                    points="0,140 80,120 160,100 240,80 320,60 400,40"
+                    fill="none"
+                    stroke="url(#scalingGradient)"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 2, delay: 0.5 }}
+                  />
+                  <defs>
+                    <linearGradient id="scalingGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#10B981" />
+                      <stop offset="100%" stopColor="#3B82F6" />
+                    </linearGradient>
+                  </defs>
+                  {/* Milestones */}
+                  {[
+                    { x: 0, y: 140, month: 'Month 0', label: 'Pilot' },
+                    { x: 80, y: 120, month: 'Month 2', label: 'Dept' },
+                    { x: 160, y: 100, month: 'Month 4', label: 'Division' },
+                    { x: 240, y: 80, month: 'Month 6', label: 'Scale' },
+                    { x: 320, y: 60, month: 'Month 8', label: 'Enterprise' },
+                    { x: 400, y: 40, month: 'Month 12', label: 'Mature' },
+                  ].map((point, index) => (
+                    <motion.g key={index}>
+                      <motion.circle
+                        cx={point.x}
+                        cy={point.y}
+                        r="8"
+                        fill="#10B981"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ duration: 0.3, delay: 0.7 + index * 0.15 }}
+                      />
+                      <text x={point.x} y={point.y - 15} textAnchor="middle" className="text-xs font-bold fill-gray-700">
+                        {point.month}
+                      </text>
+                    </motion.g>
+                  ))}
+                </svg>
+              </div>
+            </div>
+          </motion.section>
+
           {/* Common Challenges */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
@@ -272,7 +376,7 @@ export default function ScaleUpStrategyPage() {
                 <ArrowLeft className="w-5 h-5 rotate-180" />
               </Link>
               <Link
-                href="#contact"
+                href="/contact"
                 className="px-6 py-3 bg-white text-gray-900 rounded-xl font-semibold border-2 border-gray-300 hover:border-gray-400 transition-all flex items-center space-x-2"
               >
                 <span>Get Strategic Consultation</span>

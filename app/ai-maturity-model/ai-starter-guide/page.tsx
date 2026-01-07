@@ -96,6 +96,49 @@ export default function AIStarterGuidePage() {
             </div>
           </motion.section>
 
+          {/* Progress Funnel Chart */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="mb-12 md:mb-16"
+          >
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-display font-black mb-6 text-gray-900">AI Adoption Journey</h2>
+            <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-xl p-6 border border-red-200 shadow-lg">
+              <h3 className="text-lg font-heading font-bold mb-6 text-gray-900 text-center">From Awareness to Implementation</h3>
+              <div className="max-w-2xl mx-auto space-y-3">
+                {[
+                  { stage: 'Awareness', percentage: 100, color: 'from-red-500 to-orange-500', width: '100%' },
+                  { stage: 'Research', percentage: 75, color: 'from-orange-500 to-yellow-500', width: '85%' },
+                  { stage: 'Trial', percentage: 50, color: 'from-yellow-500 to-green-500', width: '70%' },
+                  { stage: 'Implementation', percentage: 25, color: 'from-green-500 to-blue-500', width: '55%' },
+                  { stage: 'Success', percentage: 10, color: 'from-blue-500 to-purple-500', width: '40%' },
+                ].map((item, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ width: 0 }}
+                    animate={{ width: '100%' }}
+                    transition={{ duration: 0.8, delay: 0.3 + index * 0.15 }}
+                    className="relative"
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm font-heading font-semibold text-gray-700">{item.stage}</span>
+                      <span className="text-sm font-bold text-gray-900">{item.percentage}%</span>
+                    </div>
+                    <div className="h-8 bg-white/50 rounded-full overflow-hidden shadow-inner">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: item.width }}
+                        transition={{ duration: 1, delay: 0.5 + index * 0.15, type: 'spring' }}
+                        className={`h-full bg-gradient-to-r ${item.color} rounded-full shadow-md`}
+                      />
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.section>
+
           {/* Getting Started Steps */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
@@ -160,6 +203,67 @@ export default function AIStarterGuidePage() {
             </div>
           </motion.section>
 
+          {/* Timeline Chart */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
+            className="mb-12 md:mb-16"
+          >
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-display font-black mb-6 text-gray-900">30-Day Progress Timeline</h2>
+            <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-lg">
+              <div className="relative h-48">
+                <svg className="w-full h-full" viewBox="0 0 400 150" preserveAspectRatio="none">
+                  {/* Grid lines */}
+                  {[0, 30, 60, 90, 120, 150].map((y, i) => (
+                    <line key={i} x1="0" y1={y} x2="400" y2={y} stroke="#E5E7EB" strokeWidth="1" strokeDasharray="4,4" />
+                  ))}
+                  {/* Progress line */}
+                  <motion.polyline
+                    points="0,140 100,120 200,100 300,80 400,60"
+                    fill="none"
+                    stroke="url(#progressGradient)"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 2, delay: 0.5 }}
+                  />
+                  <defs>
+                    <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#EF4444" />
+                      <stop offset="100%" stopColor="#10B981" />
+                    </linearGradient>
+                  </defs>
+                  {/* Milestones */}
+                  {[
+                    { x: 0, y: 140, day: 'Day 0', label: 'Start' },
+                    { x: 100, y: 120, day: 'Day 7', label: 'Research' },
+                    { x: 200, y: 100, day: 'Day 14', label: 'Trial' },
+                    { x: 300, y: 80, day: 'Day 21', label: 'Implement' },
+                    { x: 400, y: 60, day: 'Day 30', label: 'Success' },
+                  ].map((point, index) => (
+                    <motion.g key={index}>
+                      <motion.circle
+                        cx={point.x}
+                        cy={point.y}
+                        r="8"
+                        fill="#EF4444"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ duration: 0.3, delay: 0.7 + index * 0.2 }}
+                      />
+                      <text x={point.x} y={point.y - 15} textAnchor="middle" className="text-xs font-bold fill-gray-700">
+                        {point.day}
+                      </text>
+                    </motion.g>
+                  ))}
+                </svg>
+              </div>
+            </div>
+          </motion.section>
+
           {/* Common Use Cases */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
@@ -168,6 +272,35 @@ export default function AIStarterGuidePage() {
             className="mb-12 md:mb-16"
           >
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-display font-black mb-6 text-gray-900">Common AI Use Cases for Beginners</h2>
+            
+            {/* Use Case Adoption Chart */}
+            <div className="mb-8 bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-6 border border-green-200 shadow-lg">
+              <h3 className="text-lg font-heading font-bold mb-6 text-gray-900 text-center">Most Popular AI Use Cases</h3>
+              <div className="space-y-4">
+                {[
+                  { useCase: 'Customer Support Chatbot', adoption: 85, color: 'from-blue-500 to-cyan-500' },
+                  { useCase: 'Email Automation', adoption: 70, color: 'from-green-500 to-emerald-500' },
+                  { useCase: 'Content Creation', adoption: 65, color: 'from-purple-500 to-pink-500' },
+                  { useCase: 'Data Entry Automation', adoption: 55, color: 'from-orange-500 to-red-500' },
+                  { useCase: 'Analytics & Reporting', adoption: 45, color: 'from-yellow-500 to-orange-500' },
+                ].map((item, index) => (
+                  <div key={index}>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-sm font-semibold text-gray-700">{item.useCase}</span>
+                      <span className="text-sm font-bold text-gray-900">{item.adoption}%</span>
+                    </div>
+                    <div className="h-6 bg-white/50 rounded-full overflow-hidden shadow-inner">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${item.adoption}%` }}
+                        transition={{ duration: 1, delay: 0.8 + index * 0.15, type: 'spring' }}
+                        className={`h-full bg-gradient-to-r ${item.color} rounded-full shadow-md`}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
             <div className="grid md:grid-cols-3 gap-6">
               {[
                 {
@@ -232,7 +365,7 @@ export default function AIStarterGuidePage() {
                 <ArrowLeft className="w-5 h-5 rotate-180" />
               </Link>
               <Link
-                href="#contact"
+                href="/contact"
                 className="px-6 py-3 bg-white text-gray-900 rounded-xl font-heading font-semibold border-2 border-gray-300 hover:border-gray-400 transition-all flex items-center justify-center space-x-2"
               >
                 <span>Get Free Consultation</span>

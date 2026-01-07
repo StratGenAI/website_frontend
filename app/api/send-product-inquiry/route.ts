@@ -20,16 +20,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Store in Supabase
+    // Store in Supabase product_inquiries table
     try {
       const { error: dbError } = await supabase
-        .from('contact_submissions')
+        .from('product_inquiries')
         .insert([
           {
             name,
             email,
-            company,
-            message: `Product Inquiry: ${productName}\n\n${message || 'No additional message'}`,
+            company: company || null,
+            message: message || null,
+            product_name: productName,
             created_at: new Date().toISOString(),
           },
         ])

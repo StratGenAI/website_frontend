@@ -71,7 +71,7 @@ export default function HeroSection() {
               transition={{ duration: 0.8 }}
             >
               <motion.div
-                className="hidden sm:inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-100/80 via-purple-100/80 to-pink-100/80 backdrop-blur-sm border border-white/50 mb-6"
+                className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-100/80 via-purple-100/80 to-pink-100/80 backdrop-blur-sm border border-white/50 mb-6"
                 initial={{ opacity: 0, y: 20 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.2 }}
@@ -81,7 +81,7 @@ export default function HeroSection() {
               </motion.div>
 
               <motion.h1
-                className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display font-black mb-6 leading-tight px-2 sm:px-0"
+                className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-black mb-6 leading-tight"
                 initial={{ opacity: 0, y: 30 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.3 }}
@@ -117,25 +117,17 @@ export default function HeroSection() {
                   <span>Take the Assessment</span>
                   <ArrowDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
                 </motion.button>
-                <motion.a
-                  href="#overview"
-                  className="px-8 py-4 bg-white text-gray-800 rounded-xl font-heading font-semibold text-lg border-2 border-gray-300 shadow-lg hover:shadow-xl hover:border-blue-500 transition-all duration-300 flex items-center justify-center"
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Learn More
-                </motion.a>
               </motion.div>
             </motion.div>
 
             {/* Right: Interactive Pyramid */}
             <motion.div
-              className="flex flex-col items-center justify-center mt-8 lg:mt-0"
+              className="flex flex-col items-center justify-center"
               initial={{ opacity: 0, x: 50 }}
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <div className="relative w-full max-w-md px-4 sm:px-0">
+              <div className="relative w-full max-w-md">
                 {levels.map((level, index) => {
                   const Icon = level.icon
                   const width = 100 - (index * 12) // Decreasing width for pyramid effect

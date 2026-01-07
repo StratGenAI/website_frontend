@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { TrendingUp, Clock, DollarSign, CheckCircle2 } from 'lucide-react'
+import { TrendingUp, Clock, Wallet, CheckCircle2 } from 'lucide-react'
 
 const caseStudies = [
   {

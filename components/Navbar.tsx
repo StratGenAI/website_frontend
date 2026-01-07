@@ -155,10 +155,10 @@ export default function Navbar() {
     <div className="container mx-auto px-2 sm:px-3 md:px-4 lg:px-6">
       <div className="flex items-center justify-between h-14 sm:h-16 md:h-20 lg:h-24 w-full gap-1 md:gap-2">
   
-        {/* Logo - More Left Aligned */}
+        {/* Logo */}
         <Link
           href="/"
-          className="flex items-center flex-shrink-0 z-10 -ml-1 sm:-ml-2 md:-ml-3 lg:-ml-4"
+          className="flex items-center flex-shrink-0 z-10"
         >
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -180,9 +180,9 @@ export default function Navbar() {
                 className="object-contain"
                 style={{
                   backgroundColor: 'transparent',
-                  height: '80px',
+                  height: '100px',
                   width: 'auto',
-                  maxWidth: '180px',
+                  maxWidth: '220px',
                   display: 'block'
                 }}
               />

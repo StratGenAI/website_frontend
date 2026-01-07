@@ -180,9 +180,9 @@ export default function Navbar() {
                 className="object-contain"
                 style={{
                   backgroundColor: 'transparent',
-                  height: '60px',
+                  height: '80px',
                   width: 'auto',
-                  maxWidth: '120px',
+                  maxWidth: '180px',
                   display: 'block'
                 }}
               />

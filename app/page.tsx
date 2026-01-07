@@ -11,7 +11,7 @@ import FAQ from '@/components/sections/FAQ'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'StratgenAI - AI Solutions for Your Business',
+  title: 'StratgenAI - AI Solutions for Your Business | Intelligent Automation',
   description: 'StratgenAI - Transform your business with cutting-edge AI software solutions. We help businesses automate processes, enhance productivity, and drive innovation with our AI chatbot Keirō and fashion AI platform Stratflow.',
   openGraph: {
     title: 'StratgenAI - AI Solutions for Your Business',

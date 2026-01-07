@@ -136,7 +136,7 @@ export default function IndustryVertical() {
   const [expandedIndustry, setExpandedIndustry] = useState<number | null>(null)
 
   return (
-    <section ref={ref} className="pt-0 pb-20 md:pb-24 relative overflow-hidden bg-white">
+    <section ref={ref} className="py-20 md:py-24 relative overflow-hidden bg-white">
       {/* Enhanced Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
@@ -182,19 +182,19 @@ export default function IndustryVertical() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Enhanced Section Header */}
         <ScrollReveal direction="scale" delay={0.2}>
-          <div className="text-center mb-12 md:mb-16 lg:mb-24 px-4">
+          <div className="text-center mb-24">
             <motion.div
-              className="inline-flex items-center space-x-2 px-4 py-2 md:px-6 md:py-3 rounded-full bg-gradient-to-r from-green-100 via-blue-100 to-purple-100 mb-6 md:mb-8 border border-white/50 shadow-sm"
+              className="inline-flex items-center space-x-2 px-6 py-3 rounded-full bg-gradient-to-r from-green-100 via-blue-100 to-purple-100 mb-8 border border-white/50 shadow-sm"
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6 }}
             >
-              <Building2 className="w-4 h-4 md:w-5 md:h-5 text-green-600" />
-              <span className="text-xs md:text-sm font-heading font-semibold text-gray-700">Industry Expertise</span>
+              <Building2 className="w-5 h-5 text-green-600" />
+              <span className="text-sm font-heading font-semibold text-gray-700">Industry Expertise</span>
             </motion.div>
             
             <motion.h2
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-4 md:mb-6 text-gray-900"
+              className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-6 text-gray-900"
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -203,7 +203,7 @@ export default function IndustryVertical() {
             </motion.h2>
             
             <motion.p
-              className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto font-body leading-relaxed"
+              className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto font-body leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.4 }}
@@ -242,21 +242,21 @@ export default function IndustryVertical() {
                     <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${industry.color} ${isExpanded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`} />
                     
                     {/* Header */}
-                    <div className="p-4 sm:p-5 md:p-6 flex items-center justify-between">
-                      <div className="flex items-center space-x-3 sm:space-x-4 md:space-x-5 flex-1 min-w-0">
+                    <div className="p-5 md:p-6 flex items-center justify-between">
+                      <div className="flex items-center space-x-4 md:space-x-5 flex-1">
                         <motion.div
-                          className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-lg bg-gradient-to-br ${industry.color} flex items-center justify-center shadow-md flex-shrink-0`}
+                          className={`w-12 h-12 md:w-14 md:h-14 rounded-lg bg-gradient-to-br ${industry.color} flex items-center justify-center shadow-md flex-shrink-0`}
                           whileHover={{ scale: 1.1 }}
                           transition={{ duration: 0.3 }}
                         >
-                          <IndustryIcon className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-white" />
+                          <IndustryIcon className="w-6 h-6 md:w-7 md:h-7 text-white" />
                         </motion.div>
                         
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-lg sm:text-xl md:text-2xl font-heading font-bold text-gray-900 mb-1 truncate">
+                        <div className="flex-1">
+                          <h4 className="text-xl md:text-2xl font-heading font-bold text-gray-900 mb-1">
                             {industry.name}
                           </h4>
-                          <p className="text-gray-600 font-body text-xs sm:text-sm line-clamp-2">
+                          <p className="text-gray-600 font-body text-sm">
                             {industry.description}
                           </p>
                         </div>
@@ -265,9 +265,9 @@ export default function IndustryVertical() {
                       <motion.div
                         animate={{ rotate: isExpanded ? 180 : 0 }}
                         transition={{ duration: 0.3 }}
-                        className="flex-shrink-0 ml-2 sm:ml-4"
+                        className="flex-shrink-0 ml-4"
                       >
-                        <ChevronDown className={`w-5 h-5 sm:w-6 sm:h-6 ${isExpanded ? 'text-green-600' : 'text-gray-400'}`} />
+                        <ChevronDown className={`w-6 h-6 ${isExpanded ? 'text-green-600' : 'text-gray-400'}`} />
                       </motion.div>
                     </div>
 
@@ -281,29 +281,29 @@ export default function IndustryVertical() {
                       transition={{ duration: 0.3, ease: 'easeInOut' }}
                       className="overflow-hidden"
                     >
-                      <div className="px-4 sm:px-6 md:px-8 pb-4 sm:pb-6 md:pb-8 pt-0">
-                        <div className={`border-t-2 border-gray-200 pt-4 sm:pt-6 md:pt-8`}>
-                          <h5 className="text-sm sm:text-base md:text-lg font-heading font-semibold text-gray-900 mb-3 md:mb-4 flex items-center space-x-2">
+                      <div className="px-6 md:px-8 pb-6 md:pb-8 pt-0">
+                        <div className={`border-t-2 border-gray-200 pt-6 md:pt-8`}>
+                          <h5 className="text-base md:text-lg font-heading font-semibold text-gray-900 mb-4 flex items-center space-x-2">
                             <span className={`w-2 h-2 rounded-full bg-gradient-to-r ${industry.color}`} />
                             <span>Our Services</span>
                           </h5>
                           
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {industry.services.map((service, serviceIndex) => (
                               <motion.div
                                 key={serviceIndex}
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={isExpanded ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
                                 transition={{ delay: serviceIndex * 0.05 }}
-                                className="flex items-start space-x-2 sm:space-x-3 group/item"
+                                className="flex items-start space-x-3 group/item"
                               >
                                 <motion.div
-                                  className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-gradient-to-br ${industry.color} flex items-center justify-center flex-shrink-0 mt-0.5`}
+                                  className={`w-5 h-5 rounded-full bg-gradient-to-br ${industry.color} flex items-center justify-center flex-shrink-0 mt-0.5`}
                                   whileHover={{ scale: 1.2, rotate: 180 }}
                                 >
-                                  <CheckCircle2 className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />
+                                  <CheckCircle2 className="w-3 h-3 text-white" />
                                 </motion.div>
-                                <span className="text-gray-700 font-body text-xs sm:text-sm group-hover/item:text-gray-900 transition-colors">
+                                <span className="text-gray-700 font-body text-sm group-hover/item:text-gray-900 transition-colors">
                                   {service}
                                 </span>
                               </motion.div>

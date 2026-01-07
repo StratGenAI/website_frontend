@@ -158,7 +158,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link
           href="/"
-          className="flex items-center flex-shrink-0 z-10"
+          className="flex items-center flex-shrink-0 z-10 ml-2 sm:ml-3 md:ml-4"
         >
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -180,9 +180,9 @@ export default function Navbar() {
                 className="object-contain"
                 style={{
                   backgroundColor: 'transparent',
-                  height: '100px',
+                  height: '110px',
                   width: 'auto',
-                  maxWidth: '220px',
+                  maxWidth: '250px',
                   display: 'block'
                 }}
               />

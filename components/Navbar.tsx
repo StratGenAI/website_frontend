@@ -171,10 +171,10 @@ export default function Navbar() {
               style={{ overflow: 'visible', zIndex: 10, lineHeight: 0 }}
             >
               <Image
-                src="/single_s.png"
+                src="/company_logo.png"
                 alt="StratgenAI Logo"
                 width={1200}
-                height={1400}
+                height={400}
                 priority
                 unoptimized
                 className="object-contain"
@@ -182,7 +182,7 @@ export default function Navbar() {
                   backgroundColor: 'transparent',
                   height: '80px',
                   width: 'auto',
-                  maxWidth: '180px',
+                  maxWidth: '200px',
                   display: 'block'
                 }}
               />

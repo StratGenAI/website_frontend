@@ -139,7 +139,7 @@ export default function Navbar() {
     { href: '/services', label: 'Services' },
     { href: '/ai-maturity-model', label: 'AI Maturity Model' },
     { href: '#skills', label: 'Skills' },
-    { href: '#use-cases', label: 'Use Cases' },
+    { href: '/experiences', label: 'Experiences' },
     { href: '#contact', label: 'Contact' },
   ]
 
@@ -158,7 +158,7 @@ export default function Navbar() {
         {/* Logo - Left Aligned */}
         <Link
           href="/"
-          className="flex items-center flex-shrink-0 z-10 -ml-5 sm:-ml-4 md:-ml-3"
+          className="flex items-center flex-shrink-0 z-10 -ml-6 sm:-ml-5 md:-ml-4"
         >
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -177,12 +177,12 @@ export default function Navbar() {
                 height={1400}
                 priority
                 unoptimized
-                className="object-contain md:h-[50px] md:max-w-[100px] lg:h-[60px] lg:max-w-[120px]"
+                className="object-contain md:h-[48px] md:max-w-[95px] lg:h-[58px] lg:max-w-[115px]"
                 style={{
                   backgroundColor: 'transparent',
-                  height: '45px',
+                  height: '42px',
                   width: 'auto',
-                  maxWidth: '90px',
+                  maxWidth: '85px',
                   display: 'block'
                 }}
               />

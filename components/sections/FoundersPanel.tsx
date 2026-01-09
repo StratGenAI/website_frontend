@@ -156,9 +156,9 @@ export default function FoundersPanel() {
                           className="object-cover"
                           sizes="(max-width: 768px) 256px, (max-width: 1024px) 320px, 384px"
                           style={founder.name === 'Krisha Patel' ? { 
-                            objectPosition: 'center 30%',
-                            transform: 'scale(1.05)',
-                            transformOrigin: 'center center'
+                            objectPosition: 'center 20%',
+                            transform: 'scale(1.15)',
+                            transformOrigin: 'center top'
                           } : {}}
                         />
                       </div>

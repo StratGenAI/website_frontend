@@ -152,8 +152,8 @@ export default function Navbar() {
       }`}
       style={{ overflow: 'visible' }}
     >
-    <div className="container mx-auto px-2 sm:px-3 md:px-4 lg:px-6">
-      <div className="flex items-center justify-between h-14 sm:h-16 md:h-20 lg:h-24 w-full gap-1 md:gap-2">
+    <div className="container mx-auto px-2 sm:px-3 md:px-4 lg:px-6 max-w-[1920px]">
+      <div className="flex items-center justify-between h-14 sm:h-16 md:h-20 lg:h-24 w-full gap-1 md:gap-2 overflow-visible">
   
         {/* Logo */}
         <Link
@@ -191,7 +191,7 @@ export default function Navbar() {
         </Link>
 
           {/* Desktop Menu - Right Side */}
-          <div className="hidden md:flex items-center space-x-0.5 lg:space-x-1 xl:space-x-2 flex-shrink-0 ml-auto">
+          <div className="hidden md:flex items-center space-x-0.5 lg:space-x-1 xl:space-x-2 flex-shrink ml-auto min-w-0">
             {navItems.map((item) => {
               if (item.label === 'About Us') {
                 return (
@@ -409,13 +409,14 @@ export default function Navbar() {
           {/* Let's Collaborate Button - Right Aligned */}
           <motion.a
             href="/contact"
-            className="hidden md:flex items-center justify-center px-3 py-2 md:px-4 md:py-2.5 lg:px-5 lg:py-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white font-heading font-bold text-xs md:text-sm lg:text-base xl:text-lg rounded-lg md:rounded-xl shadow-lg hover:shadow-xl transition-all overflow-hidden group ml-1 md:ml-2 whitespace-nowrap"
+            className="hidden md:flex items-center justify-center px-3 py-2 md:px-4 md:py-2.5 lg:px-5 lg:py-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white font-heading font-bold text-xs md:text-sm lg:text-base rounded-lg md:rounded-xl shadow-lg hover:shadow-xl transition-all overflow-visible group ml-1 md:ml-2 lg:ml-3 whitespace-nowrap flex-shrink-0 relative"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            style={{ minWidth: 'fit-content' }}
           >
             {/* Animated Background */}
             <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              className="absolute inset-0 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg md:rounded-xl"
               animate={{
                 backgroundPosition: ['0%', '100%'],
               }}
@@ -428,7 +429,7 @@ export default function Navbar() {
                 backgroundSize: '200% auto',
               }}
             />
-            <span className="relative z-10">Let's Collaborate</span>
+            <span className="relative z-10 whitespace-nowrap px-1">Let's Collaborate</span>
           </motion.a>
 
           {/* Mobile Menu Button */}

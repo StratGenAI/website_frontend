@@ -25,7 +25,7 @@ const serviceCategories = [
   {
     category: 'AI & Machine Learning',
     icon: Brain,
-    color: 'from-blue-500 to-cyan-500',
+    color: 'from-blue-500 to-purple-500',
     bgColor: 'bg-blue-50',
     services: [
       {
@@ -71,8 +71,8 @@ const serviceCategories = [
   {
     category: 'Development Services',
     icon: Code,
-    color: 'from-indigo-500 to-purple-500',
-    bgColor: 'bg-indigo-50',
+    color: 'from-blue-500 to-purple-500',
+    bgColor: 'bg-blue-50',
     services: [
       {
         title: 'Full Stack Development',
@@ -101,14 +101,19 @@ const serviceCategories = [
         title: 'Data Science Consulting',
         description: 'Expert guidance on data strategy, modeling, and implementation',
         features: ['Data Strategy', 'Model Development', 'Statistical Analysis', 'A/B Testing']
+      },
+      {
+        title: 'Stock Market Prediction',
+        description: 'AI-powered stock market forecasting and prediction models for informed investment decisions',
+        features: ['Price Prediction Models', 'Trend Analysis', 'Risk Assessment', 'Real-time Market Analysis', 'Portfolio Optimization']
       }
     ]
   },
   {
     category: 'Specialized Solutions',
     icon: Sparkles,
-    color: 'from-teal-500 to-cyan-500',
-    bgColor: 'bg-teal-50',
+    color: 'from-purple-500 to-pink-500',
+    bgColor: 'bg-purple-50',
     services: [
       {
         title: 'AI Chatbots & Virtual Assistants',

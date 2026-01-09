@@ -137,7 +137,11 @@ export default function Chatbot() {
         'what is your company', 'company ke bare mein batao', 'about your company',
         'tell me about yourself', 'tell me about stratgenai', 'stratgenai ke bare mein batao',
         'aap kya karte ho', 'aapki company kya karti hai', 'stratgenai kya hai',
-        'company about', 'company info', 'about stratgenai'
+        'company about', 'company info', 'about stratgenai',
+        'stratgenai ke bare me info chahiye', 'mujhe stratgenai ke bare me information chahiye',
+        'stratgenai ki jankari', 'company ki jankari', 'stratgenai kya karta hai',
+        'company kya hai', 'stratgenai company kya hai', 'tell me about stratgenai company',
+        'stratgenai ke bare me batao', 'company ke bare me batao', 'stratgenai information'
       ],
       confidenceThreshold: 0.7,
       response: () => ({
@@ -196,11 +200,17 @@ export default function Chatbot() {
       examples: [
         'what services do you offer', 'services kya hai', 'kya services milti hai',
         'what can you do', 'capabilities kya hai', 'what services', 'services list',
-        'kya services hai', 'aap kya services dete ho', 'what do you provide', 'kya provide karte ho'
+        'kya services hai', 'aap kya services dete ho', 'what do you provide', 'kya provide karte ho',
+        'company ki kya services hai', 'stratgenai kya service deta hai', 'stratgenai services',
+        'company services kya hai', 'stratgenai kya services deta hai', 'company kya service deti hai',
+        'stratgenai service', 'company service', 'what services does stratgenai provide',
+        'stratgenai kya offer karta hai', 'company kya offer karti hai',
+        'tell me about AI Consulting', 'AI Consulting', 'consulting services', 'AI consultant',
+        'what consulting do you offer', 'do you provide consulting'
       ],
       confidenceThreshold: 0.7,
       response: () => ({
-        text: "We provide comprehensive **AI solutions**:\n\n✅ Custom AI Development\n✅ AI Consulting & Strategy\n✅ Machine Learning Solutions\n✅ Natural Language Processing\n✅ Computer Vision Solutions\n✅ AI Integration Services\n✅ Data Analytics & Insights\n\nWhich service interests you?",
+        text: "We provide comprehensive **AI solutions**:\n\n✅ Custom AI Development\n✅ AI Consulting & Strategy\n✅ Machine Learning Solutions\n✅ Natural Language Processing\n✅ Computer Vision Solutions\n✅ AI Integration Services\n✅ Data Analytics & Insights\n✅ Stock Market Prediction & Forecasting\n\nWhich service interests you?",
         followUp: ['Tell me about AI Consulting', 'Custom Development', 'Integration Services']
       })
     },
@@ -210,7 +220,11 @@ export default function Chatbot() {
       examples: [
         'who are the founders', 'founders kaun hai', 'founder kya hai',
         'founder ke bare mein', 'who started', 'founder info', 'founders ke bare mein',
-        'founder kaun hai', 'who created', 'who made', 'who built', 'founder team', 'founders list'
+        'founder kaun hai', 'who created', 'who made', 'who built', 'founder team', 'founders list',
+        'kisne banayi ye company', 'kisne banaya company', 'company kisne banayi',
+        'stratgenai kisne banaya', 'stratgenai kisne banayi', 'kisne start kiya',
+        'who founded stratgenai', 'who created stratgenai', 'company owner kaun hai',
+        'company ke founder kaun hai', 'founders kaun hai company ke'
       ],
       confidenceThreshold: 0.7,
       response: () => ({
@@ -333,7 +347,8 @@ export default function Chatbot() {
 
   // Detect intent from user input with comprehensive keyword override for ALL intents
   const detectIntent = (input: string): { intent: Intent; confidence: number } | null => {
-    const normalizedInput = input.toLowerCase().trim()
+    const normalizedInput = input.toLowerCase().trim().replace(/\s+/g, ' ') // Normalize spaces
+    const normalizedNoSpace = normalizedInput.replace(/\s+/g, '') // Also check without spaces for "kis ne" -> "kisne"
 
     // ========== RULE 1: Handle Follow-up Context FIRST ==========
     if (
@@ -393,40 +408,87 @@ export default function Chatbot() {
       if (productIntent) return { intent: productIntent, confidence: 0.95 }
     }
 
-    // COMPANY_INFO
-    if (
-      normalizedInput.includes('stratgenai') ||
-      (normalizedInput.includes('company') && (normalizedInput.includes('about') || normalizedInput.includes('kya') || normalizedInput.includes('what'))) ||
-      normalizedInput.includes('about your company') || normalizedInput.includes('about stratgenai') ||
-      normalizedInput.includes('who are you') || normalizedInput.includes('aap kya karte') ||
-      normalizedInput.includes('tell me about yourself') || normalizedInput.includes('company ke bare')
-    ) {
-      const companyIntent = intents.find(i => i.id === 'COMPANY_INFO')
-      if (companyIntent) return { intent: companyIntent, confidence: 0.95 }
-    }
-
-    // SERVICE_INFO
-    if (
-      normalizedInput.includes('service') || normalizedInput.includes('services') ||
-      normalizedInput.includes('what can you do') || normalizedInput.includes('capabilities') ||
-      normalizedInput.includes('what do you provide') || normalizedInput.includes('kya provide') ||
-      normalizedInput.includes('kya services') || normalizedInput.includes('services list')
-    ) {
+    // SERVICE_INFO - Check BEFORE COMPANY_INFO (HIGHEST PRIORITY for service queries)
+    const hasService = normalizedInput.includes('service') || normalizedInput.includes('services')
+    const hasConsulting = normalizedInput.includes('consulting') || normalizedInput.includes('consultant')
+    const hasKya = normalizedInput.includes('kya')
+    const hasCompany = normalizedInput.includes('company') || normalizedInput.includes('stratgenai')
+    const hasDeta = normalizedInput.includes('deta') || normalizedInput.includes('deti')
+    
+    // CRITICAL: If query has "consulting", "service", or related keywords, it's ALWAYS service info
+    // This catches: "tell me about AI Consulting", "company ki kya kya services hai", "stratgenai kya service deti hai"
+    if (hasConsulting || (hasService && (hasKya || hasDeta || hasCompany))) {
       const serviceIntent = intents.find(i => i.id === 'SERVICE_INFO')
-      if (serviceIntent) return { intent: serviceIntent, confidence: 0.95 }
+      if (serviceIntent) return { intent: serviceIntent, confidence: 0.98 }
+    }
+    
+    if (hasService || hasConsulting ||
+        normalizedInput.includes('kya service') || normalizedInput.includes('kya services') || 
+        normalizedInput.includes('services kya') || normalizedInput.includes('service kya') ||
+        normalizedInput.includes('what can you do') || normalizedInput.includes('capabilities') ||
+        normalizedInput.includes('what do you provide') || normalizedInput.includes('kya provide') ||
+        normalizedInput.includes('ai consulting') || normalizedInput.includes('ai consultant') ||
+        normalizedInput.includes('tell me about') && (hasConsulting || hasService)) {
+      const serviceIntent = intents.find(i => i.id === 'SERVICE_INFO')
+      if (serviceIntent) return { intent: serviceIntent, confidence: 0.98 }
     }
 
-    // FOUNDERS
+    // FOUNDERS - Check FIRST before COMPANY_INFO (HIGHEST PRIORITY for "who made/created" queries)
+    // Check for "kisne" or "who" patterns FIRST - these are founder queries
+    // Handle both "kisne" and "kis ne" (with/without space)
+    const hasKisne = normalizedInput.includes('kisne') || normalizedInput.includes('kis ne') || normalizedNoSpace.includes('kisne') || 
+                     normalizedInput.includes('kisne banayi') || normalizedInput.includes('kisne banaya') ||
+                     normalizedInput.includes('kis ne banayi') || normalizedInput.includes('kis ne banaya')
+    const hasWhoMade = normalizedInput.includes('who made') || normalizedInput.includes('who created') || 
+                       normalizedInput.includes('who started') || normalizedInput.includes('who built') || 
+                       normalizedInput.includes('who founded') || normalizedInput.includes('who established')
+    
+    // CRITICAL: If query has "kisne" or "who made/created" patterns, it's ALWAYS founders, not company info
+    if (hasKisne || hasWhoMade) {
+      const foundersIntent = intents.find(i => i.id === 'FOUNDERS')
+      if (foundersIntent) return { intent: foundersIntent, confidence: 0.98 }
+    }
+    
     if (
-      normalizedInput.includes('founder') || normalizedInput.includes('founders') ||
-      normalizedInput.includes('who started') || normalizedInput.includes('who created') ||
-      normalizedInput.includes('who made') || normalizedInput.includes('who built') ||
-      normalizedInput.includes('founder kaun') || normalizedInput.includes('founders kaun') ||
-      normalizedInput.includes('founder ke bare')
+      normalizedInput.includes('founder') || 
+      normalizedInput.includes('founders') ||
+      normalizedInput.includes('founder kaun') || 
+      normalizedInput.includes('founders kaun') ||
+      normalizedInput.includes('founder ke bare') || 
+      normalizedInput.includes('founders ke bare') ||
+      normalizedInput.includes('company owner') || 
+      normalizedInput.includes('company ka owner') ||
+      normalizedInput.includes('company ke founder') || 
+      normalizedInput.includes('company founders')
     ) {
       const foundersIntent = intents.find(i => i.id === 'FOUNDERS')
-      if (foundersIntent) return { intent: foundersIntent, confidence: 0.95 }
+      if (foundersIntent) return { intent: foundersIntent, confidence: 0.98 }
     }
+
+    // COMPANY_INFO - Enhanced with more variations (but NOT for founder or service queries)
+    // Skip if it's a founder query OR service query
+    const isServiceQuery = normalizedInput.includes('service') || normalizedInput.includes('services')
+    if (!normalizedInput.includes('kisne') && !normalizedInput.includes('who made') && !normalizedInput.includes('who created') && !normalizedInput.includes('who founded') && !isServiceQuery) {
+      if (
+        normalizedInput.includes('stratgenai') ||
+        (normalizedInput.includes('company') && (normalizedInput.includes('about') || normalizedInput.includes('kya') || normalizedInput.includes('what') || normalizedInput.includes('ke bare') || normalizedInput.includes('ki')) && !isServiceQuery) ||
+        normalizedInput.includes('about your company') || normalizedInput.includes('about stratgenai') ||
+        normalizedInput.includes('stratgenai ke bare') || normalizedInput.includes('stratgenai ki') ||
+        (normalizedInput.includes('stratgenai kya') && !isServiceQuery) || normalizedInput.includes('stratgenai about') ||
+        normalizedInput.includes('who are you') || normalizedInput.includes('aap kya karte') ||
+        normalizedInput.includes('tell me about yourself') || normalizedInput.includes('company ke bare') ||
+        (normalizedInput.includes('company ki') && !isServiceQuery) || (normalizedInput.includes('company kya') && !isServiceQuery) ||
+        normalizedInput.includes('info chahiye') || normalizedInput.includes('information chahiye') ||
+        normalizedInput.includes('mujhe info') || normalizedInput.includes('mujhe information') ||
+        (normalizedInput.includes('batao') && (normalizedInput.includes('company') || normalizedInput.includes('stratgenai')) && !isServiceQuery) ||
+        (normalizedInput.includes('bata') && (normalizedInput.includes('company') || normalizedInput.includes('stratgenai')) && !isServiceQuery)
+      ) {
+        const companyIntent = intents.find(i => i.id === 'COMPANY_INFO')
+        if (companyIntent) return { intent: companyIntent, confidence: 0.95 }
+      }
+    }
+
+
 
     // CONTACT - Very comprehensive (HIGHEST PRIORITY for contact queries)
     if (
@@ -576,42 +638,32 @@ export default function Chatbot() {
     return bestMatch
   }
 
-  // AI Fallback using OpenAI (optional - can be enabled with API key)
+  // AI Fallback using RAG (Retrieval Augmented Generation)
   const generateAIResponse = async (userInput: string, ctx: ConversationContext): Promise<string> => {
-    // For now, return a helpful fallback message
-    // To enable OpenAI, uncomment and add API key:
-    /*
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          {
-            role: 'system',
-            content: `You are Keirō, an AI assistant for StratgenAI, a cutting-edge AI software company. 
-            You help users learn about:
-            - Products: Keirō (AI chatbot) and Stratflow (Fashion AI platform)
-            - Services: Custom AI development, consulting, ML solutions
-            - Company info, founders, industries served
-            Be professional, friendly, and concise. If asked about something outside these topics, politely redirect.`
-          },
-          {
-            role: 'user',
-            content: userInput
-          }
-        ],
-        max_tokens: 150,
-        temperature: 0.7
+    try {
+      // Use RAG API route for intelligent responses
+      const response = await fetch('/api/chatbot-rag', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: userInput,
+          context: ctx
+        })
       })
-    })
-    const data = await response.json()
-    return data.choices[0].message.content
-    */
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success && data.response) {
+          return data.response
+        }
+      }
+    } catch (error) {
+      console.error('RAG API error:', error)
+    }
     
+    // Fallback message
     return "I'm here to help! Could you rephrase your question? I can assist with information about StratgenAI's products, services, founders, and how to contact us."
   }
 
@@ -634,15 +686,14 @@ export default function Chatbot() {
 
     const { intent, confidence } = intentResult
 
-    // Use AI fallback if confidence is low
-    if (confidence < 0.7 || intent.id === 'UNKNOWN') {
-      if (context.unclearAttempts >= 1) {
-        const aiResponse = await generateAIResponse(userInput, context)
-        setContext(prev => ({ ...prev, unclearAttempts: prev.unclearAttempts + 1 }))
-        return {
-          answer: aiResponse,
-          followUp: ['Tell me about products', 'What services do you offer?', 'How to contact?']
-        }
+    // Use RAG fallback if confidence is low or for better understanding
+    if (confidence < 0.7 || intent.id === 'UNKNOWN' || context.unclearAttempts >= 1) {
+      // Use RAG for intelligent responses with context
+      const aiResponse = await generateAIResponse(userInput, context)
+      setContext(prev => ({ ...prev, unclearAttempts: prev.unclearAttempts + 1 }))
+      return {
+        answer: aiResponse,
+        followUp: ['Tell me about products', 'What services do you offer?', 'How to contact?']
       }
     }
 

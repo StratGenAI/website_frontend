@@ -34,7 +34,7 @@ export default function OverviewSection() {
                 icon: Target,
                 title: 'Clear Assessment',
                 description: 'Understand exactly where your business stands with our comprehensive framework',
-                color: 'from-blue-500 to-cyan-500',
+                color: 'from-blue-500 to-purple-500',
               },
               {
                 icon: TrendingUp,

@@ -65,7 +65,8 @@ const industryVerticals = [
       'Personal Finance Apps',
       'Financial Data Analytics',
       'Mobile Banking Solutions',
-      'Investment Management Tools'
+      'Investment Management Tools',
+      'Stock Market Prediction & Forecasting'
     ]
   },
   {
@@ -87,7 +88,7 @@ const industryVerticals = [
     id: 5,
     name: 'Education',
     icon: GraduationCap,
-    color: 'from-blue-500 to-indigo-500',
+    color: 'from-blue-500 to-purple-500',
     bgColor: 'bg-blue-50',
     description: 'EdTech solutions for modern learning experiences',
     services: [

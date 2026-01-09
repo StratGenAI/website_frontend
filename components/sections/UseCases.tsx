@@ -19,7 +19,7 @@ const processSteps = [
     title: 'Discovery & Analysis',
     description: 'We analyze your business challenges, goals, and infrastructure to understand your unique needs',
     icon: Search,
-    color: 'from-blue-500 to-cyan-500',
+    color: 'from-blue-500 to-purple-500',
   },
   {
     step: 2,
@@ -33,7 +33,7 @@ const processSteps = [
     title: 'Development & Customization',
     description: 'We build and customize AI solutions that seamlessly integrate with your systems',
     icon: Code,
-    color: 'from-indigo-500 to-purple-500',
+    color: 'from-blue-500 to-purple-500',
   },
   {
     step: 4,
@@ -47,7 +47,7 @@ const processSteps = [
     title: 'Optimization & Growth',
     description: 'Continuous improvement based on data insights and evolving business needs',
     icon: TrendingUp,
-    color: 'from-teal-500 to-cyan-500',
+    color: 'from-purple-500 to-pink-500',
   },
 ]
 

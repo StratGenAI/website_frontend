@@ -34,7 +34,7 @@ export default function About() {
         className="absolute inset-0 opacity-10"
         style={{ y: backgroundY }}
       >
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full blur-3xl" />
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-blue-500 to-purple-500 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-br from-pink-500 to-rose-500 rounded-full blur-3xl" />
         <div className="absolute top-1/2 left-1/2 w-[500px] h-[500px] bg-gradient-to-br from-purple-500 to-pink-500 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
       </motion.div>

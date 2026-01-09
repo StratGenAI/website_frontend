@@ -32,7 +32,7 @@ export default function HeroSection() {
       {/* Animated Background */}
       <div className="absolute inset-0">
         <motion.div
-          className="absolute top-20 right-10 w-96 h-96 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full blur-3xl opacity-30"
+          className="absolute top-20 right-10 w-96 h-96 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full blur-3xl opacity-30"
           animate={{
             x: [0, 100, 0],
             y: [0, 50, 0],

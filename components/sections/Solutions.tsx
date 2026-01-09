@@ -85,7 +85,7 @@ export default function Solutions() {
                 {solutions.map((solution, index) => {
                   const Icon = solution.icon
                   const colorClasses = {
-                    blue: 'from-blue-500 to-cyan-500',
+                    blue: 'from-blue-500 to-purple-500',
                     pink: 'from-pink-500 to-rose-500',
                     purple: 'from-purple-500 to-pink-500',
                   }

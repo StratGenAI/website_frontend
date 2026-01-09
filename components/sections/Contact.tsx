@@ -81,7 +81,7 @@ export default function Contact() {
         className="absolute inset-0 opacity-10"
         style={{ y: backgroundY }}
       >
-        <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full blur-3xl" />
+        <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-gradient-to-br from-blue-500 to-purple-500 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-gradient-to-br from-pink-500 to-rose-500 rounded-full blur-3xl" />
         <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-gradient-to-br from-purple-500 to-pink-500 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
       </motion.div>
@@ -116,7 +116,7 @@ export default function Contact() {
                   Ready to Transform Your Business?
                 </h3>
                 <p className="text-lg text-gray-700 leading-relaxed mb-10 font-body">
-                  Whether you're looking to <strong className="text-blue-600 font-bold">automate customer service</strong>, enhance your marketing strategy, or explore other AI solutions, we're here to help. Let's discuss how AI can revolutionize your business operations.
+                  Whether you're looking to automate customer service, enhance your marketing strategy, or explore other AI solutions, we're here to help. Let's discuss how AI can revolutionize your business operations.
                 </p>
 
                 <div className="space-y-8">

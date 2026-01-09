@@ -85,3 +85,5 @@ After running SQL, verify tables exist:
 - RLS policies are set correctly
 - Environment variables are loaded (restart server)
 
+
+

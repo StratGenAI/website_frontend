@@ -16,7 +16,7 @@ const founders = [
     image: '/krisha_patel.jpeg',
     email: 'patelkrisha011@gmail.com',
     linkedin: 'https://www.linkedin.com/in/krisha-patel-59a4b2337',
-    gradient: 'from-blue-500 to-cyan-500',
+    gradient: 'from-blue-500 to-purple-500',
   },
   {
     id: 2,

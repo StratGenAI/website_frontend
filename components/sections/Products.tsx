@@ -22,7 +22,7 @@ const products = [
       'Analytics & Insights',
       'Easy Integration',
     ],
-    gradient: 'from-blue-500 to-cyan-500',
+    gradient: 'from-blue-500 to-purple-500',
     bgColor: 'blue',
   },
   {

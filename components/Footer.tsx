@@ -9,7 +9,7 @@ export default function Footer() {
   const socialLinks = {
     facebook: 'https://facebook.com/stratgenai',
     instagram: 'https://instagram.com/stratgenai',
-    linkedin: 'https://linkedin.com/company/stratgenai',
+    linkedin: 'https://linkedin.com/in/stratgen-ai-337697385',
     twitter: 'https://twitter.com/stratgenai',
   }
 
@@ -42,7 +42,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link 
-                  href="#home" 
+                  href="/" 
                   className="text-gray-400 hover:text-blue-400 transition-colors text-sm flex items-center group"
                 >
                   <span className="group-hover:translate-x-1 transition-transform inline-block">Home</span>
@@ -50,7 +50,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link 
-                  href="#about" 
+                  href="/#about" 
                   className="text-gray-400 hover:text-blue-400 transition-colors text-sm flex items-center group"
                 >
                   <span className="group-hover:translate-x-1 transition-transform inline-block">About Us</span>
@@ -58,7 +58,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link 
-                  href="#products" 
+                  href="/#products" 
                   className="text-gray-400 hover:text-blue-400 transition-colors text-sm flex items-center group"
                 >
                   <span className="group-hover:translate-x-1 transition-transform inline-block">Our Products</span>
@@ -74,7 +74,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link 
-                  href="#contact" 
+                  href="/contact" 
                   className="text-gray-400 hover:text-blue-400 transition-colors text-sm flex items-center group"
                 >
                   <span className="group-hover:translate-x-1 transition-transform inline-block">Contact</span>
@@ -89,7 +89,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link 
-                  href="#products" 
+                  href="/#product-1" 
                   className="text-gray-400 hover:text-blue-400 transition-colors text-sm flex items-center group"
                 >
                   <span className="group-hover:translate-x-1 transition-transform inline-block">Keirō</span>
@@ -97,7 +97,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link 
-                  href="#products" 
+                  href="/#product-2" 
                   className="text-gray-400 hover:text-blue-400 transition-colors text-sm flex items-center group"
                 >
                   <span className="group-hover:translate-x-1 transition-transform inline-block">Stratflow</span>
@@ -159,10 +159,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 mt-10 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-gray-500 text-sm text-center md:text-left">
-              &copy; {new Date().getFullYear()} StratgenAI. All rights reserved.
-            </p>
+          <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0">
             <p className="text-gray-400 text-sm font-medium bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
               From Silent Gen to Gen Alpha - AI that speaks your language
             </p>

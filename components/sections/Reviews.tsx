@@ -15,8 +15,8 @@ const reviews = [
     location: 'Ahmedabad, India',
     content: 'StratgenAI built a complete automated pipeline for us that revolutionized our data processing workflow. Their AI-powered solutions transformed our operations, enabling us to process complex data efficiently and accurately. The automated pipeline they created has significantly improved our productivity and reduced manual errors. Highly professional team with exceptional technical expertise!',
     rating: 5,
-    gradient: 'from-blue-500 via-cyan-500 to-teal-500',
-    bgGradient: 'from-blue-50 via-cyan-50 to-teal-50',
+    gradient: 'from-blue-500 via-blue-600 to-purple-600',
+    bgGradient: 'from-blue-50 via-blue-100 to-purple-50',
   },
   {
     id: 2,
@@ -25,7 +25,7 @@ const reviews = [
     role: 'Client',
     location: 'Ahmedabad, India',
     content: 'Working with StratgenAI has been a game-changer for our consultancy. Their AI-powered chatbot solutions helped us streamline customer interactions and deliver exceptional service to our clients. Outstanding service and cutting-edge technology that transformed how we engage with our customers!',
-    rating: 5,
+    rating: 4.5,
     gradient: 'from-purple-500 via-pink-500 to-rose-500',
     bgGradient: 'from-purple-50 via-pink-50 to-rose-50',
   },
@@ -52,7 +52,7 @@ export default function Reviews() {
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute top-20 right-10 w-[500px] h-[500px] bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-3xl"
+          className="absolute top-20 right-10 w-[500px] h-[500px] bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"
           animate={{
             x: [0, 100, 0],
             y: [0, 50, 0],
@@ -185,21 +185,37 @@ export default function Reviews() {
 
                     {/* Rating Stars */}
                     <div className="flex items-center space-x-1 mb-6 relative z-10">
-                      {[...Array(review.rating)].map((_, i) => (
-                        <motion.div
-                          key={i}
-                          initial={{ opacity: 0, scale: 0, rotate: -180 }}
-                          animate={inView ? { opacity: 1, scale: 1, rotate: 0 } : {}}
-                          transition={{ 
-                            delay: 0.5 + index * 0.15 + i * 0.1,
-                            type: "spring",
-                            stiffness: 200
-                          }}
-                          whileHover={{ scale: 1.2, rotate: 15 }}
-                        >
-                          <Star className="w-6 h-6 text-yellow-400 fill-yellow-400 drop-shadow-lg" />
-                        </motion.div>
-                      ))}
+                      {[...Array(5)].map((_, i) => {
+                        const starValue = i + 1
+                        const isHalfStar = review.rating < starValue && review.rating > i
+                        const isFilled = review.rating >= starValue
+                        
+                        return (
+                          <motion.div
+                            key={i}
+                            initial={{ opacity: 0, scale: 0, rotate: -180 }}
+                            animate={inView ? { opacity: 1, scale: 1, rotate: 0 } : {}}
+                            transition={{ 
+                              delay: 0.5 + index * 0.15 + i * 0.1,
+                              type: "spring",
+                              stiffness: 200
+                            }}
+                            whileHover={{ scale: 1.2, rotate: 15 }}
+                            className="relative"
+                          >
+                            {isHalfStar ? (
+                              <div className="relative">
+                                <Star className="w-6 h-6 text-gray-300 fill-gray-300 drop-shadow-lg" />
+                                <div className="absolute inset-0 overflow-hidden" style={{ width: '50%' }}>
+                                  <Star className="w-6 h-6 text-yellow-400 fill-yellow-400 drop-shadow-lg" />
+                                </div>
+                              </div>
+                            ) : (
+                              <Star className={`w-6 h-6 drop-shadow-lg ${isFilled ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300 fill-gray-300'}`} />
+                            )}
+                          </motion.div>
+                        )
+                      })}
                     </div>
 
                     {/* Review Content */}

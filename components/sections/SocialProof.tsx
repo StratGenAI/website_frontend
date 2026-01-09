@@ -91,7 +91,7 @@ const stats = [
     icon: Users,
     number: '500+',
     label: 'Happy Clients',
-    color: 'from-blue-500 to-cyan-500'
+    color: 'from-blue-500 to-purple-500'
   },
   {
     icon: Star,

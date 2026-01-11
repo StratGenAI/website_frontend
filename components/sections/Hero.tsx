@@ -3,22 +3,61 @@
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import { useInView } from 'react-intersection-observer'
+import { useEffect, useRef, useState } from 'react'
 
 export default function Hero() {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   })
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    // Check if device is mobile
+    const checkMobile = () => {
+      const isMobileDevice = window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      setIsMobile(isMobileDevice)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  useEffect(() => {
+    // Pause video on mobile or when not in viewport
+    if (videoRef.current) {
+      if (isMobile) {
+        videoRef.current.pause()
+      } else if (inView) {
+        videoRef.current.play().catch(() => {
+          // Handle autoplay restrictions
+        })
+      } else {
+        videoRef.current.pause()
+      }
+    }
+  }, [isMobile, inView])
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Video Background */}
-      <div className="absolute inset-0 w-full h-full z-0">
+      {/* Static Gradient Background for Mobile */}
+      <div className="absolute inset-0 w-full h-full z-0 md:hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100" />
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-purple-50/20 to-pink-50/30" />
+      </div>
+
+      {/* Video Background - Hidden on Mobile */}
+      <div className="absolute inset-0 w-full h-full z-0 hidden md:block">
         <video
+          ref={videoRef}
           autoPlay
           loop
           muted
           playsInline
+          preload="metadata"
           className="absolute inset-0 w-full h-full object-cover"
           style={{ zIndex: 0 }}
         >

@@ -27,30 +27,20 @@ export default function Hero() {
   }, [])
 
   useEffect(() => {
-    // Pause video on mobile or when not in viewport
-    if (videoRef.current) {
-      if (isMobile) {
-        videoRef.current.pause()
-      } else if (inView) {
-        videoRef.current.play().catch(() => {
-          // Handle autoplay restrictions
-        })
-      } else {
-        videoRef.current.pause()
-      }
+    // Play video when in viewport
+    if (videoRef.current && inView) {
+      videoRef.current.play().catch(() => {
+        // Handle autoplay restrictions
+      })
+    } else if (videoRef.current && !inView) {
+      videoRef.current.pause()
     }
-  }, [isMobile, inView])
+  }, [inView])
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Static Gradient Background for Mobile */}
-      <div className="absolute inset-0 w-full h-full z-0 md:hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100" />
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-purple-50/20 to-pink-50/30" />
-      </div>
-
-      {/* Video Background - Hidden on Mobile */}
-      <div className="absolute inset-0 w-full h-full z-0 hidden md:block">
+      {/* Video Background - Visible on Both Mobile and Desktop */}
+      <div className="absolute inset-0 w-full h-full z-0">
         <video
           ref={videoRef}
           autoPlay

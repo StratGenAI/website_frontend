@@ -63,109 +63,11 @@ export default function Hero() {
         >
           <source src="/BACKGROUND.mp4" type="video/mp4" />
         </video>
-        {/* Overlay for better text readability */}
+        {/* Simple Overlay for better text readability - No animations */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-purple-50/20 to-pink-50/30" style={{ zIndex: 1 }} />
       </div>
       
-      {/* Multiple Animated Gradient Orbs */}
-      <motion.div
-        className="absolute top-20 left-10 w-[600px] h-[600px] bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full blur-3xl opacity-40 z-[2]"
-        animate={{
-          x: [0, 200, 0],
-          y: [0, 150, 0],
-          scale: [1, 1.4, 1],
-        }}
-        transition={{
-          duration: 18,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-      />
-      <motion.div
-        className="absolute bottom-20 right-10 w-[600px] h-[600px] bg-gradient-to-br from-pink-400 to-rose-400 rounded-full blur-3xl opacity-40 z-[2]"
-        animate={{
-          x: [0, -200, 0],
-          y: [0, -150, 0],
-          scale: [1, 1.5, 1],
-        }}
-        transition={{
-          duration: 22,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-      />
-      <motion.div
-        className="absolute top-1/2 left-1/2 w-[500px] h-[500px] bg-gradient-to-br from-purple-400 to-pink-400 rounded-full blur-3xl opacity-35 -translate-x-1/2 -translate-y-1/2 z-[2]"
-        animate={{
-          scale: [1, 1.7, 1],
-          rotate: [0, 360],
-        }}
-        transition={{
-          duration: 25,
-          repeat: Infinity,
-          ease: 'linear',
-        }}
-      />
-      <motion.div
-        className="absolute top-1/3 right-1/4 w-[400px] h-[400px] bg-gradient-to-br from-cyan-400 to-blue-400 rounded-full blur-3xl opacity-30 z-[2]"
-        animate={{
-          x: [0, 100, 0],
-          y: [0, -100, 0],
-          scale: [1, 1.3, 1],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-      />
-      
-      {/* Static Network Pattern - No Blinking */}
-      <div className="absolute inset-0 opacity-20">
-        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="network" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
-              <circle cx="100" cy="100" r="4" fill="#0ea5e9" opacity="0.4" />
-              <circle cx="50" cy="60" r="3" fill="#ec4899" opacity="0.4" />
-              <circle cx="150" cy="140" r="3" fill="#8b5cf6" opacity="0.4" />
-              <circle cx="40" cy="160" r="2.5" fill="#06b6d4" opacity="0.3" />
-              <circle cx="160" cy="50" r="2.5" fill="#f472b6" opacity="0.3" />
-              <line x1="100" y1="100" x2="50" y2="60" stroke="#0ea5e9" strokeWidth="1.5" opacity="0.3" />
-              <line x1="100" y1="100" x2="150" y2="140" stroke="#ec4899" strokeWidth="1.5" opacity="0.3" />
-              <line x1="100" y1="100" x2="40" y2="160" stroke="#8b5cf6" strokeWidth="1.5" opacity="0.25" />
-              <line x1="100" y1="100" x2="160" y2="50" stroke="#06b6d4" strokeWidth="1.5" opacity="0.25" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#network)" />
-        </svg>
-      </div>
-      
-      {/* Floating Particles Effect - Reduced Blinking */}
-      {[...Array(10)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-2 h-2 rounded-full"
-          style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            background: ['#0ea5e9', '#ec4899', '#8b5cf6', '#06b6d4'][Math.floor(Math.random() * 4)],
-            opacity: 0.3,
-          }}
-          animate={{
-            y: [0, -30, 0],
-            x: [0, Math.random() * 20 - 10, 0],
-            scale: [1, 1.3, 1],
-          }}
-          transition={{
-            duration: 4 + Math.random() * 2,
-            repeat: Infinity,
-            delay: Math.random() * 2,
-            ease: 'easeInOut',
-          }}
-        />
-      ))}
-      
-      {/* Gradient Overlay for Depth */}
+      {/* Gradient Overlay for Depth - Static only */}
       <div className="absolute inset-0 bg-gradient-to-t from-white/30 via-transparent to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/20" />
 

@@ -114,6 +114,7 @@ export default function Navbar() {
   const servicesItems = [
     { href: '/services', label: 'Services' },
     { href: '/industry-vertical', label: 'Industry Vertical' },
+    { href: '/ai-maturity-model', label: 'AI Maturity Guide' },
   ]
 
   const handleAboutClick = (href: string) => {
@@ -138,7 +139,6 @@ export default function Navbar() {
     { href: '#skills', label: 'Skills' },
     { href: '/services', label: 'Services' },
     { href: '/experiences', label: 'Experiences' },
-    { href: '/ai-maturity-model', label: 'AI Maturity Model' },
     { href: '#about', label: 'About Us' },
     { href: '#contact', label: 'Contact' },
   ]

@@ -97,11 +97,6 @@ export default function Footer() {
                   <span className="group-hover:translate-x-1 transition-transform inline-block">BioCopilot AI</span>
                 </Link>
               </li>
-              <li>
-                <Link href="/ai-maturity-model" className="text-gray-400 hover:text-purple-400 transition-colors text-sm flex items-center group">
-                  <span className="group-hover:translate-x-1 transition-transform inline-block">AI Maturity Model</span>
-                </Link>
-              </li>
             </ul>
           </div>
 

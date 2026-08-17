@@ -77,10 +77,10 @@ export default function HomeCaseStudies() {
         <ScrollReveal direction="up" delay={0.4}>
           <div className="text-center mt-12">
             <Link
-              href="/ai-maturity-model"
+              href="/#contact"
               className="inline-flex items-center gap-2 text-purple-600 font-heading font-bold hover:text-pink-600 transition-colors"
             >
-              Explore AI Maturity Model
+              Talk about your project
               <ArrowRight className="w-5 h-5" />
             </Link>
           </div>

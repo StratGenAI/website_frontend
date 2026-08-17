@@ -30,6 +30,17 @@ const reviews = [
     gradient: 'from-purple-500 via-pink-500 to-rose-500',
     bgGradient: 'from-purple-50 via-pink-50 to-rose-50',
   },
+  {
+    id: 3,
+    company: 'Indibloom',
+    name: 'Zeeya Mehta',
+    role: 'Founder',
+    location: 'Shopping website',
+    content: 'StratgenAI built Indibloom, our shopping website, from the ground up. The store is clean, fast, and easy for customers to browse and buy. Professional delivery, thoughtful design, and a platform we can grow with — exactly what we needed to go live.',
+    rating: 5,
+    gradient: 'from-rose-500 via-orange-500 to-amber-500',
+    bgGradient: 'from-rose-50 via-orange-50 to-amber-50',
+  },
 ]
 
 export default function Reviews() {
@@ -125,7 +136,7 @@ export default function Reviews() {
         {/* Reviews - Asymmetric Modern Layout */}
         <motion.div 
           style={{ y }}
-          className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto"
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto"
         >
           {reviews.map((review, index) => {
             const isLarge = false // No large cards for 2 reviews
@@ -253,6 +264,11 @@ export default function Reviews() {
                         <h4 className="text-lg sm:text-xl font-heading font-black text-gray-900 mb-0.5 sm:mb-1">
                           {review.company}
                         </h4>
+                        {(review.name || review.role) && (
+                          <p className="text-xs sm:text-sm text-gray-700 font-body font-semibold">
+                            {[review.name, review.role].filter(Boolean).join(' · ')}
+                          </p>
+                        )}
                         {review.location && (
                           <p className="text-xs sm:text-sm text-gray-600 font-body font-medium">
                             {review.location}

@@ -41,16 +41,18 @@ export async function submitToWeb3Forms(
   formType: FormType,
   data: FormPayload
 ): Promise<{ ok: boolean; error?: string }> {
-  const accessKey = process.env.WEB3FORMS_ACCESS_KEY
+  // Web3Forms free plan blocks server-side proxies. Key is designed to be public.
+  const accessKey =
+    process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY || process.env.WEB3FORMS_ACCESS_KEY
 
   if (!accessKey) {
     console.error(
-      '[forms] WEB3FORMS_ACCESS_KEY is missing. Add it to .env.local — get a free key at https://web3forms.com'
+      '[forms] NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY is missing. Add it to .env.local and Vercel — get a free key at https://web3forms.com'
     )
     return {
       ok: false,
       error:
-        'Forms are not set up yet. Add WEB3FORMS_ACCESS_KEY in .env.local (see SETUP-FORMS.txt in project folder), then restart npm run dev. Or email hello@stratgenai.in directly.',
+        'Forms are not set up yet. Add NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY in Vercel Environment Variables, then redeploy. Or email hello@stratgenai.in directly.',
     }
   }
 
@@ -64,10 +66,11 @@ export async function submitToWeb3Forms(
     body: JSON.stringify({
       access_key: accessKey,
       subject: FORM_SUBJECTS[formType],
+      name: data.name,
       from_name: data.name,
       email: data.email,
+      replyto: data.email,
       message: buildMessage(formType, data),
-      botcheck: false,
     }),
   })
 

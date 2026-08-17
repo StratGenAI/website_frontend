@@ -23,6 +23,7 @@ STEP 2 — Project mein .env.local file
 
   3. Andar SIRF yeh likho (apni key paste karo):
 
+     NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY=YOUR_KEY_HERE_PASTE_BETWEEN_EQUALS
      WEB3FORMS_ACCESS_KEY=YOUR_KEY_HERE_PASTE_BETWEEN_EQUALS
 
      Example (fake):
@@ -45,9 +46,10 @@ STEP 3 — Server restart
 STEP 4 — Live site (Vercel) par
 -------------------------------
   Vercel → Project → Settings → Environment Variables
-  Name:  WEB3FORMS_ACCESS_KEY
+  Name:  NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY
   Value: (wahi key jo .env.local mein hai)
-  Redeploy karo.
+  Environment: Production
+  Redeploy karo. (NEXT_PUBLIC_ ke bina live form fail hota hai)
 
 
 CHECK — sahi setup hai ya nahi

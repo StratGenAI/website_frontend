@@ -4,14 +4,20 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, Send, CheckCircle, AlertCircle, Loader2 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import BioCopilotVisual from '@/components/products/BioCopilotVisual'
+import { submitForm } from '@/lib/submit-form-client'
+import type { ProductVisual } from '@/lib/products-data'
 
 interface ProductModalProps {
   isOpen: boolean
   onClose: () => void
   product: {
     name: string
-    logo: string
+    logo?: string
+    visual?: ProductVisual
     description: string
+    gradient?: string
+    status?: 'live' | 'early-access'
   }
 }
 
@@ -49,45 +55,17 @@ export default function ProductModal({ isOpen, onClose, product }: ProductModalP
     setSubmitMessage('')
 
     try {
-      // Save to Supabase
-      const { supabase } = await import('@/lib/supabase')
-      
-      const { error: dbError } = await supabase
-        .from('product_inquiries')
-        .insert([
-          {
-            name: formData.name,
-            email: formData.email,
-            company: formData.company || null,
-            message: formData.message || null,
-            product_name: product.name,
-            created_at: new Date().toISOString(),
-          },
-        ])
+      const result = await submitForm('product_inquiry', {
+        name: formData.name,
+        email: formData.email,
+        company: formData.company || null,
+        message: formData.message || null,
+        productName: product.name,
+        source: 'product_modal',
+      })
 
-      if (dbError) {
-        console.error('Error saving to Supabase:', dbError)
-        throw new Error('Failed to save inquiry. Please try again.')
-      }
-
-      // Also send email via API (optional)
-      try {
-        const response = await fetch('/api/send-product-inquiry', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ...formData,
-            productName: product.name,
-          }),
-        })
-        // Don't fail if email fails, data is already saved
-        if (!response.ok) {
-          console.warn('Email sending failed, but data saved to database')
-        }
-      } catch (emailError) {
-        console.warn('Email sending failed, but data saved to database:', emailError)
+      if (!result.success) {
+        throw new Error(result.error)
       }
 
       setSubmitStatus('success')
@@ -150,21 +128,34 @@ export default function ProductModal({ isOpen, onClose, product }: ProductModalP
               <div className="p-6 md:p-8">
                 {/* Header */}
                 <div className="flex items-center space-x-4 mb-6 pb-6 border-b border-gray-200">
-                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-50 to-pink-50 p-3 flex items-center justify-center flex-shrink-0">
-                    <Image
-                      src={product.logo}
-                      alt={product.name}
-                      width={80}
-                      height={80}
-                      className="w-full h-full object-contain"
-                      unoptimized
-                    />
+                  <div className="w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    {product.visual === 'biocopilot' ? (
+                      <BioCopilotVisual size="sm" showBadge={false} />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-blue-50 to-pink-50 p-3 flex items-center justify-center">
+                        <Image
+                          src={product.logo!}
+                          alt={product.name}
+                          width={80}
+                          height={80}
+                          className="w-full h-full object-contain"
+                          unoptimized
+                        />
+                      </div>
+                    )}
                   </div>
                   <div>
-                    <h2 className="text-2xl md:text-3xl font-display font-black text-gray-900 mb-1">
-                      {product.name}
-                    </h2>
-                    <p className="text-sm text-gray-600 font-body">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                      <h2 className="text-2xl md:text-3xl font-display font-black text-gray-900">
+                        {product.name}
+                      </h2>
+                      {product.status === 'early-access' && (
+                        <span className="text-xs font-heading font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                          Early Access
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-600 font-body leading-relaxed">
                       {product.description}
                     </p>
                   </div>
@@ -255,7 +246,9 @@ export default function ProductModal({ isOpen, onClose, product }: ProductModalP
                   <motion.button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white rounded-lg font-heading font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2 group mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className={`w-full px-6 py-3 bg-gradient-to-r ${
+                      product.gradient ?? 'from-blue-600 via-purple-600 to-pink-600'
+                    } text-white rounded-lg font-heading font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2 group mt-2 disabled:opacity-50 disabled:cursor-not-allowed`}
                     whileHover={!isSubmitting ? { scale: 1.02, y: -2 } : {}}
                     whileTap={!isSubmitting ? { scale: 0.98 } : {}}
                   >

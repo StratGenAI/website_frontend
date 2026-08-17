@@ -12,7 +12,7 @@ interface ParallaxSectionProps {
 export default function ParallaxSection({ children, speed = 0.5, className = '' }: ParallaxSectionProps) {
   const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
-    target: ref,
+    target: ref as React.RefObject<HTMLElement>,
     offset: ['start end', 'end start'],
   })
 

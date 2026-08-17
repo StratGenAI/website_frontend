@@ -79,11 +79,17 @@ Guidelines:
         }
       }
       
-      // Fallback: Return structured response from knowledge base
+      // Fallback without OpenAI: return top KB answer clearly
       const primaryDoc = relevantDocs[0]
+      const extras = relevantDocs.slice(1).map(d => d.title).filter(Boolean)
+      const follow =
+        extras.length > 0
+          ? `\n\nRelated: ${extras.join(', ')}. You can also ask about products, services, founders, pricing, or contact.`
+          : `\n\nYou can also ask about products, services, founders, pricing, demo, or contact.`
+
       return NextResponse.json({
         success: true,
-        response: `${primaryDoc.content}\n\nWould you like to know more about ${primaryDoc.relatedTopics.join(', ')}?`,
+        response: `**${primaryDoc.title}**\n\n${primaryDoc.content}${follow}`,
         sources: relevantDocs.map(doc => doc.title)
       })
     }
@@ -91,7 +97,7 @@ Guidelines:
     // No relevant documents found
     return NextResponse.json({
       success: true,
-      response: "I'm here to help! Could you rephrase your question? I can assist with information about StratgenAI's products, services, founders, and how to contact us.",
+      response: "I couldn't find that in my knowledge base. Try asking about: products (Keirō / BioCopilot), services, founders, pricing, demo, industries, or contact (hello@stratgenai.in).",
       sources: []
     })
   } catch (error: any) {
@@ -102,5 +108,6 @@ Guidelines:
     )
   }
 }
+
 
 

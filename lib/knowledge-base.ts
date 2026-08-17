@@ -14,7 +14,7 @@ export const knowledgeBase: KnowledgeItem[] = [
     id: 'company-overview',
     category: 'company',
     title: 'About StratgenAI',
-    content: `StratgenAI is a cutting-edge AI software company specializing in intelligent business solutions. We help businesses automate processes with AI, enhance productivity, and drive innovation. Our tagline is "From Silent Gen to Gen Alpha - AI that speaks your language". We are based in Ahmedabad, India.`,
+    content: `StratgenAI is a cutting-edge AI software company specializing in intelligent business solutions. We help businesses automate processes with AI, enhance productivity, and drive innovation. Our tagline is "From Silent Gen to Gen Alpha - AI that speaks your language". We are based at Universal Vila, Patel vaas, danilimda gam, Ahmedabad-380028, India.`,
     keywords: ['stratgenai', 'company', 'about', 'overview', 'what is', 'kya hai', 'company kya', 'company about'],
     relatedTopics: ['founders', 'services', 'products', 'location']
   },
@@ -62,21 +62,14 @@ We help businesses across various industries transform their operations with int
 
 Keirō helps businesses automate customer support, enhance user engagement, and provide 24/7 intelligent assistance.`,
     keywords: ['keiro', 'keirō', 'chatbot', 'ai chatbot', 'conversational ai', 'chat bot'],
-    relatedTopics: ['products', 'stratflow', 'ai solutions']
+    relatedTopics: ['products', 'biocopilot', 'ai solutions']
   },
   {
-    id: 'products-stratflow',
+    id: 'products-biocopilot',
     category: 'products',
-    title: 'Stratflow - Fashion AI Platform',
-    content: `Stratflow is our AI-driven fashion marketing platform. Features include:
-- Trend Analysis & Prediction for fashion trends
-- Personalized Recommendations for customers
-- Campaign Optimization for marketing
-- Customer Segmentation for targeted marketing
-- Real-time Analytics for performance tracking
-
-Designed specifically for the fashion industry to boost sales with intelligent, data-driven insights.`,
-    keywords: ['stratflow', 'fashion ai', 'fashion platform', 'fashion marketing'],
+    title: 'BioCopilot AI - Research Assistant',
+    content: `BioCopilot AI is StratgenAI's premium SaaS research assistant for genomics, microbiome, metagenomics, transcriptomics, and multi-omics researchers. It helps teams interpret QIIME2, Kraken, Bracken, and DESeq2 outputs; generate publication-quality figures and reports; draft manuscripts; and respond to reviewers — reducing weeks of work to minutes. Features include project workspaces, intelligent data upload, RAG-based dataset chat, figure studio, report builder, and manuscript copilot. For research use only — not for clinical diagnosis, treatment recommendations, or medical advice.`,
+    keywords: ['biocopilot', 'bio copilot', 'genomics', 'microbiome', 'metagenomics', 'qiime2', 'kraken', 'research ai', 'bioinformatics'],
     relatedTopics: ['products', 'keiro', 'ai solutions']
   },
   {
@@ -85,10 +78,10 @@ Designed specifically for the fashion industry to boost sales with intelligent, 
     title: 'Contact Information',
     content: `You can reach StratgenAI at:
 - Email: hello@stratgenai.in
-- Location: Ahmedabad, India
+- Address: Universal Vila, Patel vaas, danilimda gam, Ahmedabad-380028
 
 We're available for consultations, demos, and inquiries. Feel free to reach out to discuss how we can help transform your business with AI.`,
-    keywords: ['contact', 'email', 'phone', 'address', 'location', 'how to contact', 'kaise contact', 'reach out', 'get in touch'],
+    keywords: ['contact', 'email', 'phone', 'address', 'location', 'how to contact', 'kaise contact', 'reach out', 'get in touch', 'danilimda', 'ahmedabad'],
     relatedTopics: ['demo', 'consultation', 'support']
   },
   {
@@ -140,41 +133,75 @@ Our team has deep expertise across these domains to deliver cutting-edge solutio
 We stay updated with the latest technologies to deliver best-in-class solutions.`,
     keywords: ['technologies', 'technology', 'tech stack', 'what technologies', 'kon si technology', 'kya technology', 'tech use'],
     relatedTopics: ['expertise', 'services', 'development']
+  },
+  {
+    id: 'pricing',
+    category: 'pricing',
+    title: 'Pricing Information',
+    content: `StratgenAI pricing is custom based on your needs (products, integrations, users, and support level). We offer free consultation and tailored quotes. Keirō and BioCopilot have flexible plans — contact hello@stratgenai.in or request a demo for exact pricing. We also offer a free 14-day trial for eligible products.`,
+    keywords: ['pricing', 'price', 'cost', 'how much', 'kitna', 'paisa', 'budget', 'fee', 'plans', 'quote'],
+    relatedTopics: ['demo', 'contact', 'products']
+  },
+  {
+    id: 'demo-trial',
+    category: 'demo',
+    title: 'Demo and Free Trial',
+    content: `Yes — you can request a product demo or free trial. Options: watch a short demo, book a live demo call, or start a free 14-day trial (where available). Share your name and email in the chatbot or on the contact form, or email hello@stratgenai.in.`,
+    keywords: ['demo', 'trial', 'free trial', 'live demo', 'preview', 'try', 'dikhao'],
+    relatedTopics: ['products', 'contact', 'pricing']
+  },
+  {
+    id: 'support',
+    category: 'support',
+    title: 'Customer Support',
+    content: `StratgenAI provides technical support, documentation, and guidance for clients. Reach us at hello@stratgenai.in for support questions. For product demos and onboarding help, request a session via the website forms or chatbot.`,
+    keywords: ['support', 'help', 'technical support', 'customer support', 'madad', 'issue'],
+    relatedTopics: ['contact', 'demo']
+  },
+  {
+    id: 'community',
+    category: 'community',
+    title: 'StratgenAI Community',
+    content: `StratgenAI has a community for AI enthusiasts, developers, and business leaders to share insights, collaborate, and hear product updates. To join, contact hello@stratgenai.in or ask via the website chatbot.`,
+    keywords: ['community', 'join community', 'network', 'group'],
+    relatedTopics: ['contact', 'company']
   }
 ]
 
 // Search function for RAG
 export function searchKnowledgeBase(query: string, limit: number = 3): KnowledgeItem[] {
   const normalizedQuery = query.toLowerCase().trim()
-  const queryWords = normalizedQuery.split(/\s+/).filter(w => w.length > 2)
-  
+  const stopWords = new Set(['the', 'and', 'for', 'are', 'you', 'what', 'how', 'can', 'please', 'tell', 'me', 'about', 'your', 'with', 'from', 'this', 'that', 'have', 'do'])
+  const queryWords = normalizedQuery
+    .split(/\s+/)
+    .map(w => w.replace(/[^a-z0-9āōūīē]/g, ''))
+    .filter(w => w.length >= 2 && !stopWords.has(w))
+
   const scoredItems = knowledgeBase.map(item => {
     let score = 0
-    
-    // Exact keyword match
-    const itemText = `${item.title} ${item.content} ${item.keywords.join(' ')}`.toLowerCase()
-    queryWords.forEach(word => {
-      if (itemText.includes(word)) {
-        score += 2
-      }
-      // Check keywords array
-      if (item.keywords.some(kw => kw.toLowerCase().includes(word) || word.includes(kw.toLowerCase()))) {
-        score += 3
-      }
+    const title = item.title.toLowerCase()
+    const content = item.content.toLowerCase()
+    const keywords = item.keywords.map(k => k.toLowerCase())
+
+    // Full-phrase keyword hit is strongest
+    keywords.forEach(kw => {
+      if (kw.length >= 3 && normalizedQuery.includes(kw)) score += 8
     })
-    
-    // Category match
-    if (normalizedQuery.includes(item.category)) {
-      score += 1
-    }
-    
+
+    queryWords.forEach(word => {
+      if (title.includes(word)) score += 4
+      if (keywords.some(kw => kw === word || kw.includes(word) || word.includes(kw))) score += 5
+      if (content.includes(word)) score += 1
+    })
+
+    if (normalizedQuery.includes(item.category)) score += 2
+
     return { item, score }
   })
-  
-  // Sort by score and return top results
+
   return scoredItems
     .sort((a, b) => b.score - a.score)
-    .filter(result => result.score > 0)
+    .filter(result => result.score >= 4)
     .slice(0, limit)
     .map(result => result.item)
 }

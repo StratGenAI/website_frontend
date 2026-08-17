@@ -28,6 +28,20 @@ html {
   scroll-behavior: smooth;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
@@ -62,6 +76,13 @@ body {
     @apply bg-gradient-to-r from-blue-600 via-pink-500 to-blue-600 bg-clip-text text-transparent;
     background-size: 200% auto;
     animation: gradient 3s linear infinite;
+  }
+
+  @media (max-width: 1023px) {
+    .gradient-text {
+      animation: none;
+      background-size: 100% auto;
+    }
   }
   
   .glass-effect {

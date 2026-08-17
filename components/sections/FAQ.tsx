@@ -53,7 +53,7 @@ const faqs = [
   {
     id: 10,
     question: 'Do I need technical expertise to use StratgenAI\'s AI solutions?',
-    answer: 'No, StratgenAI designs AI solutions to be user-friendly and intuitive. Our platforms like Keirō and Stratflow are built with non-technical users in mind, featuring simple interfaces and clear workflows. We provide comprehensive training and support to ensure your team can effectively use and benefit from our AI tools without requiring deep technical knowledge.'
+    answer: 'No, StratgenAI designs AI solutions to be user-friendly and intuitive. Our platform Keirō is built with non-technical users in mind, featuring simple interfaces and clear workflows. We provide comprehensive training and support to ensure your team can effectively use and benefit from our AI tools without requiring deep technical knowledge.'
   }
 ]
 

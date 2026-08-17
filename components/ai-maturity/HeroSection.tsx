@@ -32,7 +32,7 @@ export default function HeroSection() {
       {/* Animated Background */}
       <div className="absolute inset-0">
         <motion.div
-          className="absolute top-20 right-10 w-96 h-96 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full blur-3xl opacity-30"
+          className="absolute top-20 right-10 w-96 h-96 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full blur-3xl opacity-30"
           animate={{
             x: [0, 100, 0],
             y: [0, 50, 0],
@@ -117,6 +117,14 @@ export default function HeroSection() {
                   <span>Take the Assessment</span>
                   <ArrowDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
                 </motion.button>
+                <motion.a
+                  href="#overview"
+                  className="px-8 py-4 bg-white text-gray-800 rounded-xl font-heading font-semibold text-lg border-2 border-gray-300 shadow-lg hover:shadow-xl hover:border-blue-500 transition-all duration-300 flex items-center justify-center"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Learn More
+                </motion.a>
               </motion.div>
             </motion.div>
 

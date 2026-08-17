@@ -5,7 +5,8 @@ import { useInView } from 'react-intersection-observer'
 import { MapPin, Mail, Send, CheckCircle, AlertCircle } from 'lucide-react'
 import { useState, useRef } from 'react'
 import ScrollReveal from '@/components/ScrollReveal'
-import { supabase } from '@/lib/supabase'
+import { submitForm } from '@/lib/submit-form-client'
+import { usePerformanceMode } from '@/lib/use-performance-mode'
 
 export default function Contact() {
   const [ref, inView] = useInView({
@@ -31,21 +32,16 @@ export default function Contact() {
     setSubmitMessage('')
 
     try {
-      const { data, error } = await supabase
-        .from('contact_submissions')
-        .insert([
-          {
-            name: formData.name,
-            email: formData.email,
-            company: formData.company || null,
-            message: formData.message,
-            created_at: new Date().toISOString(),
-          },
-        ])
-        .select()
+      const result = await submitForm('contact', {
+        name: formData.name,
+        email: formData.email,
+        company: formData.company || null,
+        message: formData.message,
+        source: 'contact_page',
+      })
 
-      if (error) {
-        throw error
+      if (!result.success) {
+        throw new Error(result.error)
       }
 
       setSubmitStatus('success')
@@ -67,24 +63,27 @@ export default function Contact() {
   }
 
   const sectionRef = useRef<HTMLElement>(null)
+  const { lowPower } = usePerformanceMode()
   const { scrollYProgress } = useScroll({
-    target: sectionRef,
+    target: sectionRef as React.RefObject<HTMLElement>,
     offset: ['start end', 'end start'],
   })
-
   const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '30%'])
 
   return (
     <section ref={sectionRef} id="contact" className="py-32 bg-gradient-to-br from-white via-blue-50/30 to-pink-50/30 relative overflow-hidden">
-      {/* Advanced Background with Parallax */}
-      <motion.div
-        className="absolute inset-0 opacity-10"
-        style={{ y: backgroundY }}
-      >
-        <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-gradient-to-br from-blue-500 to-purple-500 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-gradient-to-br from-pink-500 to-rose-500 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-gradient-to-br from-purple-500 to-pink-500 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-      </motion.div>
+      {lowPower ? (
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-blue-400 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-pink-400 rounded-full blur-3xl" />
+        </div>
+      ) : (
+        <motion.div className="absolute inset-0 opacity-10" style={{ y: backgroundY }}>
+          <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-gradient-to-br from-blue-500 to-purple-500 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-gradient-to-br from-pink-500 to-rose-500 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-gradient-to-br from-purple-500 to-pink-500 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+        </motion.div>
+      )}
 
       <div ref={ref} className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <ScrollReveal direction="scale" delay={0.2}>
@@ -133,7 +132,10 @@ export default function Contact() {
                     </motion.div>
                     <div>
                       <h4 className="font-heading font-bold text-xl text-gray-800 mb-2">Location</h4>
-                      <p className="text-gray-600 font-body text-lg">Ahmedabad, India</p>
+                      <p className="text-gray-600 font-body text-lg leading-relaxed">
+                        Universal Vila, Patel vaas, danilimda gam,<br />
+                        Ahmedabad — 380028
+                      </p>
                     </div>
                   </motion.div>
 

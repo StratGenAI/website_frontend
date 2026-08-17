@@ -1,0 +1,67 @@
+================================================================================
+  STRATGENAI — FORM SETUP (Supabase ki jagah Web3Forms)
+  Folder: C:\Users\admin\OneDrive\Documents\websitee  (ROOT — yahi sahi hai)
+  Mat chalao: websitee\websitee\  (purana duplicate folder)
+================================================================================
+
+STEP 1 — Web3Forms par free key lo
+----------------------------------
+  1. Browser mein kholo: https://web3forms.com
+  2. "Create your Access Key" / "Get Started" dabao
+  3. Apna EMAIL daalo (jahan submissions aani chahiye — hello@stratgenai.in ya personal)
+  4. Email mein link aayega — verify karo
+  5. Dashboard par "Access Key" dikhega — poora copy karo (lamba text, UUID jaisa)
+
+
+STEP 2 — Project mein .env.local file
+-------------------------------------
+  1. Is folder mein jao (ROOT):
+     C:\Users\admin\OneDrive\Documents\websitee
+
+  2. File banao naam:  .env.local
+     (agar pehle se hai to usko kholo)
+
+  3. Andar SIRF yeh likho (apni key paste karo):
+
+     WEB3FORMS_ACCESS_KEY=YOUR_KEY_HERE_PASTE_BETWEEN_EQUALS
+
+     Example (fake):
+     WEB3FORMS_ACCESS_KEY=a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+  4. Save karo. Key ke around quotes mat lagao.
+
+
+STEP 3 — Server restart
+-----------------------
+  1. Terminal mein jo "npm run dev" chal raha hai — Ctrl+C se band karo
+  2. Phir:
+     cd C:\Users\admin\OneDrive\Documents\websitee
+     npm run dev
+  3. Browser: http://localhost:3000
+  4. Contact form test — submit karo
+  5. Web3Forms dashboard / email check karo
+
+
+STEP 4 — Live site (Vercel) par
+-------------------------------
+  Vercel → Project → Settings → Environment Variables
+  Name:  WEB3FORMS_ACCESS_KEY
+  Value: (wahi key jo .env.local mein hai)
+  Redeploy karo.
+
+
+CHECK — sahi setup hai ya nahi
+------------------------------
+  Terminal (project root):
+     npm run check:forms
+
+  "OK" dikhe = ready. "MISSING" = Step 2 dubara karo.
+
+
+PROBLEM?
+--------
+  - Forms fail + "not configured" → .env.local missing ya galat folder
+  - Key paste ke baad bhi fail → dev server restart zaroori
+  - Confusion: code ROOT folder mein hai, websitee\websitee\ mein nahi
+
+================================================================================

@@ -30,7 +30,7 @@ interface ConversationContext {
   activeIntent: string | null
   intentHistory: string[]
   entities: {
-    product?: 'Keiro' | 'Stratflow'
+    product?: 'Keiro' | 'BioCopilot'
     interest?: 'demo' | 'pricing'
   }
   unclearAttempts: number
@@ -41,6 +41,7 @@ interface ConversationContext {
 
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false)
+  const [logoError, setLogoError] = useState(false)
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -155,13 +156,13 @@ export default function Chatbot() {
       examples: [
         'what products do you have', 'aapke products kya hai', 'products batao',
         'what do you sell', 'kya kya milta hai', 'product list', 'keiro kya hai',
-        'stratflow kya hai', 'products kya hai', 'what are your products',
+        'biocopilot kya hai', 'bio copilot', 'products kya hai', 'what are your products',
         'products list', 'kya products hai', 'aap kya bechte ho', 'offerings kya hai', 'solutions kya hai'
       ],
       confidenceThreshold: 0.7,
       response: () => ({
-        text: "We offer **2 main products**:\n\n1. **Keirō** 🤖\n   Intelligent conversational AI chatbot\n   • Natural Language Processing\n   • Multi-language Support\n   • Customizable Workflows\n   • Analytics & Insights\n   • Easy Integration\n\n2. **Stratflow** 👗\n   AI-driven fashion marketing platform\n   • Trend Analysis & Prediction\n   • Personalized Recommendations\n   • Campaign Optimization\n   • Customer Segmentation\n   • Real-time Analytics\n\nWhich one interests you more?",
-        followUp: ['Tell me about Keirō', 'Tell me about Stratflow', 'How can I contact you?']
+        text: "We offer **two AI products**:\n\n1. **Keirō** 🤖 — Intelligent conversational AI for business\n   • NLP, multi-language, workflows, analytics & integration\n\n2. **BioCopilot AI** 🧬 — Research assistant for genomics & multi-omics (Early Access)\n   • QIIME2, Kraken, DESeq2 interpretation\n   • Publication figures, reports & manuscript copilot\n   • *For research use only — not clinical diagnostics*\n\nWhich product would you like to explore?",
+        followUp: ['Tell me about Keirō', 'Tell me about BioCopilot AI', 'How can I contact you?']
       })
     },
     {
@@ -176,7 +177,7 @@ export default function Chatbot() {
       ],
       confidenceThreshold: 0.7,
       response: () => ({
-        text: "You can reach us at:\n\n📧 **Email**: hello@stratgenai.in\n📍 **Location**: Ahmedabad, India\n\nWould you like to:\n• Schedule a call\n• Send us an email\n• Get WhatsApp contact",
+        text: "You can reach us at:\n\n📧 **Email**: hello@stratgenai.in\n📍 **Address**: Universal Vila, Patel vaas, danilimda gam, Ahmedabad-380028\n\nWould you like to:\n• Schedule a call\n• Send us an email\n• Get WhatsApp contact",
         followUp: ['Schedule a call', 'Send email', 'WhatsApp us']
       })
     },
@@ -310,7 +311,7 @@ export default function Chatbot() {
       ],
       confidenceThreshold: 0.7,
       response: () => ({
-        text: "You can reach us at:\n\n📧 **Email**: hello@stratgenai.in\n📍 **Location**: Ahmedabad, India\n\nFor pricing details, please contact us and we'll provide a customized quote based on your needs!",
+        text: "You can reach us at:\n\n📧 **Email**: hello@stratgenai.in\n📍 **Address**: Universal Vila, Patel vaas, danilimda gam, Ahmedabad-380028\n\nFor pricing details, please contact us and we'll provide a customized quote based on your needs!",
         followUp: ['Schedule a call', 'Send email', 'WhatsApp us']
       })
     },
@@ -375,10 +376,7 @@ export default function Chatbot() {
       normalizedInput.includes('kaise ho') || normalizedInput.includes('kya haal') ||
       normalizedInput.includes('good morning') || normalizedInput.includes('good afternoon') ||
       normalizedInput.includes('good evening') || normalizedInput.includes('gm') ||
-      normalizedInput.includes('hey there') || normalizedInput.length <= 5 && (
-        normalizedInput.includes('h') && normalizedInput.includes('i') ||
-        normalizedInput.includes('h') && normalizedInput.includes('e') && normalizedInput.includes('l')
-      )
+      normalizedInput.includes('hey there')
     ) {
       const greetingIntent = intents.find(i => i.id === 'GREETING')
       if (greetingIntent) return { intent: greetingIntent, confidence: 0.95 }
@@ -399,10 +397,12 @@ export default function Chatbot() {
     // PRODUCT_INFO - High priority
     if (
       normalizedInput.includes('product') || normalizedInput.includes('products') ||
-      normalizedInput.includes('keiro') || normalizedInput.includes('stratflow') ||
-      normalizedInput.includes('offerings') || normalizedInput.includes('solutions') ||
+      normalizedInput.includes('keiro') || normalizedInput.includes('keirō') ||
+      normalizedInput.includes('biocopilot') || normalizedInput.includes('bio copilot') ||
+      normalizedInput.includes('offerings') ||
       normalizedInput.includes('what do you sell') || normalizedInput.includes('aap kya bechte') ||
-      normalizedInput.includes('kya milta hai') || normalizedInput.includes('product list')
+      normalizedInput.includes('kya milta hai') || normalizedInput.includes('product list') ||
+      (normalizedInput.includes('solution') && (normalizedInput.includes('product') || normalizedInput.includes('ai')))
     ) {
       const productIntent = intents.find(i => i.id === 'PRODUCT_INFO')
       if (productIntent) return { intent: productIntent, confidence: 0.95 }
@@ -490,23 +490,18 @@ export default function Chatbot() {
 
 
 
-    // CONTACT - Very comprehensive (HIGHEST PRIORITY for contact queries)
+    // CONTACT
     if (
       normalizedInput.includes('contact') || normalizedInput.includes('email') ||
-      normalizedInput.includes('phone') || normalizedInput.includes('reach') ||
-      normalizedInput.includes('connect') || normalizedInput.includes('address') ||
+      normalizedInput.includes('phone') || normalizedInput.includes('address') ||
       normalizedInput.includes('location') || normalizedInput.includes('get in touch') ||
       normalizedInput.includes('kaise contact') || normalizedInput.includes('tumse kaise baat') ||
-      normalizedInput.includes('contact karna') || normalizedInput.includes('contact kare') ||
-      normalizedInput.includes('contact kese') || normalizedInput.includes('contact kaise') ||
-      normalizedInput.includes('stratgenai ko contact') || normalizedInput.includes('stratgenai contact') ||
-      normalizedInput.includes('contact stratgenai') || normalizedInput.includes('stratgenai se contact') ||
       normalizedInput.includes('whatsapp') || normalizedInput.includes('whats app') ||
-      normalizedInput.includes('number') || normalizedInput.includes('phone number') ||
-      normalizedInput.includes('email id') || normalizedInput.includes('email address') ||
-      normalizedInput.includes('reach out') || normalizedInput.includes('reach karna') ||
-      normalizedInput.includes('baat karna') || normalizedInput.includes('baat kare') ||
-      normalizedInput.includes('call') || normalizedInput.includes('call karna')
+      normalizedInput.includes('phone number') || normalizedInput.includes('email id') ||
+      normalizedInput.includes('email address') || normalizedInput.includes('reach out') ||
+      normalizedInput.includes('reach karna') || normalizedInput.includes('call karna') ||
+      normalizedInput.includes('schedule a call') || normalizedInput.includes('send email') ||
+      normalizedInput.includes('whatsapp us')
     ) {
       const contactIntent = intents.find(i => i.id === 'CONTACT')
       if (contactIntent) return { intent: contactIntent, confidence: 0.98 }
@@ -515,10 +510,11 @@ export default function Chatbot() {
     // DEMO_REQUEST
     if (
       normalizedInput.includes('demo') || normalizedInput.includes('trial') ||
-      normalizedInput.includes('test') || normalizedInput.includes('try') ||
-      normalizedInput.includes('dikhao') || normalizedInput.includes('dekh') ||
-      normalizedInput.includes('preview') || normalizedInput.includes('sample') ||
-      normalizedInput.includes('demo chahiye') || normalizedInput.includes('test kar sakte')
+      normalizedInput.includes('free trial') || normalizedInput.includes('live demo') ||
+      normalizedInput.includes('dikhao') || normalizedInput.includes('preview') ||
+      normalizedInput.includes('demo chahiye') || normalizedInput.includes('test kar sakte') ||
+      normalizedInput.includes('try karna') || normalizedInput.includes('start free trial') ||
+      normalizedInput.includes('watch demo') || normalizedInput.includes('schedule live demo')
     ) {
       const demoIntent = intents.find(i => i.id === 'DEMO_REQUEST')
       if (demoIntent) return { intent: demoIntent, confidence: 0.95 }
@@ -530,8 +526,8 @@ export default function Chatbot() {
       normalizedInput.includes('cost') || normalizedInput.includes('charge') ||
       normalizedInput.includes('kitna') || normalizedInput.includes('paisa') ||
       normalizedInput.includes('budget') || normalizedInput.includes('fee') ||
-      normalizedInput.includes('rate') || normalizedInput.includes('how much') ||
-      normalizedInput.includes('plan') || normalizedInput.includes('plans')
+      normalizedInput.includes('how much') || normalizedInput.includes('pricing plan') ||
+      (normalizedInput.includes('plan') && (normalizedInput.includes('price') || normalizedInput.includes('cost') || normalizedInput.includes('pricing')))
     ) {
       const pricingIntent = intents.find(i => i.id === 'PRICING_REQUEST')
       if (pricingIntent) return { intent: pricingIntent, confidence: 0.95 }
@@ -549,12 +545,15 @@ export default function Chatbot() {
       if (industriesIntent) return { intent: industriesIntent, confidence: 0.95 }
     }
 
-    // SUPPORT
+    // SUPPORT — avoid catching every casual "help"/"problem" question
     if (
-      normalizedInput.includes('support') || normalizedInput.includes('help') ||
-      normalizedInput.includes('assist') || normalizedInput.includes('problem') ||
-      normalizedInput.includes('issue') || normalizedInput.includes('madad') ||
-      normalizedInput.includes('technical support') || normalizedInput.includes('customer support')
+      normalizedInput.includes('technical support') ||
+      normalizedInput.includes('customer support') ||
+      normalizedInput.includes('support available') ||
+      normalizedInput.includes('madad') ||
+      (normalizedInput.includes('support') && !normalizedInput.includes('what support')) ||
+      normalizedInput.includes('need help with support') ||
+      normalizedInput.includes('help milegi')
     ) {
       const supportIntent = intents.find(i => i.id === 'SUPPORT')
       if (supportIntent) return { intent: supportIntent, confidence: 0.95 }
@@ -686,18 +685,21 @@ export default function Chatbot() {
 
     const { intent, confidence } = intentResult
 
-    // Use RAG fallback if confidence is low or for better understanding
-    if (confidence < 0.7 || intent.id === 'UNKNOWN' || context.unclearAttempts >= 1) {
-      // Use RAG for intelligent responses with context
+    // RAG only when we truly don't know — do NOT lock into RAG after one miss
+    if (confidence < 0.7 || intent.id === 'UNKNOWN') {
       const aiResponse = await generateAIResponse(userInput, context)
-      setContext(prev => ({ ...prev, unclearAttempts: prev.unclearAttempts + 1 }))
+      setContext(prev => ({
+        ...prev,
+        unclearAttempts: prev.unclearAttempts + 1,
+        activeIntent: null,
+      }))
       return {
         answer: aiResponse,
         followUp: ['Tell me about products', 'What services do you offer?', 'How to contact?']
       }
     }
 
-    // Update context
+    // Update context — successful match resets unclear counter
     setContext(prev => ({
       ...prev,
       activeIntent: intent.id,
@@ -717,18 +719,19 @@ export default function Chatbot() {
 
   // Old matching logic removed - using intent-based system above
 
-  const handleSend = async () => {
-    if (!input.trim()) return
+  const handleSend = async (overrideText?: string) => {
+    const text = (overrideText ?? input).trim()
+    if (!text) return
 
     const userMessage: Message = {
       id: Date.now().toString(),
-      text: input,
+      text,
       sender: 'user',
       timestamp: new Date(),
     }
 
     setMessages((prev) => [...prev, userMessage])
-    const userInput = input
+    const userInput = text
     setInput('')
     setIsTyping(true)
 
@@ -759,28 +762,17 @@ export default function Chatbot() {
     e.preventDefault()
     
     try {
-      // Save to Supabase session_requests table
-      const { supabase } = await import('@/lib/supabase')
-      
-      const { error: dbError } = await supabase
-        .from('session_requests')
-        .insert([
-          {
-            name: leadData.name,
-            email: leadData.email,
-            phone: leadData.phone || null,
-            company: null,
-            session_type: 'demo_request',
-            preferred_date: null,
-            message: null,
-            source: 'chatbot',
-            created_at: new Date().toISOString(),
-          },
-        ])
+      const { submitForm } = await import('@/lib/submit-form-client')
+      const result = await submitForm('session_request', {
+        name: leadData.name,
+        email: leadData.email,
+        phone: leadData.phone || null,
+        sessionType: 'demo_request',
+        source: 'chatbot',
+      })
 
-      if (dbError) {
-        console.error('Error saving to Supabase:', dbError)
-        // Continue anyway, show success message
+      if (!result.success) {
+        console.error('Error submitting lead:', result.error)
       }
 
       const successMessage: Message = {
@@ -868,27 +860,22 @@ export default function Chatbot() {
           </motion.div>
         ) : (
           <>
-            <motion.div
-              initial={{ scale: 0, rotate: -180, opacity: 0 }}
-              animate={{ scale: 1, rotate: 0, opacity: 1 }}
-              transition={{ 
-                type: 'spring', 
-                stiffness: 250, 
-                damping: 20,
-                delay: 0.5
-              }}
-              className="relative z-10"
-            >
-              <Image
-                src="/chatbot_logo.png"
-                alt="Keirō Chatbot"
-                width={40}
-                height={40}
-                className="w-10 h-10 object-contain"
-                priority
-                unoptimized
-              />
-            </motion.div>
+            <div className="relative z-10 flex items-center justify-center">
+              {!logoError ? (
+                <Image
+                  src="/single_s.png"
+                  alt="Keirō Chatbot"
+                  width={40}
+                  height={40}
+                  className="w-10 h-10 object-contain"
+                  priority
+                  unoptimized
+                  onError={() => setLogoError(true)}
+                />
+              ) : (
+                <Bot className="w-8 h-8 text-white" />
+              )}
+            </div>
             <motion.div
               className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full border-2 border-white shadow-lg z-20"
               initial={{ scale: 0, opacity: 0 }}
@@ -932,11 +919,13 @@ export default function Chatbot() {
                 <div className="relative">
                   <div className="bg-gray-50 rounded-lg p-2 border border-gray-200">
                     <Image
-                      src="/chatbot_logo.png"
+                      src="/single_s.png"
                       alt="Keirō"
                       width={28}
                       height={28}
                       className="w-7 h-7 object-contain"
+                      unoptimized
+                      onError={() => setLogoError(true)}
                     />
                   </div>
                   <motion.div
@@ -1117,10 +1106,7 @@ export default function Chatbot() {
                   {lastResponse.followUp.slice(0, 3).map((q, idx) => (
                     <motion.button
                       key={idx}
-                      onClick={() => {
-                        setInput(q)
-                        setTimeout(() => handleSend(), 100)
-                      }}
+                      onClick={() => handleSend(q)}
                       className="text-[11px] px-3 py-1.5 bg-white rounded-md border border-gray-300 hover:border-gray-900 hover:text-gray-900 hover:bg-gray-100 transition-all font-medium text-gray-700"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -1143,10 +1129,7 @@ export default function Chatbot() {
                   {quickQuestions.map((q, idx) => (
                     <motion.button
                       key={idx}
-                      onClick={() => {
-                        setInput(q)
-                        setTimeout(() => handleSend(), 100)
-                      }}
+                      onClick={() => handleSend(q)}
                       className="text-[11px] px-3 py-1.5 bg-white rounded-md border border-gray-300 hover:border-gray-900 hover:text-gray-900 hover:bg-gray-100 transition-all font-medium text-gray-700"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}

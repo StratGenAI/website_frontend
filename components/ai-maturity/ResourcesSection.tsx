@@ -122,7 +122,7 @@ export default function ResourcesSection() {
                       }
                     }}
                   >
-                    <span>Explore</span>
+                    <span>Learn More</span>
                     <ArrowRight className="w-5 h-5" />
                   </motion.a>
                 </motion.div>

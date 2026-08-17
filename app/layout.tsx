@@ -2,10 +2,8 @@ import type { Metadata } from 'next'
 import { Space_Grotesk, Playfair_Display, Poppins, Outfit } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
-import AnnouncementBar from '@/components/AnnouncementBar'
 import Footer from '@/components/Footer'
 import FloatingButton from '@/components/FloatingButton'
-import AnimatedGradient from '@/components/AnimatedGradient'
 import Chatbot from '@/components/Chatbot'
 
 const spaceGrotesk = Space_Grotesk({ 
@@ -42,7 +40,7 @@ export const metadata: Metadata = {
     template: '%s | StratgenAI'
   },
   description: 'Transform your business with cutting-edge AI software solutions. We help businesses automate processes, enhance productivity, and drive innovation. Specializing in AI chatbots, machine learning, and intelligent automation.',
-  keywords: ['AI solutions', 'artificial intelligence', 'machine learning', 'AI chatbot', 'business automation', 'AI consulting', 'StratgenAI', 'Keirō', 'Stratflow', 'AI software', 'digital transformation', 'AI maturity model'],
+  keywords: ['AI solutions', 'artificial intelligence', 'machine learning', 'AI chatbot', 'BioCopilot AI', 'bioinformatics', 'genomics', 'business automation', 'AI consulting', 'StratgenAI', 'Keirō', 'AI software', 'digital transformation', 'AI maturity model'],
   authors: [{ name: 'StratgenAI' }],
   creator: 'StratgenAI',
   publisher: 'StratgenAI',
@@ -109,7 +107,9 @@ export default function RootLayout({
     description: 'AI software company specializing in intelligent business solutions, AI chatbots, and machine learning.',
     address: {
       '@type': 'PostalAddress',
+      streetAddress: 'Universal Vila, Patel vaas, danilimda gam',
       addressLocality: 'Ahmedabad',
+      postalCode: '380028',
       addressCountry: 'IN',
     },
     contactPoint: {
@@ -124,14 +124,13 @@ export default function RootLayout({
   }
 
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body className={`${spaceGrotesk.variable} ${playfair.variable} ${poppins.variable} ${outfit.variable} font-sans`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
         <Navbar />
-        <AnnouncementBar />
         <main className="min-h-screen relative z-10">
           {children}
         </main>

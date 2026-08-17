@@ -66,25 +66,25 @@ export default function Navbar() {
     }
   }, [])
 
-  const handleProductClick = (productId: string) => {
-    // Navigate to home page first if not already there
-    if (window.location.pathname !== '/') {
-      window.location.href = '/#products'
-      return
-    }
-    
-    const productsSection = document.getElementById('products')
-    if (productsSection) {
-      productsSection.scrollIntoView({ behavior: 'smooth' })
-      setTimeout(() => {
-        const productElement = document.getElementById(`product-${productId}`)
-        if (productElement) {
-          productElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
-        }
-      }, 500)
-    }
+  const handleProductClick = (product: { id: string; href: string }) => {
     setProductsDropdownOpen(false)
     setIsOpen(false)
+
+    if (window.location.pathname === '/') {
+      const productsSection = document.getElementById('products')
+      if (productsSection) {
+        productsSection.scrollIntoView({ behavior: 'smooth' })
+        setTimeout(() => {
+          const productElement = document.getElementById(`product-${product.id}`)
+          if (productElement) {
+            productElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          }
+        }, 500)
+        return
+      }
+    }
+
+    window.location.href = product.href
   }
 
   const handleHashLink = (href: string) => {
@@ -102,8 +102,8 @@ export default function Navbar() {
   }
 
   const products = [
-    { id: '1', name: 'Keirō' },
-    { id: '2', name: 'Stratflow' },
+    { id: '1', name: 'Keirō', href: '/products/keiro' },
+    { id: '2', name: 'BioCopilot AI', href: '/products/biocopilot' },
   ]
 
   const aboutItems = [
@@ -316,7 +316,7 @@ export default function Navbar() {
                           {products.map((product) => (
                             <motion.button
                               key={product.id}
-                              onClick={() => handleProductClick(product.id)}
+                              onClick={() => handleProductClick(product)}
                               className="w-full px-5 py-3 text-left text-gray-700 hover:bg-gray-50 transition-all font-heading font-medium text-sm border-b border-gray-100 last:border-b-0"
                               whileHover={{ x: 5 }}
                             >
@@ -568,7 +568,7 @@ export default function Navbar() {
                             {products.map((product) => (
                               <motion.button
                                 key={product.id}
-                                onClick={() => handleProductClick(product.id)}
+                                onClick={() => handleProductClick(product)}
                                 className="w-full py-2 px-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-all font-heading font-medium text-sm text-gray-700"
                                 whileHover={{ x: 5 }}
                               >

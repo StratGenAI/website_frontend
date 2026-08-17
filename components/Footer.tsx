@@ -22,7 +22,7 @@ export default function Footer() {
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-10">
           {/* Company Info */}
           <div className="lg:col-span-1">
             <h3 className="text-2xl font-heading font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
@@ -88,22 +88,41 @@ export default function Footer() {
             <h4 className="text-lg font-heading font-semibold mb-4 text-white">Products</h4>
             <ul className="space-y-3">
               <li>
-                <Link 
-                  href="/#product-1" 
-                  className="text-gray-400 hover:text-blue-400 transition-colors text-sm flex items-center group"
-                >
+                <Link href="/products/keiro" className="text-gray-400 hover:text-blue-400 transition-colors text-sm flex items-center group">
                   <span className="group-hover:translate-x-1 transition-transform inline-block">Keirō</span>
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/#product-2" 
-                  className="text-gray-400 hover:text-blue-400 transition-colors text-sm flex items-center group"
-                >
-                  <span className="group-hover:translate-x-1 transition-transform inline-block">Stratflow</span>
+                <Link href="/products/biocopilot" className="text-gray-400 hover:text-pink-400 transition-colors text-sm flex items-center group">
+                  <span className="group-hover:translate-x-1 transition-transform inline-block">BioCopilot AI</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/ai-maturity-model" className="text-gray-400 hover:text-purple-400 transition-colors text-sm flex items-center group">
+                  <span className="group-hover:translate-x-1 transition-transform inline-block">AI Maturity Model</span>
                 </Link>
               </li>
             </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h4 className="text-lg font-heading font-semibold mb-4 text-white">Legal</h4>
+            <ul className="space-y-3">
+              <li>
+                <Link href="/privacy" className="text-gray-400 hover:text-blue-400 transition-colors text-sm">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="text-gray-400 hover:text-blue-400 transition-colors text-sm">
+                  Terms of Service
+                </Link>
+              </li>
+            </ul>
+            <p className="text-gray-500 text-xs mt-4 leading-relaxed">
+              BioCopilot AI: for research use only. Not for clinical diagnosis.
+            </p>
           </div>
 
           {/* Social Media */}
@@ -159,9 +178,12 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 mt-10 pt-8">
-          <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+            <p className="text-gray-500 text-xs">
+              © {new Date().getFullYear()} StratgenAI. All rights reserved.
+            </p>
             <p className="text-gray-400 text-sm font-medium bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              From Silent Gen to Gen Alpha - AI that speaks your language
+              From Silent Gen to Gen Alpha — AI that speaks your language
             </p>
           </div>
         </div>

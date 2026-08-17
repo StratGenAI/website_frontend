@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Send, Loader2, CheckCircle, AlertCircle, Calendar, User, Mail, Phone, Building2 } from 'lucide-react'
-import { supabase } from '@/lib/supabase'
+import { submitForm } from '@/lib/submit-form-client'
 
 interface SessionRequestModalProps {
   isOpen: boolean
@@ -55,26 +55,19 @@ export default function SessionRequestModal({ isOpen, onClose }: SessionRequestM
     setSubmitMessage('')
 
     try {
-      // Save to Supabase session_requests table
-      const { error: dbError } = await supabase
-        .from('session_requests')
-        .insert([
-          {
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone || null,
-            company: formData.company || null,
-            session_type: formData.sessionType,
-            preferred_date: formData.preferredDate || null,
-            message: formData.message || null,
-            source: 'ai_maturity_model',
-            created_at: new Date().toISOString(),
-          },
-        ])
+      const result = await submitForm('session_request', {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || null,
+        company: formData.company || null,
+        sessionType: formData.sessionType,
+        preferredDate: formData.preferredDate || null,
+        message: formData.message || null,
+        source: 'ai_maturity_model',
+      })
 
-      if (dbError) {
-        console.error('Error saving to Supabase:', dbError)
-        throw new Error('Failed to save session request. Please try again.')
+      if (!result.success) {
+        throw new Error(result.error)
       }
 
       setSubmitStatus('success')
@@ -314,6 +307,7 @@ export default function SessionRequestModal({ isOpen, onClose }: SessionRequestM
     </AnimatePresence>
   )
 }
+
 
 
 

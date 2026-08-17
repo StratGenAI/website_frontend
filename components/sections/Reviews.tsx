@@ -5,6 +5,7 @@ import { useInView } from 'react-intersection-observer'
 import { Star, Quote, Sparkles, CheckCircle2 } from 'lucide-react'
 import ScrollReveal from '@/components/ScrollReveal'
 import { useRef } from 'react'
+import { usePerformanceMode } from '@/lib/use-performance-mode'
 
 const reviews = [
   {
@@ -37,8 +38,9 @@ export default function Reviews() {
     threshold: 0.1,
   })
   const containerRef = useRef<HTMLDivElement>(null)
+  const { lowPower } = usePerformanceMode()
   const { scrollYProgress } = useScroll({
-    target: containerRef,
+    target: containerRef as React.RefObject<HTMLElement>,
     offset: ['start end', 'end start'],
   })
   const y = useTransform(scrollYProgress, [0, 1], [0, -50])
@@ -49,34 +51,39 @@ export default function Reviews() {
       id="reviews" 
       className="py-32 bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30 relative overflow-hidden"
     >
-      {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-20 right-10 w-[500px] h-[500px] bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"
-          animate={{
-            x: [0, 100, 0],
-            y: [0, 50, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-        <motion.div
-          className="absolute bottom-20 left-10 w-[500px] h-[500px] bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"
-          animate={{
-            x: [0, -100, 0],
-            y: [0, -50, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
+        {lowPower ? (
+          <div className="absolute top-20 right-10 w-80 h-80 bg-blue-300/20 rounded-full blur-3xl" />
+        ) : (
+          <>
+            <motion.div
+              className="absolute top-20 right-10 w-[500px] h-[500px] bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"
+              animate={{
+                x: [0, 100, 0],
+                y: [0, 50, 0],
+                scale: [1, 1.2, 1],
+              }}
+              transition={{
+                duration: 20,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+            <motion.div
+              className="absolute bottom-20 left-10 w-[500px] h-[500px] bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"
+              animate={{
+                x: [0, -100, 0],
+                y: [0, -50, 0],
+                scale: [1, 1.2, 1],
+              }}
+              transition={{
+                duration: 20,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+          </>
+        )}
         {/* Grid Pattern Overlay */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
       </div>

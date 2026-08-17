@@ -3,8 +3,9 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { Linkedin, Mail, Sparkles, Copy, Check } from 'lucide-react'
-import Image from 'next/image'
 import ScrollReveal from '@/components/ScrollReveal'
+import FounderAvatar from '@/components/FounderAvatar'
+import { usePerformanceMode } from '@/lib/use-performance-mode'
 import { useState } from 'react'
 
 const founders = [
@@ -47,6 +48,7 @@ export default function FoundersPanel() {
   })
   const [copiedEmail, setCopiedEmail] = useState<string | null>(null)
   const [showEmail, setShowEmail] = useState<string | null>(null)
+  const { lowPower } = usePerformanceMode()
 
   const handleEmailClick = (e: React.MouseEvent, email: string) => {
     e.preventDefault()
@@ -63,7 +65,10 @@ export default function FoundersPanel() {
   return (
     <section id="founders" className="py-32 bg-gradient-to-br from-white via-blue-50/30 to-pink-50/30 relative overflow-hidden">
       {/* Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {lowPower ? (
+          <div className="absolute top-20 right-10 w-72 h-72 bg-blue-300 rounded-full blur-3xl opacity-10" />
+        ) : (
         <motion.div
           className="absolute top-20 right-10 w-96 h-96 bg-blue-400 rounded-full blur-3xl opacity-10"
           animate={{
@@ -77,6 +82,8 @@ export default function FoundersPanel() {
             ease: 'easeInOut',
           }}
         />
+        )}
+        {!lowPower && (
         <motion.div
           className="absolute bottom-20 left-10 w-96 h-96 bg-pink-400 rounded-full blur-3xl opacity-10"
           animate={{
@@ -90,6 +97,7 @@ export default function FoundersPanel() {
             ease: 'easeInOut',
           }}
         />
+        )}
       </div>
 
       <div ref={ref} className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -149,17 +157,19 @@ export default function FoundersPanel() {
                       
                       {/* Image Container - Static, No 3D */}
                       <div className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-72 md:h-72 lg:w-96 lg:h-96 rounded-3xl overflow-hidden">
-                        <Image
-                          src={founder.image}
-                          alt={founder.name}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 768px) 256px, (max-width: 1024px) 320px, 384px"
-                          style={founder.name === 'Krisha Patel' ? { 
-                            objectPosition: 'center 20%',
-                            transform: 'scale(1.15)',
-                            transformOrigin: 'center top'
-                          } : {}}
+                        <FounderAvatar
+                          name={founder.name}
+                          image={founder.image}
+                          gradient={founder.gradient}
+                          imageStyle={
+                            founder.name === 'Krisha Patel'
+                              ? {
+                                  objectPosition: 'center 20%',
+                                  transform: 'scale(1.15)',
+                                  transformOrigin: 'center top',
+                                }
+                              : undefined
+                          }
                         />
                       </div>
                     </div>

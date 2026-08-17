@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
+import { usePerformanceMode } from '@/lib/use-performance-mode'
 import { ChevronDown, ChevronUp, XCircle, Lightbulb, FlaskConical, TrendingUp, Target, Crown, CheckCircle2, AlertCircle, Clock, Wallet, Users, ArrowRight } from 'lucide-react'
 
 const levels = [
@@ -338,6 +339,7 @@ export default function MaturityLevels() {
   })
 
   const [expandedLevel, setExpandedLevel] = useState<number | null>(null)
+  const { lowPower } = usePerformanceMode()
 
   const toggleLevel = (levelNumber: number) => {
     setExpandedLevel(expandedLevel === levelNumber ? null : levelNumber)
@@ -369,10 +371,10 @@ export default function MaturityLevels() {
               return (
                 <motion.div
                   key={level.number}
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={lowPower ? false : { opacity: 0, y: 16 }}
                   animate={inView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ delay: index * 0.1 }}
-                  className={`rounded-2xl border-2 ${level.borderColor} ${level.bgColor} overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300`}
+                  transition={lowPower ? { duration: 0 } : { delay: index * 0.05, duration: 0.25 }}
+                  className={`rounded-2xl border-2 ${level.borderColor} ${level.bgColor} overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-200`}
                   style={{ maxWidth: '100%', width: '100%', boxSizing: 'border-box' }}
                 >
                   <button
@@ -412,13 +414,13 @@ export default function MaturityLevels() {
                     </div>
                   </button>
 
-                  <AnimatePresence>
+                  <AnimatePresence initial={false}>
                     {isExpanded && (
                       <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3 }}
+                        initial={lowPower ? false : { opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.15 }}
                         className="overflow-hidden"
                       >
                         <div className="px-4 sm:px-6 md:px-8 pb-4 sm:pb-6 md:pb-8 space-y-4 sm:space-y-6">

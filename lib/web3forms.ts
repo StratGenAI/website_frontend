@@ -39,20 +39,22 @@ function buildMessage(formType: FormType, data: FormPayload): string {
 
 export async function submitToWeb3Forms(
   formType: FormType,
-  data: FormPayload
+  data: FormPayload,
+  accessKeyOverride?: string
 ): Promise<{ ok: boolean; error?: string }> {
-  // Web3Forms free plan blocks server-side proxies. Key is designed to be public.
+  // Web3Forms free plan blocks server-side proxies, so the browser must POST.
+  // The access key is designed to be public (same as embedding it in HTML).
   const accessKey =
-    process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY || process.env.WEB3FORMS_ACCESS_KEY
+    accessKeyOverride ||
+    process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ||
+    process.env.WEB3FORMS_ACCESS_KEY
 
   if (!accessKey) {
-    console.error(
-      '[forms] NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY is missing. Add it to .env.local and Vercel — get a free key at https://web3forms.com'
-    )
+    console.error('[forms] Web3Forms access key is missing on this environment.')
     return {
       ok: false,
       error:
-        'Forms are not set up yet. Add NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY in Vercel Environment Variables, then redeploy. Or email hello@stratgenai.in directly.',
+        'Forms are not set up yet. Add WEB3FORMS_ACCESS_KEY in Vercel → Settings → Environment Variables (Production), then Redeploy. Or email hello@stratgenai.in directly.',
     }
   }
 

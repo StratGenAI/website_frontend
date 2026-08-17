@@ -5,6 +5,17 @@ export const runtime = 'nodejs'
 
 const VALID_TYPES: FormType[] = ['contact', 'session_request', 'product_inquiry']
 
+export async function GET() {
+  const accessKey =
+    process.env.WEB3FORMS_ACCESS_KEY || process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY
+
+  if (!accessKey) {
+    return NextResponse.json({ error: 'Forms are not configured' }, { status: 503 })
+  }
+
+  return NextResponse.json({ accessKey })
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()

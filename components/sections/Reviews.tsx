@@ -1,10 +1,9 @@
 'use client'
 
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { Star, Quote, Sparkles, CheckCircle2 } from 'lucide-react'
+import { Star, Quote, Sparkles } from 'lucide-react'
 import ScrollReveal from '@/components/ScrollReveal'
-import { useRef } from 'react'
 import { usePerformanceMode } from '@/lib/use-performance-mode'
 
 const reviews = [
@@ -48,19 +47,12 @@ export default function Reviews() {
     triggerOnce: true,
     threshold: 0.1,
   })
-  const containerRef = useRef<HTMLDivElement>(null)
   const { lowPower } = usePerformanceMode()
-  const { scrollYProgress } = useScroll({
-    target: containerRef as React.RefObject<HTMLElement>,
-    offset: ['start end', 'end start'],
-  })
-  const y = useTransform(scrollYProgress, [0, 1], [0, -50])
 
   return (
-    <section 
-      ref={containerRef}
-      id="reviews" 
-      className="py-32 bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30 relative overflow-hidden"
+    <section
+      id="reviews"
+      className="py-20 md:py-24 bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30 relative overflow-hidden"
     >
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {lowPower ? (
@@ -102,7 +94,7 @@ export default function Reviews() {
       <div ref={ref} className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <ScrollReveal direction="scale" delay={0.2}>
-          <div className="text-center mb-24">
+          <div className="text-center mb-12">
             <motion.div
               className="inline-flex items-center space-x-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-100/80 via-purple-100/80 to-pink-100/80 backdrop-blur-sm border border-white/50 mb-8 shadow-lg"
               initial={{ opacity: 0, y: 20 }}
@@ -133,172 +125,78 @@ export default function Reviews() {
           </div>
         </ScrollReveal>
 
-        {/* Reviews - Asymmetric Modern Layout */}
-        <motion.div 
-          style={{ y }}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto"
-        >
-          {reviews.map((review, index) => {
-            const isLarge = false // No large cards for 2 reviews
-            
-            return (
-              <ScrollReveal 
-                key={review.id} 
-                direction={index % 2 === 0 ? 'left' : 'right'} 
-                delay={0.3 + index * 0.15}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto items-stretch">
+          {reviews.map((review) => (
+            <div key={review.id} className="relative group h-full">
+              <div
+                className={`
+                  relative h-full flex flex-col rounded-2xl p-5
+                  bg-gradient-to-br ${review.bgGradient}
+                  border border-white/60 shadow-lg
+                  overflow-hidden
+                `}
               >
-                <motion.div
-                  initial={{ opacity: 0, y: 50, scale: 0.9 }}
-                  animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
-                  transition={{ 
-                    duration: 0.8, 
-                    delay: 0.3 + index * 0.15,
-                    type: "spring",
-                    stiffness: 100
-                  }}
-                  className="relative group"
-                  whileHover={{ y: -8, scale: 1.02 }}
+                <div
+                  className={`absolute top-4 right-4 w-10 h-10 rounded-xl bg-gradient-to-br ${review.gradient} opacity-10 flex items-center justify-center`}
                 >
-                  {/* Main Card with Glassmorphism */}
-                  <div className={`
-                    relative h-full rounded-2xl md:rounded-3xl p-6 sm:p-8 lg:p-10
-                    bg-gradient-to-br ${review.bgGradient}
-                    backdrop-blur-xl border border-white/60
-                    shadow-2xl hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)]
-                    transition-all duration-500
-                    overflow-hidden
-                  `}>
-                    {/* Animated Gradient Border */}
-                    <div className={`
-                      absolute inset-0 rounded-3xl
-                      bg-gradient-to-r ${review.gradient}
-                      opacity-0 group-hover:opacity-20
-                      transition-opacity duration-500
-                      blur-xl
-                    `} />
-                    
-                    {/* Decorative Elements */}
-                    <div className="absolute top-0 right-0 w-32 h-32 opacity-5">
-                      <div className={`w-full h-full bg-gradient-to-br ${review.gradient} rounded-full blur-2xl`} />
-                    </div>
-                    <div className="absolute bottom-0 left-0 w-24 h-24 opacity-5">
-                      <div className={`w-full h-full bg-gradient-to-br ${review.gradient} rounded-full blur-2xl`} />
-                    </div>
+                  <Quote className="w-5 h-5 text-white" />
+                </div>
 
-                    {/* Quote Icon - Floating */}
-                    <motion.div
-                      className={`absolute top-6 right-6 w-20 h-20 rounded-2xl bg-gradient-to-br ${review.gradient} opacity-10 flex items-center justify-center`}
-                      animate={{
-                        rotate: [0, 5, -5, 0],
-                        scale: [1, 1.1, 1],
-                      }}
-                      transition={{
-                        duration: 6,
-                        repeat: Infinity,
-                        ease: 'easeInOut',
-                      }}
-                    >
-                      <Quote className="w-10 h-10 text-white" />
-                    </motion.div>
+                <div className="flex items-center space-x-0.5 mb-3 relative z-10">
+                  {[...Array(5)].map((_, i) => {
+                    const starValue = i + 1
+                    const isHalfStar = review.rating < starValue && review.rating > i
+                    const isFilled = review.rating >= starValue
 
-                    {/* Rating Stars */}
-                    <div className="flex items-center space-x-1 mb-6 relative z-10">
-                      {[...Array(5)].map((_, i) => {
-                        const starValue = i + 1
-                        const isHalfStar = review.rating < starValue && review.rating > i
-                        const isFilled = review.rating >= starValue
-                        
-                        return (
-                          <motion.div
-                            key={i}
-                            initial={{ opacity: 0, scale: 0, rotate: -180 }}
-                            animate={inView ? { opacity: 1, scale: 1, rotate: 0 } : {}}
-                            transition={{ 
-                              delay: 0.5 + index * 0.15 + i * 0.1,
-                              type: "spring",
-                              stiffness: 200
-                            }}
-                            whileHover={{ scale: 1.2, rotate: 15 }}
-                            className="relative"
-                          >
-                            {isHalfStar ? (
-                              <div className="relative">
-                                <Star className="w-6 h-6 text-gray-300 fill-gray-300 drop-shadow-lg" />
-                                <div className="absolute inset-0 overflow-hidden" style={{ width: '50%' }}>
-                                  <Star className="w-6 h-6 text-yellow-400 fill-yellow-400 drop-shadow-lg" />
-                                </div>
-                              </div>
-                            ) : (
-                              <Star className={`w-6 h-6 drop-shadow-lg ${isFilled ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300 fill-gray-300'}`} />
-                            )}
-                          </motion.div>
-                        )
-                      })}
-                    </div>
-
-                    {/* Review Content */}
-                    <motion.p
-                      className={`text-base sm:text-lg ${isLarge ? 'lg:text-xl' : ''} text-gray-800 leading-relaxed font-body mb-6 md:mb-8 relative z-10 font-medium`}
-                      initial={{ opacity: 0 }}
-                      animate={inView ? { opacity: 1 } : {}}
-                      transition={{ delay: 0.6 + index * 0.15 }}
-                    >
-                      <span className="text-3xl sm:text-4xl leading-none text-gray-400 font-serif mr-1 sm:mr-2">"</span>
-                      {review.content}
-                      <span className="text-3xl sm:text-4xl leading-none text-gray-400 font-serif ml-1 sm:ml-2">"</span>
-                    </motion.p>
-
-                    {/* Company Info */}
-                    <div className="flex items-center space-x-3 sm:space-x-4 relative z-10">
-                      <motion.div
-                        className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br ${review.gradient} flex items-center justify-center shadow-xl flex-shrink-0 relative overflow-hidden`}
-                        whileHover={{ rotate: 360, scale: 1.1 }}
-                        transition={{ duration: 0.6 }}
-                      >
-                        <div className="absolute inset-0 bg-white/20" />
-                        <span className="text-white font-bold text-lg sm:text-xl relative z-10">
-                          {review.company.charAt(0)}
-                        </span>
-                      </motion.div>
-                      <div>
-                        <h4 className="text-lg sm:text-xl font-heading font-black text-gray-900 mb-0.5 sm:mb-1">
-                          {review.company}
-                        </h4>
-                        {(review.name || review.role) && (
-                          <p className="text-xs sm:text-sm text-gray-700 font-body font-semibold">
-                            {[review.name, review.role].filter(Boolean).join(' · ')}
-                          </p>
-                        )}
-                        {review.location && (
-                          <p className="text-xs sm:text-sm text-gray-600 font-body font-medium">
-                            {review.location}
-                          </p>
+                    return (
+                      <div key={i} className="relative">
+                        {isHalfStar ? (
+                          <div className="relative">
+                            <Star className="w-4 h-4 text-gray-300 fill-gray-300" />
+                            <div className="absolute inset-0 overflow-hidden" style={{ width: '50%' }}>
+                              <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                            </div>
+                          </div>
+                        ) : (
+                          <Star
+                            className={`w-4 h-4 ${isFilled ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300 fill-gray-300'}`}
+                          />
                         )}
                       </div>
-                    </div>
+                    )
+                  })}
+                </div>
 
-                    {/* Bottom Gradient Accent */}
-                    <motion.div
-                      className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${review.gradient} rounded-b-3xl`}
-                      initial={{ scaleX: 0 }}
-                      animate={inView ? { scaleX: 1 } : {}}
-                      transition={{ delay: 1 + index * 0.15, duration: 0.8 }}
-                    />
+                <p className="text-sm text-gray-800 leading-relaxed font-body mb-4 relative z-10 font-medium flex-grow">
+                  “{review.content}”
+                </p>
+
+                <div className="flex items-center space-x-3 relative z-10 mt-auto">
+                  <div
+                    className={`w-10 h-10 rounded-xl bg-gradient-to-br ${review.gradient} flex items-center justify-center shadow-md flex-shrink-0`}
+                  >
+                    <span className="text-white font-bold text-sm">{review.company.charAt(0)}</span>
                   </div>
+                  <div>
+                    <h4 className="text-base font-heading font-bold text-gray-900 leading-tight">
+                      {review.company}
+                    </h4>
+                    {(review.name || review.role) && (
+                      <p className="text-xs text-gray-700 font-body">
+                        {[review.name, review.role].filter(Boolean).join(' · ')}
+                      </p>
+                    )}
+                    {review.location && (
+                      <p className="text-xs text-gray-500 font-body">{review.location}</p>
+                    )}
+                  </div>
+                </div>
 
-                  {/* Floating Shadow Effect */}
-                  <div className={`
-                    absolute -inset-1 rounded-3xl
-                    bg-gradient-to-r ${review.gradient}
-                    opacity-0 group-hover:opacity-30
-                    blur-xl -z-10
-                    transition-opacity duration-500
-                  `} />
-                </motion.div>
-              </ScrollReveal>
-            )
-          })}
-        </motion.div>
+                <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${review.gradient} rounded-b-2xl`} />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )
